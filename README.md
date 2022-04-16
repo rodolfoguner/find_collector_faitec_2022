@@ -7,41 +7,48 @@
 
 <h3 align="center">Find Collectors</h3>
 
+---
+
 <div align="center">
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-%23005C0F.svg?style=for-the-badge&logo=Thymeleaf&logoColor=white)
+![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
 </div>
 
 ---
 
 <p align="center"> Este projeto tem como objetivo faciliatar a localização de carrocinhas e catadores de reciclávies.
-    <br> 
 </p>
 
 ## 📝 Tabela de conteúdos
 
 - [Sobre](#about)
-- [Começa](#getting_started)
-- [Deployment](#deployment)
+- [Começando](#getting_started)
 - [Usage](#usage)
-- [Built Using](#built_using)
+- [Tecnologias](#built_using)
 - [TODO](#todo)
-- [Contributing](../CONTRIBUTING.md)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
+- [Autores](#authors)
 
 ## 🧐 Sobre <a name = "about"></a>
 
-O projeto tem como objetivo ajudar a localização de pessoas que fazem coleta de lixo recicláveis,  seja carrocinhas ou catadores de lixo, ao localizar os catadores pretendemos criar uma rede colaborativa entre pessoas que prezam pela reciclagem de lixo.
-
+O projeto tem como objetivo ajudar a localização de pessoas que fazem coleta de lixo recicláveis, seja carrocinhas ou catadores de lixo, ao localizar os catadores pretendemos criar uma rede colaborativa entre pessoas que prezam pela reciclagem de lixo.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
@@ -93,31 +100,20 @@ Give an example
 
 Add notes about how to use the system.
 
-## 🚀 Deployment <a name = "deployment"></a>
+## ⛏️ Tecnologias <a name = "built_using"></a>
 
-Add additional notes about how to deploy this on a live system.
-
-## ⛏️ Built Using <a name = "built_using"></a>
-
-- [Postgres](https://www.postgresql.org) - Banco de dados
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
+- [Postgres](https://www.postgresql.org)
+- [Spring Boot](https://spring.io/projects/spring-boot)
+- [Thymeleaf](https://www.thymeleaf.org)
+- [Maven](https://maven.apache.org)
+- [Bootstrap](https://getbootstrap.com)
 
 ## 📝 TODO <a name="todo"></a>
+
 - [ ] Cadastro de catadores;
-- [ ] Cadastro de recicladores;
 
 ## ✍️ Autores <a name = "authors"></a>
 
 - [@Anilson22](https://github.com/Anilson22) - Colaborador | Desenvolvedor
 - [@enthonyedu](https://github.com/enthonyedu) - Colaborador | Desenvolvedor
 - [@rodolfoguner](https://github.com/rodolfoguner) - Colaborador | Desenvolvedor
-
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
-
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
