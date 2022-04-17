@@ -35,8 +35,8 @@
 
 - [Sobre](#sobre)
 - [Como executar o projeto](#executar-projeto)
-  * [Pré requisitos](pre-requisitos)
-  * [Instalação](instalacao)
+  * [Pré-requisitos](#pre-requisitos)
+  * [Instalação](#instalacao)
 - [Executando testes automatizados](#testes)
 - [Tecnologias](#tecnologias)
 - [TODO](#todo)
