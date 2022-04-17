@@ -1,5 +1,3 @@
-# README em construção 🔨
-
 <p align="center">
   <a href="" rel="noopener">
  <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
@@ -35,84 +33,77 @@
 
 ## 📝 Tabela de conteúdos
 
-- [Sobre](#about)
-- [Começando](#getting_started)
-- [Usage](#usage)
-- [Tecnologias](#built_using)
+- [Sobre](#sobre)
+- [Como executar o projeto](#executar-projeto)
+  * [Pré requisitos](pre-requisitos)
+  * [Instalação](instalacao)
+- [Executando testes automatizados](#testes)
+- [Tecnologias](#tecnologias)
 - [TODO](#todo)
-- [Autores](#authors)
+- [Autores](#autores)
 
-## 🧐 Sobre <a name = "about"></a>
+## 🧐 Sobre <a name = "sobre"></a>
 
 O projeto tem como objetivo ajudar a localização de pessoas que fazem coleta de lixo recicláveis, seja carrocinhas ou catadores de lixo, ao localizar os catadores pretendemos criar uma rede colaborativa entre pessoas que prezam pela reciclagem de lixo.
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## 🏁 Como executar o projeto <a name = "executar-projeto"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See for notes on how to deploy the project on a live system.
+### Pré-requisitos <a name = "pre-requisitos"></a>
 
-### Prerequisites
+- [Git](https://git-scm.com)
+- [Java JDK 13](https://www.java.com/pt-BR/)
+- [Maven](https://maven.apache.org)
 
-What things you need to install the software and how to install them.
+### Instalação <a name = "instalacao"></a>
 
-```
-Give examples
-```
+Fazer download do projeto:
 
-### Installing
+```bash
+# Clonando o projeto
 
-A step by step series of examples that tell you how to get a development env running.
+# Com HTTPS
+$ git clone https://github.com/rodolfoguner/find_collector_faitec_2022
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+# Com SSH
+$ git clone git@github.com:rodolfoguner/find_collector_faitec_2022.git
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
+## 🔧 Executando testes automatizados <a name = "testes"></a>
 
-## 🔧 Running the tests <a name = "tests"></a>
+Em definição. 🚧
 
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## 🎈 Usage <a name="usage"></a>
-
-Add notes about how to use the system.
-
-## ⛏️ Tecnologias <a name = "built_using"></a>
+## ⛏️ Tecnologias <a name = "tecnologias"></a>
 
 - [Postgres](https://www.postgresql.org)
+- [Java](https://www.java.com/pt-BR/)
 - [Spring Boot](https://spring.io/projects/spring-boot)
 - [Thymeleaf](https://www.thymeleaf.org)
 - [Maven](https://maven.apache.org)
 - [Bootstrap](https://getbootstrap.com)
 
-## 📝 TODO <a name="todo"></a>
+## ⚙ TODO <a name="todo"></a>
 
-- [ ] Cadastro de catadores;
+O projeto tem as seguintes funcionalidades:
+  - Essencial:
+    * [ ] Cadastrar-se;
+    * [ ] Login;
+    * [ ] Recuperar senha;
+    * [ ] Alterar senha;
+    * [ ] Editar perfil;
+    * [ ] Cadastrar-se como catador;
+    * [ ] Localizar catadores;
+    * [ ] Apadrinhar catadores;
+  - Importante:
+    * [ ] Cadastrar pontos de coleta coleta;
+    * [ ] Agendar coleta;
+    * [ ] Chat entre catadores e recicladores para combinar coleta;
+    * [ ] Gerar bônus por coleta realizada;
+    * [ ] Apresentar a história dos catadores;
+  - Desejável:
+    * [ ] Notificar coletas próximas por whatsapp;
 
-## ✍️ Autores <a name = "authors"></a>
+
+## ✍️ Autores <a name = "autores"></a>
 
 - [@Anilson22](https://github.com/Anilson22) - Colaborador | Desenvolvedor
 - [@enthonyedu](https://github.com/enthonyedu) - Colaborador | Desenvolvedor
