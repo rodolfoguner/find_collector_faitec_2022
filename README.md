@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
+ <img width=250px height=250px src="https://user-images.githubusercontent.com/72309970/163736378-a6b19183-0384-4383-bcf3-af15ac3d58b6.jpeg" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Find Collectors</h3>
