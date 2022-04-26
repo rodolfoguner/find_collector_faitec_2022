@@ -28,7 +28,7 @@
 
 ---
 
-<p align="center"> Este projeto tem como objetivo faciliatar a localização de carrocinhas e catadores de reciclávies.
+<p align="center"> Este projeto tem como objetivo facilitar a localização de carrocinhas e catadores de recicláveis.
 </p>
 
 ## 📝 Tabela de conteúdos
@@ -44,7 +44,14 @@
 
 ## 🧐 Sobre <a name = "sobre"></a>
 
-O projeto tem como objetivo ajudar a localização de pessoas que fazem coleta de lixo recicláveis, seja carrocinhas ou catadores de lixo, ao localizar os catadores pretendemos criar uma rede colaborativa entre pessoas que prezam pela reciclagem de lixo.
+O Find Collectors é um projeto inspirado no 11° objetivo da ONU que se diz respeito a comunidades e cidades sustentáveis, com esse problema em pauta decidimos então iniciar um projeto com o objetivo de criar uma rede de contatos sustentável e beneficente para pessoas que cuidam do meio ambiente e também informar da importância da reciclagem e incentivar outras pessoas a reciclar.
+ 
+O sistema tem como objetivo realizar cadastro de catadores de recicláveis contendo a sua localização para que as pessoas possam levar o lixo até os catadores ou também será possível combinar uma coleta entre as duas pessoas.
+ 
+Após cada coleta confirmada, será gerado um bônus entre para o catador e o reciclador, com o objetivo de fomentar a reciclagem do lixo. Os pontos gerados por esse bônus serão utilizados para trocar em produtos ou serviços com as empresas parceiras e que apoiam a ideia do Find Collectors.
+ 
+Com esse projeto esperamos conseguir atrair cada vez mais pessoas para reciclagem melhorando a sustentabilidade, a qualidade de vida de cada um e aumentar a renda dos catadores de reciclável.
+
 
 ## 🏁 Como executar o projeto <a name = "executar-projeto"></a>
 
@@ -53,6 +60,7 @@ O projeto tem como objetivo ajudar a localização de pessoas que fazem coleta d
 - [Git](https://git-scm.com)
 - [Java JDK 13](https://www.java.com/pt-BR/)
 - [Maven](https://maven.apache.org)
+- [Docker](https://www.docker.com) 
 
 ### Instalação <a name = "instalacao"></a>
 
@@ -80,6 +88,7 @@ Em definição. 🚧
 - [Thymeleaf](https://www.thymeleaf.org)
 - [Maven](https://maven.apache.org)
 - [Bootstrap](https://getbootstrap.com)
+- [Docker](https://www.docker.com)
 
 ## ⚙ TODO <a name="todo"></a>
 
