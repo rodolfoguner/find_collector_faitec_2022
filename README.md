@@ -1,123 +1,119 @@
-# README em construção 🔨
-
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
+ <img width=250px height=250px src="https://user-images.githubusercontent.com/72309970/163736378-a6b19183-0384-4383-bcf3-af15ac3d58b6.jpeg" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Find Collectors</h3>
 
+---
+
 <div align="center">
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-%23005C0F.svg?style=for-the-badge&logo=Thymeleaf&logoColor=white)
+![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
 </div>
 
 ---
 
-<p align="center"> Este projeto tem como objetivo faciliatar a localização de carrocinhas e catadores de reciclávies.
-    <br> 
+<p align="center"> Este projeto tem como objetivo facilitar a localização de carrocinhas e catadores de recicláveis.
 </p>
 
 ## 📝 Tabela de conteúdos
 
-- [Sobre](#about)
-- [Começa](#getting_started)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Built Using](#built_using)
+- [Sobre](#sobre)
+- [Como executar o projeto](#executar-projeto)
+  * [Pré-requisitos](#pre-requisitos)
+  * [Instalação](#instalacao)
+- [Executando testes automatizados](#testes)
+- [Tecnologias](#tecnologias)
 - [TODO](#todo)
-- [Contributing](../CONTRIBUTING.md)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
+- [Autores](#autores)
 
-## 🧐 Sobre <a name = "about"></a>
+## 🧐 Sobre <a name = "sobre"></a>
 
-O projeto tem como objetivo ajudar a localização de pessoas que fazem coleta de lixo recicláveis,  seja carrocinhas ou catadores de lixo, ao localizar os catadores pretendemos criar uma rede colaborativa entre pessoas que prezam pela reciclagem de lixo.
+O Find Collectors é um projeto inspirado no 11° objetivo da ONU que se diz respeito a comunidades e cidades sustentáveis, com esse problema em pauta decidimos então iniciar um projeto com o objetivo de criar uma rede de contatos sustentável e beneficente para pessoas que cuidam do meio ambiente e também informar da importância da reciclagem e incentivar outras pessoas a reciclar.
+ 
+O sistema tem como objetivo realizar cadastro de catadores de recicláveis contendo a sua localização para que as pessoas possam levar o lixo até os catadores ou também será possível combinar uma coleta entre as duas pessoas.
+ 
+Após cada coleta confirmada, será gerado um bônus entre para o catador e o reciclador, com o objetivo de fomentar a reciclagem do lixo. Os pontos gerados por esse bônus serão utilizados para trocar em produtos ou serviços com as empresas parceiras e que apoiam a ideia do Find Collectors.
+ 
+Com esse projeto esperamos conseguir atrair cada vez mais pessoas para reciclagem melhorando a sustentabilidade, a qualidade de vida de cada um e aumentar a renda dos catadores de reciclável.
 
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## 🏁 Como executar o projeto <a name = "executar-projeto"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+### Pré-requisitos <a name = "pre-requisitos"></a>
 
-### Prerequisites
+- [Git](https://git-scm.com)
+- [Java JDK 13](https://www.java.com/pt-BR/)
+- [Maven](https://maven.apache.org)
+- [Docker](https://www.docker.com) 
 
-What things you need to install the software and how to install them.
+### Instalação <a name = "instalacao"></a>
 
-```
-Give examples
-```
+Fazer download do projeto:
 
-### Installing
+```bash
+# Clonando o projeto
 
-A step by step series of examples that tell you how to get a development env running.
+# Com HTTPS
+$ git clone https://github.com/rodolfoguner/find_collector_faitec_2022
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo.
-
-## 🔧 Running the tests <a name = "tests"></a>
-
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
+# Com SSH
+$ git clone git@github.com:rodolfoguner/find_collector_faitec_2022.git
 ```
 
-### And coding style tests
+## 🔧 Executando testes automatizados <a name = "testes"></a>
 
-Explain what these tests test and why
+Em definição. 🚧
 
-```
-Give an example
-```
+## ⛏️ Tecnologias <a name = "tecnologias"></a>
 
-## 🎈 Usage <a name="usage"></a>
+- [Postgres](https://www.postgresql.org)
+- [Java](https://www.java.com/pt-BR/)
+- [Spring Boot](https://spring.io/projects/spring-boot)
+- [Thymeleaf](https://www.thymeleaf.org)
+- [Maven](https://maven.apache.org)
+- [Bootstrap](https://getbootstrap.com)
+- [Docker](https://www.docker.com)
 
-Add notes about how to use the system.
+## ⚙ TODO <a name="todo"></a>
 
-## 🚀 Deployment <a name = "deployment"></a>
+O projeto tem as seguintes funcionalidades:
+  - Essencial:
+    * [ ] Cadastrar-se;
+    * [ ] Login;
+    * [ ] Recuperar senha;
+    * [ ] Alterar senha;
+    * [ ] Editar perfil;
+    * [ ] Cadastrar-se como catador;
+    * [ ] Localizar catadores;
+    * [ ] Apadrinhar catadores;
+  - Importante:
+    * [ ] Cadastrar pontos de coleta coleta;
+    * [ ] Agendar coleta;
+    * [ ] Chat entre catadores e recicladores para combinar coleta;
+    * [ ] Gerar bônus por coleta realizada;
+    * [ ] Apresentar a história dos catadores;
+  - Desejável:
+    * [ ] Notificar coletas próximas por whatsapp;
 
-Add additional notes about how to deploy this on a live system.
 
-## ⛏️ Built Using <a name = "built_using"></a>
-
-- [Postgres](https://www.postgresql.org) - Banco de dados
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
-
-## 📝 TODO <a name="todo"></a>
-- [ ] Cadastro de catadores;
-- [ ] Cadastro de recicladores;
-
-## ✍️ Autores <a name = "authors"></a>
+## ✍️ Autores <a name = "autores"></a>
 
 - [@Anilson22](https://github.com/Anilson22) - Colaborador | Desenvolvedor
 - [@enthonyedu](https://github.com/enthonyedu) - Colaborador | Desenvolvedor
 - [@rodolfoguner](https://github.com/rodolfoguner) - Colaborador | Desenvolvedor
-
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
-
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
