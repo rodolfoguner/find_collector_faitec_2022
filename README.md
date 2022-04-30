@@ -103,7 +103,7 @@ O projeto tem as seguintes funcionalidades:
     * [ ] Localizar catadores;
     * [ ] Apadrinhar catadores;
   - Importante:
-    * [ ] Cadastrar pontos de coleta coleta;
+    * [ ] Cadastrar pontos de coleta;
     * [ ] Agendar coleta;
     * [ ] Chat entre catadores e recicladores para combinar coleta;
     * [ ] Gerar bônus por coleta realizada;
