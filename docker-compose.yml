@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  db:
+    container_name: find_collectors
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: find-collectors
+    volumes:
+      - ./find-collectors-data:/var/lib/postgresql/data
+    ports:
+      - '3000:5432'
