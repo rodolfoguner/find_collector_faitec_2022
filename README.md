@@ -78,6 +78,16 @@ $ git clone git@github.com:rodolfoguner/find_collector_faitec_2022.git
 
 Após o download do projeto é necessário iniciar o contêiner responsável pelo banco de dados do projeto.
 
+Para isso é necessário criar um arquivo ```.env```, ou utilizar o ```.env.example``` existente, que irá conter as configurações de senha, usuário e porta do seu banco.
+
+```
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=find-collectors
+PORT=3000
+```
+Após a criação do arquivo, só executar as instruções abaixo para iniciar o contêiner.
+
 ```bash
 # Para iniciar o contêiner navegue até a pasta que contém o arquivo docker-compose.yml e execute o comando
 

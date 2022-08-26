@@ -253,6 +253,8 @@ nbdist/
 #  Removes database files from tracking
 *find-collectors-data/
 
+*.env
+
 # Support for Project snippet scope
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,intellij,maven,java,eclipse,netbeans
