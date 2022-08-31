@@ -84,7 +84,7 @@ Para isso é necessário criar um arquivo ```.env```, ou utilizar o ```.env.exam
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=find-collectors
-PORT=3000
+DB_PORT=3000
 ```
 Após a criação do arquivo, só executar as instruções abaixo para iniciar o contêiner.
 
