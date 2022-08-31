@@ -13,5 +13,5 @@ services:
       - ./find-collectors-data:/var/lib/postgresql/data
       - ./init-database.sql:/docker-entrypoint-initdb.d/init-database.sql
     ports:
-      - '${PORT}:5432'
+      - '${DB_PORT}:5432'
     restart: unless-stopped
