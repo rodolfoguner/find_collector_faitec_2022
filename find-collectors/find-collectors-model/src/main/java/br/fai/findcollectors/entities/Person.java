@@ -1,4 +1,4 @@
 package br.fai.findcollectors.entities;
 
-public class Reciclador {
+public class Person {
 }
