@@ -99,6 +99,8 @@ $ docker compose down
 
 ```
 
+Caso necessite alterar a estrutura do banco de dados, é necessário apagar o diretório ```find-collectors-data```, alterar o arquivo em ```./find-collectors/db-scripts/dump.sql``` e executar o comando ```docker compose up -d --build --remove-orphans``` novamente.
+
 ## 🔧 Executando testes automatizados <a name = "testes"></a>
 
 Em definição. 🚧

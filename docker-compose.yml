@@ -2,8 +2,11 @@ version: "3.7"
 
 services:
   db:
-    container_name: find_collectors
-    image: postgres:14
+    image: db
+    container_name: find-collectors
+    build: 
+      context: ./find-collectors/db-scripts
+      target: db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -11,7 +14,6 @@ services:
       POSTGRES_INITDB_ARGS: '--encoding=UTF-8'
     volumes:
       - ./find-collectors-data:/var/lib/postgresql/data
-      - ./init-database.sql:/docker-entrypoint-initdb.d/init-database.sql
     ports:
       - '${DB_PORT}:5432'
     restart: unless-stopped
