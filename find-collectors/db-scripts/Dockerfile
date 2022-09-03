@@ -1,6 +1,6 @@
-FROM postgres:14 as db
+FROM python:3.10 as migration
 
-WORKDIR /db-scripts
-
-COPY ./init-database.sh ./
-COPY ./dump.sql ./
+COPY . /app
+RUN pip install psycopg2
+WORKDIR /app
+CMD python dump.py
