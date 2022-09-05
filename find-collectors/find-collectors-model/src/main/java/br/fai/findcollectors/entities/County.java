@@ -2,7 +2,7 @@ package br.fai.findcollectors.entities;
 
 public class County extends BaseEntity{
     private String city;
-    private State state_id;
+    private State stateId;
 
     public String getCity() {
         return city;
@@ -12,11 +12,11 @@ public class County extends BaseEntity{
         this.city = city;
     }
 
-    public State getState_id() {
-        return state_id;
+    public State getStateId() {
+        return stateId;
     }
 
-    public void setState_id(State state_id) {
-        this.state_id = state_id;
+    public void setStateId(State stateId) {
+        this.stateId = stateId;
     }
 }

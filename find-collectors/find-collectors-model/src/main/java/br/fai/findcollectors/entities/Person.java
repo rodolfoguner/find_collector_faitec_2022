@@ -10,7 +10,7 @@ public class Person extends BaseEntity{
     private String district;
     private String number;
 
-    private County county_id;
+    private County countyId;
 
     public String getEmail() {
         return email;
@@ -68,11 +68,11 @@ public class Person extends BaseEntity{
         this.number = number;
     }
 
-    public County getCounty_id() {
-        return county_id;
+    public County getCountyId() {
+        return countyId;
     }
 
-    public void setCounty_id(County county_id) {
-        this.county_id = county_id;
+    public void setCountyId(County countyId) {
+        this.countyId = countyId;
     }
 }

@@ -5,9 +5,9 @@ import br.fai.findcollectors.enums.GarbageType;
 public class Collector extends Person {
     private GarbageType type;
     private String description;
-    private boolean collect_point;
-    private Person person_id;
-    private Recycler recycler_id;
+    private boolean collectPoint;
+    private Person personId;
+    private Recycler recyclerId;
 
     public GarbageType getType() {
         return type;
@@ -25,27 +25,27 @@ public class Collector extends Person {
         this.description = description;
     }
 
-    public boolean isCollect_point() {
-        return collect_point;
+    public boolean isCollectPoint() {
+        return collectPoint;
     }
 
-    public void setCollect_point(boolean collect_point) {
-        this.collect_point = collect_point;
+    public void setCollectPoint(boolean collectPoint) {
+        this.collectPoint = collectPoint;
     }
 
-    public Person getPerson_id() {
-        return person_id;
+    public Person getPersonId() {
+        return personId;
     }
 
-    public void setPerson_id(Person person_id) {
-        this.person_id = person_id;
+    public void setPersonId(Person personId) {
+        this.personId = personId;
     }
 
-    public Recycler getRecycler_id() {
-        return recycler_id;
+    public Recycler getRecyclerId() {
+        return recyclerId;
     }
 
-    public void setRecycler_id(Recycler recycler_id) {
-        this.recycler_id = recycler_id;
+    public void setRecyclerId(Recycler recyclerId) {
+        this.recyclerId = recyclerId;
     }
 }

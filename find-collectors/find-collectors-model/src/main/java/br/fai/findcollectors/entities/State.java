@@ -2,7 +2,7 @@ package br.fai.findcollectors.entities;
 
 public class State extends BaseEntity{
     private String uf;
-    private String state_Name;
+    private String stateName;
 
     public String getUf() {
         return uf;
@@ -12,11 +12,11 @@ public class State extends BaseEntity{
         this.uf = uf;
     }
 
-    public String getState_Name() {
-        return state_Name;
+    public String getStateName() {
+        return stateName;
     }
 
-    public void setState_Name(String state_Name) {
-        this.state_Name = state_Name;
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
     }
 }
