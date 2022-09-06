@@ -4,6 +4,9 @@ import java.sql.*;
 
 public class ConnectionFactory {
 
+    private ConnectionFactory() {
+    }
+
     private static final String DATABASE = System.getenv("POSTGRES_DB").isEmpty() ? System.getenv("POSTGRES_DB") : "find-collectors";
     private static final String PORT = System.getenv("DB_PORT").isEmpty() ? System.getenv("DB_PORT") : "5432";
     private static final String USERNAME = System.getenv("POSTGRES_USER").isEmpty() ? System.getenv("POSTGRES_USER") : "postgres";
@@ -11,9 +14,6 @@ public class ConnectionFactory {
     private static final String URL = "jdbc:postgresql://localhost:" + PORT + "/" + DATABASE + "";
 
     private static Connection connection = null;
-
-    private ConnectionFactory() {
-    }
 
     public static Connection getConnection() {
         try {

@@ -2,9 +2,11 @@ package br.fai.findcollectors.findcollectorsapi.service.impl;
 
 import br.fai.findcollectors.entities.Recycler;
 import br.fai.findcollectors.findcollectorsapi.service.RecyclerRestService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RecyclerRestServiceImpl implements RecyclerRestService<Recycler> {
     @Override
     public List<Recycler> find() {

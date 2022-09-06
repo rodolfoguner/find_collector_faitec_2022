@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api/county")
 @CrossOrigin(origins = "*")
-public class AccountRestController {
+public class CountyRestController {
 }
