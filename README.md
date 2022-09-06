@@ -99,6 +99,8 @@ $ docker compose down
 
 ```
 
+Caso necessite alterar a estrutura do banco de dados, altere o arquivo em ```./find-collectors/db-scripts/dump.sql``` e execute o comando ```docker compose up -d --build```.
+
 ## 🔧 Executando testes automatizados <a name = "testes"></a>
 
 Em definição. 🚧

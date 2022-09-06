@@ -1,6 +1,5 @@
 package br.fai.findcollectors.findcollectorsapi.service.impl;
 
-import br.fai.findcollectors.entities.CollectPoint;
 import br.fai.findcollectors.findcollectorsapi.service.CollectPointRestService;
 
 import java.util.List;
