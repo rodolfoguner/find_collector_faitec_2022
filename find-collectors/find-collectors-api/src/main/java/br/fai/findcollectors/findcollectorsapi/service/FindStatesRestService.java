@@ -8,6 +8,8 @@ public interface FindStatesRestService {
 
     List<State> find();
 
-    State findById();
+    State findById(int id);
+
+    List<State> findStateByName(String stateName);
 
 }
