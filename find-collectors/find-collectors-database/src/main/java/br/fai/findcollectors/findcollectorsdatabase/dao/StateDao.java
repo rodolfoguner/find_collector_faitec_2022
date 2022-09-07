@@ -14,6 +14,6 @@ public interface StateDao {
 
     List<State> findStateByName(String stateName);
 
-    State generateInstance(ResultSet resultSet) throws SQLException;
+    State loadValues(ResultSet resultSet) throws SQLException;
 
 }

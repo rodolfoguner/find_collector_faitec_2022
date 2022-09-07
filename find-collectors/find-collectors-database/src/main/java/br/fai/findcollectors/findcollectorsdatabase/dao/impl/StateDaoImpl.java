@@ -33,7 +33,7 @@ public class StateDaoImpl implements StateDao {
 
             while (resultSet.next()) {
 
-                State state = generateInstance(resultSet);
+                State state = loadValues(resultSet);
 
                 states.add(state);
 
@@ -72,7 +72,7 @@ public class StateDaoImpl implements StateDao {
                 return null;
             }
 
-            state = generateInstance(resultSet);
+            state = loadValues(resultSet);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +106,7 @@ public class StateDaoImpl implements StateDao {
 
             while (resultSet.next()) {
 
-                State state = generateInstance(resultSet);
+                State state = loadValues(resultSet);
 
                 states.add(state);
 
@@ -123,7 +123,7 @@ public class StateDaoImpl implements StateDao {
     }
 
     @Override
-    public State generateInstance(ResultSet resultSet) throws SQLException {
+    public State loadValues(ResultSet resultSet) throws SQLException {
         State state = new State();
         state.setId(resultSet.getInt("id"));
         state.setStateName(resultSet.getString("nome_estado"));
