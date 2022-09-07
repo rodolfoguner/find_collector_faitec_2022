@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +73,11 @@ public class CityDaoImpl implements CityDao {
 
     @Override
     public List<City> findCityByName(String cityName) {
+        return null;
+    }
+
+    @Override
+    public City loadValues(ResultSet resultSet) throws SQLException {
         return null;
     }
 

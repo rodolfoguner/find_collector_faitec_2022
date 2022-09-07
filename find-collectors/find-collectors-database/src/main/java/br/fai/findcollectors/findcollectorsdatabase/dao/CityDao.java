@@ -2,6 +2,8 @@ package br.fai.findcollectors.findcollectorsdatabase.dao;
 
 import br.fai.findcollectors.entities.City;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface CityDao {
@@ -13,5 +15,7 @@ public interface CityDao {
     List<City> findByState(String stateName);
 
     List<City> findCityByName(String cityName);
+
+    City loadValues(ResultSet resultSet) throws SQLException;
 
 }
