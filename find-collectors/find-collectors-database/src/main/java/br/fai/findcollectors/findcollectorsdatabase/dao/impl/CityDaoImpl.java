@@ -1,9 +1,9 @@
 package br.fai.findcollectors.findcollectorsdatabase.dao.impl;
 
-import br.fai.findcollectors.entities.County;
+import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.entities.State;
 import br.fai.findcollectors.findcollectorsdatabase.connection.ConnectionFactory;
-import br.fai.findcollectors.findcollectorsdatabase.dao.CountyDao;
+import br.fai.findcollectors.findcollectorsdatabase.dao.CityDao;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class CountyDaoImpl implements CountyDao {
+public class CityDaoImpl implements CityDao {
     @Override
-    public List<County> find() {
+    public List<City> find() {
 
-        List<County> counties = new ArrayList<>();
+        List<City> cities = new ArrayList<>();
 
         final String sql = "SELECT * FROM municipio m INNER JOIN estado e ON e.id = m.estado_id;";
 
@@ -32,13 +32,13 @@ public class CountyDaoImpl implements CountyDao {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                County county = new County();
+                City city = new City();
                 State state = new State();
 
-                county.setId(resultSet.getInt("id"));
-                county.setCity(resultSet.getString("cidade"));
-                county.setCreatedAt(resultSet.getTimestamp("criado_em"));
-                county.setLastModified(resultSet.getTimestamp("alterado_em"));
+                city.setId(resultSet.getInt("id"));
+                city.setCity(resultSet.getString("cidade"));
+                city.setCreatedAt(resultSet.getTimestamp("criado_em"));
+                city.setLastModified(resultSet.getTimestamp("alterado_em"));
 
                 state.setId(resultSet.getInt("estado_id"));
                 state.setUf(resultSet.getString("uf"));
@@ -46,9 +46,9 @@ public class CountyDaoImpl implements CountyDao {
                 state.setCreatedAt(resultSet.getTimestamp("criado_em"));
                 state.setLastModified(resultSet.getTimestamp("alterado_em"));
 
-                county.setStateId(state);
+                city.setStateId(state);
 
-                counties.add(county);
+                cities.add(city);
             }
 
         } catch (Exception e) {
@@ -57,16 +57,22 @@ public class CountyDaoImpl implements CountyDao {
             ConnectionFactory.close(connection, preparedStatement, resultSet);
         }
 
-        return counties;
+        return cities;
     }
 
     @Override
-    public County findById() {
+    public City findById(int id) {
         return null;
     }
 
     @Override
-    public List<County> findByState() {
+    public List<City> findByState(String stateName) {
         return null;
     }
+
+    @Override
+    public List<City> findCityByName(String cityName) {
+        return null;
+    }
+
 }

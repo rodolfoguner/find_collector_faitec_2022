@@ -38,8 +38,8 @@ public class FindCollectorsApiConfig {
     }
 
     @Bean
-    public CountyDao getCountyDao() {
-        return new CountyDaoImpl();
+    public CityDao getCityDao() {
+        return new CityDaoImpl();
     }
 
 }

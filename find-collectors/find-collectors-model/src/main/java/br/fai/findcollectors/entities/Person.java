@@ -1,6 +1,6 @@
 package br.fai.findcollectors.entities;
 
-public class Person extends BaseEntity{
+public class Person extends BaseEntity {
 
     private String email;
     private String password;
@@ -10,7 +10,7 @@ public class Person extends BaseEntity{
     private String district;
     private String number;
 
-    private County countyId;
+    private City cityId;
 
     public String getEmail() {
         return email;
@@ -68,11 +68,11 @@ public class Person extends BaseEntity{
         this.number = number;
     }
 
-    public County getCountyId() {
-        return countyId;
+    public City getCityId() {
+        return cityId;
     }
 
-    public void setCountyId(County countyId) {
-        this.countyId = countyId;
+    public void setCityId(City cityId) {
+        this.cityId = cityId;
     }
 }

@@ -1,6 +1,6 @@
 package br.fai.findcollectors.entities;
 
-public class County extends BaseEntity{
+public class City extends BaseEntity {
     private String city;
     private State stateId;
 

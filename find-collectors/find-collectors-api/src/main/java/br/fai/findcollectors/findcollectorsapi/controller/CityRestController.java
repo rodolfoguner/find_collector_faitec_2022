@@ -1,7 +1,7 @@
 package br.fai.findcollectors.findcollectorsapi.controller;
 
-import br.fai.findcollectors.entities.County;
-import br.fai.findcollectors.findcollectorsapi.service.FindCountyRestService;
+import br.fai.findcollectors.entities.City;
+import br.fai.findcollectors.findcollectorsapi.service.FindCityRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/county")
+@RequestMapping("/api/city")
 @CrossOrigin(origins = "*")
-public class CountyRestController {
+public class CityRestController {
 
     @Autowired
-    FindCountyRestService countyRestService;
+    FindCityRestService cityRestService;
 
     @GetMapping("")
-    public ResponseEntity<List<County>> findaAllCounties() {
-        return ResponseEntity.ok(countyRestService.find());
+    public ResponseEntity<List<City>> findaAllCities() {
+        return ResponseEntity.ok(cityRestService.find());
     }
 
 }
