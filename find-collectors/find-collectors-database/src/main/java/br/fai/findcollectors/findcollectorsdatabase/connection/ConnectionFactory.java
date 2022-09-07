@@ -4,16 +4,12 @@ import java.sql.*;
 
 public class ConnectionFactory {
 
-    private static final String DATABASE = System.getenv("POSTGRES_DB").isEmpty() ? System.getenv("POSTGRES_DB") : "find-collectors";
-    private static final String PORT = System.getenv("DB_PORT").isEmpty() ? System.getenv("DB_PORT") : "5432";
-    private static final String USERNAME = System.getenv("POSTGRES_USER").isEmpty() ? System.getenv("POSTGRES_USER") : "postgres";
-    private static final String PASSWORD = System.getenv("POSTGRES_PASSWORD").isEmpty() ? System.getenv("POSTGRES_PASSWORD") : "postgres";
+    private static final String DATABASE = "find-collectors";
+    private static final String PORT = "3000";
+    private static final String USERNAME = "postgres";
+    private static final String PASSWORD = "postgres";
     private static final String URL = "jdbc:postgresql://localhost:" + PORT + "/" + DATABASE + "";
-
     private static Connection connection = null;
-
-    private ConnectionFactory() {
-    }
 
     public static Connection getConnection() {
         try {

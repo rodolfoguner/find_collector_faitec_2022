@@ -1,4 +1,4 @@
 package br.fai.findcollectors.findcollectorsdatabase.dao;
 
-public interface CollectorDao <T> extends PersonDao<T>{
+public interface CollectorDao<T> extends PersonDao<T> {
 }
