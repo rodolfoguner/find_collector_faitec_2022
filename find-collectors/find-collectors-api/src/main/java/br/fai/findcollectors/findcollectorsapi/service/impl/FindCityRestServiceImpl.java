@@ -16,13 +16,35 @@ public class FindCityRestServiceImpl implements FindCityRestService {
 
 
     @Override
-    public List<City> find(String cityName, String stateName, int stateId) {
-        return null;
+    public List<City> find(String cityName, String stateName, String stateId) {
+
+        if (!cityName.isEmpty() && stateId.isEmpty()) {
+            return cityDao.findCityByName(cityName);
+        }
+
+        if (!stateName.isEmpty()) {
+            return cityDao.findCitiesByStateName(stateName);
+        }
+
+        if (cityName.isEmpty() && !stateId.isEmpty()) {
+            return cityDao.findByStateId(Integer.parseInt(stateId));
+        }
+
+        if (!cityName.isEmpty()) {
+            return cityDao.findByStateIdAndCityName(Integer.parseInt(stateId), cityName);
+        }
+
+        return cityDao.find();
     }
 
     @Override
     public City findById(int id) {
-        return null;
+
+        if (id <= 0) {
+            return null;
+        }
+
+        return cityDao.findById(id);
     }
-    
+
 }

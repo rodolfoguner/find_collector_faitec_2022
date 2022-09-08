@@ -20,7 +20,7 @@ public class CityDaoImpl implements CityDao {
 
         List<City> cities = new ArrayList<>();
 
-        final String sql = "SELECT * FROM municipio m INNER JOIN estado e ON e.id = m.estado_id;";
+        final String sql = "SELECT * FROM municipio m INNER JOIN estado e ON e.id = m.estado_id ORDER BY m.cidade;";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -50,27 +50,187 @@ public class CityDaoImpl implements CityDao {
 
     @Override
     public City findById(int id) {
-        return null;
+
+        City city = null;
+
+        final String sql = "SELECT * FROM municipio m INNER JOIN estado e ON e.id = m.estado_id WHERE m.id = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, id);
+
+            resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            city = loadValues(resultSet);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return city;
+
     }
 
     @Override
     public List<City> findCityByName(String cityName) {
-        return null;
+
+
+        List<City> cities = new ArrayList<>();
+
+        final String sql = "SELECT * FROM municipio m INNER JOIN estado e ON e.id = m.estado_id " +
+                "WHERE m.cidade ILIKE ? " +
+                "ORDER BY m.cidade;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, cityName + "%");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                City city = loadValues(resultSet);
+
+                cities.add(city);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return cities;
     }
 
     @Override
-    public List<City> findByStateName(String stateName) {
-        return null;
+    public List<City> findCitiesByStateName(String stateName) {
+
+        List<City> cities = new ArrayList<>();
+
+        final String sql = "SELECT * FROM municipio m INNER JOIN estado e ON e.id = m.estado_id " +
+                "WHERE e.nome_estado ILIKE ? " +
+                "ORDER BY m.cidade;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, stateName + "%");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                City city = loadValues(resultSet);
+
+                cities.add(city);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return cities;
     }
 
     @Override
     public List<City> findByStateId(int id) {
-        return null;
+
+
+        List<City> cities = new ArrayList<>();
+
+        final String sql = "SELECT * FROM municipio m INNER JOIN estado e ON e.id = m.estado_id " +
+                "WHERE e.id = ? " +
+                "ORDER BY m.cidade;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                City city = loadValues(resultSet);
+
+                cities.add(city);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return cities;
     }
 
     @Override
     public List<City> findByStateIdAndCityName(int stateId, String cityName) {
-        return null;
+
+
+        List<City> cities = new ArrayList<>();
+
+        final String sql = "SELECT * FROM municipio m INNER JOIN estado e ON e.id = m.estado_id " +
+                "WHERE e.id = ? " +
+                "AND m.cidade ILIKE ? " +
+                "ORDER BY m.cidade;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, stateId);
+            preparedStatement.setString(2, cityName + "%");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                City city = loadValues(resultSet);
+
+                cities.add(city);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return cities;
     }
 
     @Override

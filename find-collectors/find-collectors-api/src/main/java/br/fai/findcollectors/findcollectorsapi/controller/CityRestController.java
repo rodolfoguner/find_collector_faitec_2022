@@ -4,10 +4,7 @@ import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.findcollectorsapi.service.FindCityRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,8 +17,22 @@ public class CityRestController {
     FindCityRestService cityRestService;
 
     @GetMapping("")
-    public ResponseEntity<List<City>> findaAllCities() {
-        return ResponseEntity.ok(cityRestService.find());
+    public ResponseEntity<List<City>> findaAllCities(@RequestParam(defaultValue = "") String cityName,
+                                                     @RequestParam(defaultValue = "") String stateName,
+                                                     @RequestParam(defaultValue = "") String stateId) {
+        return ResponseEntity.ok(cityRestService.find(cityName, stateName, stateId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<City> findCityById(@PathVariable int id) {
+        City city = cityRestService.findById(id);
+
+        if (city == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(city);
+
     }
 
 }
