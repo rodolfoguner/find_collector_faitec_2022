@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - The prismatic forms </title>
+  <link rel="stylesheet" href="/css/style2.css" type="text/css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+      <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+              <a class="navbar-brand" href="#"><img src="/assets/logo-sem-fundo2.png" alt="Logo">
+              </a>
+          </div>
+
+
+      </div>
+  </div>
+  <!-- =============== container-fluid =============== -->
+</nav>
+
+<ul class="nav">
+  <li onclick="showLogin()">Logar</li>
+  <li onclick="showSignup()">Cadastrar-se</li>
+  <li onclick="showForgotPassword()">Esqueceu a senha</li>
+  <li onclick="showSubscribe()">Se inscrever</li>
+  <li onclick="showContactUs()">Contate nos</li>
+</ul>
+<div class="wrapper">
+  <div class="rec-prism">
+    <div class="face face-top">
+      <div class="content">
+        <h2>Subscribe</h2>
+        <small>Digite seu e-mail para que possamos enviar as atualizações mais recentes!</small>
+        <form onsubmit="event.preventDefault()">
+          <div class="field-wrapper">
+            <input type="text" name="email" placeholder="email">
+            <label>e-mail</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="submit" onclick="showThankYou()">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="face face-front">
+      <div class="content">
+        <h2>Entrar</h2>
+        <form onsubmit="event.preventDefault()">
+          <div class="field-wrapper">
+            <input type="text" name="username" placeholder="username">
+            <label>usuario</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="password" name="password" placeholder="password" autocomplete="new-password">
+            <label>senha</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="submit" onclick="showThankYou()">
+          </div>
+          <span class="psw" onclick="showForgotPassword()">Esqueceu a Senha?   </span>
+          <span class="signup" onclick="showSignup()">Não é usuario? cadastre</span>
+        </form>
+      </div>
+    </div>
+    <div class="face face-back">
+      <div class="content">
+        <h2>Esqueceu a Senha?</h2>
+        <small>Digite seu e-mail para que possamos enviar um link de redefinição para sua senha</small>
+        <form onsubmit="event.preventDefault()">
+          <div class="field-wrapper">
+            <input type="text" name="email" placeholder="email">
+            <label>e-mail</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="submit" onclick="showThankYou()">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="face face-right">
+      <div class="content">
+        <h2>inscrever-se</h2>
+        <form onsubmit="event.preventDefault()">
+          <div class="field-wrapper">
+            <input type="text" name="email" placeholder="email">
+            <label>e-mail</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="password" name="password" placeholder="password" autocomplete="new-password">
+            <label>senha</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="password" name="password2" placeholder="password" autocomplete="new-password">
+            <label>repita a senha</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="submit" onclick="showThankYou()">
+          </div>
+          <span class="singin" onclick="showLogin()">Já é um usuário? Entrar</span>
+        </form>
+      </div>
+    </div>
+    <div class="face face-left">
+      <div class="content">
+        <h2>Contate nos</h2>
+        <form onsubmit="event.preventDefault()">
+          <div class="field-wrapper">
+            <input type="text" name="name" placeholder="name">
+            <label>Name</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="text" name="email" placeholder="email">
+            <label>e-mail</label>
+          </div>
+          <div class="field-wrapper">
+            <textarea placeholder="your message"></textarea>
+            <label>sua mensagem</label>
+          </div>
+          <div class="field-wrapper">
+            <input type="submit" onclick="showThankYou()">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="face face-bottom">
+      <div class="content">
+        <div class="thank-you-msg">
+          Obrigado!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- partial -->
+  <script src="/js/script.js"></script>
+
+</body>
+</html>
