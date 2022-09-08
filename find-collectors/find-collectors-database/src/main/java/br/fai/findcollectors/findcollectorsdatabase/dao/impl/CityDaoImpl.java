@@ -33,21 +33,8 @@ public class CityDaoImpl implements CityDao {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                City city = new City();
-                State state = new State();
 
-                city.setId(resultSet.getInt("id"));
-                city.setCity(resultSet.getString("cidade"));
-                city.setCreatedAt(resultSet.getTimestamp("criado_em"));
-                city.setLastModified(resultSet.getTimestamp("alterado_em"));
-
-                state.setId(resultSet.getInt("estado_id"));
-                state.setUf(resultSet.getString("uf"));
-                state.setStateName(resultSet.getString("nome_estado"));
-                state.setCreatedAt(resultSet.getTimestamp("criado_em"));
-                state.setLastModified(resultSet.getTimestamp("alterado_em"));
-
-                city.setStateId(state);
+                City city = loadValues(resultSet);
 
                 cities.add(city);
             }
@@ -78,7 +65,22 @@ public class CityDaoImpl implements CityDao {
 
     @Override
     public City loadValues(ResultSet resultSet) throws SQLException {
-        return null;
+        City city = new City();
+        State state = new State();
+
+        city.setId(resultSet.getInt("id"));
+        city.setCity(resultSet.getString("cidade"));
+        city.setCreatedAt(resultSet.getTimestamp("criado_em"));
+        city.setLastModified(resultSet.getTimestamp("alterado_em"));
+
+        state.setId(resultSet.getInt("estado_id"));
+        state.setUf(resultSet.getString("uf"));
+        state.setStateName(resultSet.getString("nome_estado"));
+        state.setCreatedAt(resultSet.getTimestamp(9));
+        state.setLastModified(resultSet.getTimestamp(10));
+
+        city.setStateId(state);
+        return city;
     }
 
 }
