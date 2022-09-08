@@ -14,24 +14,15 @@ public class FindCityRestServiceImpl implements FindCityRestService {
     @Autowired
     CityDao cityDao;
 
+
     @Override
-    public List<City> find() {
-        return cityDao.find();
+    public List<City> find(String cityName, String stateName, int stateId) {
+        return null;
     }
 
     @Override
     public City findById(int id) {
         return null;
     }
-
-    @Override
-    public List<City> findByState(String stateName) {
-        return null;
-    }
-
-    @Override
-    public List<City> findCityByName(String cityName) {
-        return null;
-    }
-
+    
 }

@@ -54,12 +54,22 @@ public class CityDaoImpl implements CityDao {
     }
 
     @Override
-    public List<City> findByState(String stateName) {
+    public List<City> findCityByName(String cityName) {
         return null;
     }
 
     @Override
-    public List<City> findCityByName(String cityName) {
+    public List<City> findByStateName(String stateName) {
+        return null;
+    }
+
+    @Override
+    public List<City> findByStateId(int id) {
+        return null;
+    }
+
+    @Override
+    public List<City> findByStateIdAndCityName(int stateId, String cityName) {
         return null;
     }
 

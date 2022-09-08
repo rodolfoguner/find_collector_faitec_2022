@@ -6,12 +6,8 @@ import java.util.List;
 
 public interface FindCityRestService {
 
-    List<City> find();
+    List<City> find(String cityName, String stateName, int stateId);
 
     City findById(int id);
-
-    List<City> findByState(String stateName);
-
-    List<City> findCityByName(String cityName);
 
 }

@@ -12,9 +12,13 @@ public interface CityDao {
 
     City findById(int id);
 
-    List<City> findByState(String stateName);
-
     List<City> findCityByName(String cityName);
+
+    List<City> findByStateName(String stateName);
+
+    List<City> findByStateId(int id);
+
+    List<City> findByStateIdAndCityName(int stateId, String cityName);
 
     City loadValues(ResultSet resultSet) throws SQLException;
 
