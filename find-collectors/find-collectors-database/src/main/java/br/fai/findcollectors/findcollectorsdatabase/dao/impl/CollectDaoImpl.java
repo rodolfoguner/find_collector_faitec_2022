@@ -4,6 +4,8 @@ import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.findcollectorsdatabase.dao.CollectDao;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -31,5 +33,10 @@ public class CollectDaoImpl implements CollectDao<Collect> {
     @Override
     public boolean deleteById(int id) {
         return false;
+    }
+
+    @Override
+    public Collect loadValues(ResultSet resultSet) throws SQLException {
+        return null;
     }
 }

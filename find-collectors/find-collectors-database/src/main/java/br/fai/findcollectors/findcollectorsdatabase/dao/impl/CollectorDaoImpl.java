@@ -4,6 +4,8 @@ import br.fai.findcollectors.entities.Collector;
 import br.fai.findcollectors.findcollectorsdatabase.dao.CollectorDao;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -31,5 +33,10 @@ public class CollectorDaoImpl implements CollectorDao<Collector> {
     @Override
     public boolean deleteById(int id) {
         return false;
+    }
+
+    @Override
+    public Collector loadValues(ResultSet resultSet) throws SQLException {
+        return null;
     }
 }

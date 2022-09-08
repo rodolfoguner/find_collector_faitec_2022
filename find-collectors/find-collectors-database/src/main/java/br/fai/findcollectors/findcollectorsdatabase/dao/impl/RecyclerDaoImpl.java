@@ -4,6 +4,8 @@ import br.fai.findcollectors.entities.Recycler;
 import br.fai.findcollectors.findcollectorsdatabase.dao.RecyclerDao;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -31,5 +33,10 @@ public class RecyclerDaoImpl implements RecyclerDao<Recycler> {
     @Override
     public boolean deleteById(int id) {
         return false;
+    }
+
+    @Override
+    public Recycler loadValues(ResultSet resultSet) throws SQLException {
+        return null;
     }
 }

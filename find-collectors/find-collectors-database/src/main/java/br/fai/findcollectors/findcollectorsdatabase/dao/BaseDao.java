@@ -1,5 +1,7 @@
 package br.fai.findcollectors.findcollectorsdatabase.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface BaseDao<T> {
@@ -13,4 +15,6 @@ public interface BaseDao<T> {
     boolean update(T entity);
 
     boolean deleteById(int id);
+
+    T loadValues(ResultSet resultSet) throws SQLException;
 }
