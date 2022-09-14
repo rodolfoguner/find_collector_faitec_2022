@@ -15,7 +15,12 @@ public class FindStatesRestServiceImpl implements FindStatesRestService {
     StateDao stateDao;
 
     @Override
-    public List<State> find() {
+    public List<State> find(String name) {
+
+        if (name.isEmpty()) {
+            return findStateByName(name);
+        }
+
         return stateDao.find();
     }
 
@@ -31,7 +36,7 @@ public class FindStatesRestServiceImpl implements FindStatesRestService {
 
     @Override
     public List<State> findStateByName(String stateName) {
-        
+
         return stateDao.findStateByName(stateName);
     }
 }

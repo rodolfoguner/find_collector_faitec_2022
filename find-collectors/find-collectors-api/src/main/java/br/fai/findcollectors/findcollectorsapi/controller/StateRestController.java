@@ -20,13 +20,7 @@ public class StateRestController {
     @GetMapping("")
     public ResponseEntity<List<State>> findAll(@RequestParam(defaultValue = "") String name) {
         List<State> states = new ArrayList<>();
-
-        if (!name.isEmpty()) {
-            states = statesRestService.findStateByName(name);
-            return ResponseEntity.ok(states);
-        }
-
-        states = statesRestService.find();
+        states = statesRestService.find(name);
         return ResponseEntity.ok(states);
     }
 

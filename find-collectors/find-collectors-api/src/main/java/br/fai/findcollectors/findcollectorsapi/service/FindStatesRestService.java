@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface FindStatesRestService {
 
-    List<State> find();
+    List<State> find(String name);
 
     State findById(int id);
 
