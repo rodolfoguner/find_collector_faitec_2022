@@ -4,6 +4,7 @@ public class Person extends BaseEntity {
 
     private String email;
     private String password;
+    private String name;
     private String telephone;
     private String cep;
     private String address;
@@ -26,6 +27,14 @@ public class Person extends BaseEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTelephone() {
