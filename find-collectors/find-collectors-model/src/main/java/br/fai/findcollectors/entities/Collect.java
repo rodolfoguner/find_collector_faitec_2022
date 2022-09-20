@@ -14,7 +14,7 @@ public class Collect extends BaseEntity {
     private String address;
     private String district;
     private String number;
-    private County countyId;
+    private City cityId;
     private Collector collectorId;
     private Recycler recyclerId;
 
@@ -90,12 +90,12 @@ public class Collect extends BaseEntity {
         this.number = number;
     }
 
-    public County getCountyId() {
-        return countyId;
+    public City getCityId() {
+        return cityId;
     }
 
-    public void setCountyId(County countyId) {
-        this.countyId = countyId;
+    public void setCityId(City cityId) {
+        this.cityId = cityId;
     }
 
     public Collector getCollectorId() {
