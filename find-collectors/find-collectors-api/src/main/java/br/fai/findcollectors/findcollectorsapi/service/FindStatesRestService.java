@@ -6,8 +6,10 @@ import java.util.List;
 
 public interface FindStatesRestService {
 
-    List<State> find();
+    List<State> find(String name);
 
-    State findById();
+    State findById(int id);
+
+    List<State> findStateByName(String stateName);
 
 }

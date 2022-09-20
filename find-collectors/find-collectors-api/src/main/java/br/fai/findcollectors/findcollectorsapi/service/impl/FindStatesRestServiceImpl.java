@@ -15,12 +15,28 @@ public class FindStatesRestServiceImpl implements FindStatesRestService {
     StateDao stateDao;
 
     @Override
-    public List<State> find() {
+    public List<State> find(String name) {
+
+        if (name.isEmpty()) {
+            return findStateByName(name);
+        }
+
         return stateDao.find();
     }
 
     @Override
-    public State findById() {
-        return null;
+    public State findById(int id) {
+
+        if (id <= 0) {
+            return null;
+        }
+
+        return stateDao.findById(id);
+    }
+
+    @Override
+    public List<State> findStateByName(String stateName) {
+
+        return stateDao.findStateByName(stateName);
     }
 }
