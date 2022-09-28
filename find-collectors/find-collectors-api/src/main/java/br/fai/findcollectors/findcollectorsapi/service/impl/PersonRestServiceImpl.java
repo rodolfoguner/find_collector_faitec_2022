@@ -26,7 +26,11 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
     @Override
     public Person findById(int id) {
-        return null;
+        if (id <= 0) {
+            return null;
+        }
+
+        return personDao.findById(id);
     }
 
     @Override

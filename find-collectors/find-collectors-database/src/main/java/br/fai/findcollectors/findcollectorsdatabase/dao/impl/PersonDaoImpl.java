@@ -53,7 +53,37 @@ public class PersonDaoImpl implements PersonDao<Person> {
 
     @Override
     public Person findById(int id) {
-        return null;
+
+        Person person = null;
+
+        final String sql = "SELECT * FROM pessoa p WHERE p.id = ?";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            
+            resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            person = loadValues(resultSet);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return person;
+
     }
 
     @Override
