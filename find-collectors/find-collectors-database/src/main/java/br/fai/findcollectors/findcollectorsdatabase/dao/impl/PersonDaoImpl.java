@@ -100,8 +100,6 @@ public class PersonDaoImpl implements PersonDao<Person> {
         } finally {
             ConnectionFactory.close(connection, preparedStatement, resultSet);
         }
-
-
     }
 
     @Override
@@ -112,6 +110,43 @@ public class PersonDaoImpl implements PersonDao<Person> {
     @Override
     public boolean deleteById(int id) {
         return false;
+    }
+
+    @Override
+    public Person findPersonByEmail(String email) {
+
+        Person person = null;
+
+
+        final String sql = "SELECT * FROM pessoa p WHERE p.email = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, email);
+
+            resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            person = loadValues(resultSet);
+            person.setPassword(resultSet.getString("senha"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return person;
     }
 
     @Override

@@ -18,6 +18,11 @@ public class AccountRestController {
     @PostMapping("/login")
     public ResponseEntity<Person> login(@RequestBody Account account) {
         Person person = personPersonRestService.validateLogin(account);
+
+        if (person == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.ok(person);
     }
 

@@ -46,7 +46,23 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
     @Override
     public Person validateLogin(Account account) {
-        return null;
+        if (account.getEmail().isEmpty() || account.getPassword().isEmpty()) {
+            return null;
+        }
+
+        Person person = personDao.findPersonByEmail(account.getEmail());
+
+        if (person == null) {
+            return null;
+        }
+
+        if (!BCrypt.checkpw(account.getPassword(), person.getPassword())) {
+            return null;
+        }
+
+        person.setPassword(null);
+
+        return person;
     }
 
     @Override
