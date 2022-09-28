@@ -3,15 +3,25 @@ package br.fai.findcollectors.findcollectorsapi.service.impl;
 import br.fai.findcollectors.entities.Account;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.findcollectorsapi.service.PersonRestService;
+import br.fai.findcollectors.findcollectorsdatabase.dao.PersonDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class PersonRestServiceImpl implements PersonRestService<Person> {
+
+    private final String pepper = "ZiFuZC1jQGxsZWN0MHJzPw==";
+    private final String salt = BCrypt.gensalt(10) + pepper;
+
+    @Autowired
+    PersonDao<Person> personDao;
+
     @Override
     public List<Person> find() {
-        return null;
+        return personDao.find();
     }
 
     @Override
@@ -21,7 +31,7 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
     @Override
     public int create(Person entity) {
-        return 0;
+        return personDao.create(entity);
     }
 
     @Override
@@ -48,8 +58,10 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
         Person person = new Person();
 
+        final String password = BCrypt.hashpw(account.getPassword(), salt);
+
         person.setEmail(account.getEmail());
-        person.setPassword(account.getPassword());
+        person.setPassword(password);
 
         return this.create(person);
     }

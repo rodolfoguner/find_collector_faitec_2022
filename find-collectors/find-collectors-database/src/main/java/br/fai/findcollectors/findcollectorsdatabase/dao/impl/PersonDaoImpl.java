@@ -8,10 +8,7 @@ import br.fai.findcollectors.findcollectorsdatabase.dao.PersonDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +21,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
     @Override
     public List<Person> find() {
 
-        List<Person> personList = new ArrayList<>();
+        List<Person> personList = new ArrayList<Person>();
 
         final String sql = "SELECT * FROM pessoa p ORDER BY p.nome;";
 
@@ -61,7 +58,50 @@ public class PersonDaoImpl implements PersonDao<Person> {
 
     @Override
     public int create(Person entity) {
-        return 0;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        int id = -1;
+
+        try {
+
+            final String sql = "INSERT INTO pessoa (id, email, senha) VALUES (DEFAULT, ?, ?);";
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, entity.getEmail());
+            preparedStatement.setString(2, entity.getPassword());
+
+            preparedStatement.execute();
+
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+
+            connection.commit();
+
+            return id;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                e.printStackTrace();
+            }
+
+            return id;
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+
     }
 
     @Override

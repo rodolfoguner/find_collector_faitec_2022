@@ -25,6 +25,10 @@ public class AccountRestController {
     public ResponseEntity<Integer> signUp(@RequestBody Account account) {
         int id = personPersonRestService.signUp(account);
 
+        if (id <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.ok(id);
     }
 }
