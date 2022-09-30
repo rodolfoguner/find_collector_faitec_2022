@@ -40,7 +40,26 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
     @Override
     public boolean update(int id, Person entity) {
-        return false;
+
+        if (id <= 0) {
+            return false;
+        }
+
+        Person person = personDao.findById(id);
+
+        if (person == null) {
+            return false;
+        }
+
+        person.setName(entity.getName());
+        person.setTelephone(entity.getTelephone());
+        person.setCep(entity.getCep());
+        person.setAddress(entity.getAddress());
+        person.setDistrict(entity.getDistrict());
+        person.setNumber(entity.getNumber());
+        person.setCityId(entity.getCityId());
+
+        return personDao.update(person);
     }
 
     @Override

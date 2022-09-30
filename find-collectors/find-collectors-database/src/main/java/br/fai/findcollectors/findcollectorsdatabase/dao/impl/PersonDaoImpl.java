@@ -135,8 +135,55 @@ public class PersonDaoImpl implements PersonDao<Person> {
     @Override
     public boolean update(Person entity) {
 
+        final String sql = "UPDATE pessoa SET " +
+                "nome = ?, " +
+                "telefone = ?, " +
+                "cep = ?, " +
+                "endereco = ?, " +
+                "bairro = ?, " +
+                "numero = ?, " +
+                "municipio_id = ?," +
+                "alterado_em = NOW() " +
+                "WHERE " +
+                "id = ?;";
 
-        return false;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, entity.getName());
+            preparedStatement.setString(2, entity.getTelephone());
+            preparedStatement.setString(3, entity.getCep());
+            preparedStatement.setString(4, entity.getAddress());
+            preparedStatement.setString(5, entity.getDistrict());
+            preparedStatement.setString(6, entity.getNumber());
+            preparedStatement.setInt(7, entity.getCityId().getId());
+            preparedStatement.setInt(8, entity.getId());
+            preparedStatement.execute();
+
+            connection.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                connection.commit();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+            return false;
+
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement);
+        }
     }
 
     @Override
