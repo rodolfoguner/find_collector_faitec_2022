@@ -67,7 +67,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
             connection = ConnectionFactory.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
-            
+
             resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.next()) {
@@ -139,7 +139,43 @@ public class PersonDaoImpl implements PersonDao<Person> {
 
     @Override
     public boolean deleteById(int id) {
-        return false;
+
+        boolean result = false;
+
+        final String sql = "DELETE FROM pessoa p WHERE p.id = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+
+            connection.commit();
+
+            result = true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                connection.rollback();
+
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+        } finally {
+
+            ConnectionFactory.close(connection, preparedStatement);
+
+        }
+
+        return result;
     }
 
     @Override
