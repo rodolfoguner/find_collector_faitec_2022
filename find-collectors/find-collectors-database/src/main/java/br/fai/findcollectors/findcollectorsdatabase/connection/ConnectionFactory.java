@@ -26,6 +26,12 @@ public class ConnectionFactory {
         closeResultSet(resultSet);
     }
 
+    public static void close(Connection connection, PreparedStatement preparedStatement) {
+        closeConnection(connection);
+        closePreparedStatement(preparedStatement);
+    }
+
+
     private static void closeResultSet(ResultSet resultSet) {
         if (resultSet == null) {
             return;
