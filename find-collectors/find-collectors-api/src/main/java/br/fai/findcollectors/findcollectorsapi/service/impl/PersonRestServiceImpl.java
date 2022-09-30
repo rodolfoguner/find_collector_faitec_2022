@@ -39,7 +39,7 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
     }
 
     @Override
-    public boolean update(Person entity) {
+    public boolean update(int id, Person entity) {
         return false;
     }
 

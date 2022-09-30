@@ -24,7 +24,7 @@ public class RecyclerRestServiceImpl implements RecyclerRestService<Recycler> {
     }
 
     @Override
-    public boolean update(Recycler entity) {
+    public boolean update(int id, Recycler entity) {
         return false;
     }
 

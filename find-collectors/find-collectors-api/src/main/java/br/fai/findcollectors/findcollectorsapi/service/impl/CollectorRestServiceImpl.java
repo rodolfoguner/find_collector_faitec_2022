@@ -24,7 +24,7 @@ public class CollectorRestServiceImpl implements CollectorRestService<Collector>
     }
 
     @Override
-    public boolean update(Collector entity) {
+    public boolean update(int id, Collector entity) {
         return false;
     }
 

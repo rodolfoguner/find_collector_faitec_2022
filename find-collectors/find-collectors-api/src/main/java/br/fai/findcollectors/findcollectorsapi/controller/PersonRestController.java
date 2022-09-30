@@ -34,9 +34,9 @@ public class PersonRestController {
         return ResponseEntity.ok(person);
     }
 
-    @PutMapping("")
-    public ResponseEntity<Boolean> update(@RequestBody Person person) {
-        boolean updated = personPersonRestService.update(person);
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> update(@PathVariable("id") int id, @RequestBody Person person) {
+        boolean updated = personPersonRestService.update(id, person);
 
         if (!updated) {
             return ResponseEntity.badRequest().build();

@@ -24,7 +24,7 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
     }
 
     @Override
-    public boolean update(Collect entity) {
+    public boolean update(int id, Collect entity) {
         return false;
     }
 
