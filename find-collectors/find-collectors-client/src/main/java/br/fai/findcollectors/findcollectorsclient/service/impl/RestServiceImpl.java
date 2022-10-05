@@ -148,6 +148,29 @@ public class RestServiceImpl<T> implements RestService<T> {
 
     @Override
     public boolean deleteById(String resource) {
-        return false;
+
+        boolean response = false;
+
+        final RestTemplate restTemplate = new RestTemplate();
+
+        try {
+
+            final HttpEntity<String> httpEntity = new HttpEntity<>("");
+
+            final ResponseEntity<Boolean> responseEntity = restTemplate.exchange(
+                    buildEndPoint(resource),
+                    HttpMethod.DELETE,
+                    httpEntity,
+                    Boolean.class
+            );
+
+            response = responseEntity.getBody();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return response;
     }
 }
