@@ -2,6 +2,7 @@ package br.fai.findcollectors.findcollectorsclient.config.security.providers;
 
 
 import br.fai.findcollectors.entities.Person;
+import br.fai.findcollectors.findcollectorsclient.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,8 +18,8 @@ import java.util.List;
 @Component
 public class FindCollectorsAuthenticationProvider implements AuthenticationProvider {
 
-//    @Autowired
-//    PersonService personService;
+    @Autowired
+    PersonService<Person> personService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -28,11 +29,11 @@ public class FindCollectorsAuthenticationProvider implements AuthenticationProvi
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-//        Person person = personService.validateLogin(username, password);
+        Person person = personService.validateLogin(username, password);
 
-//        if (person == null) {
-//            return null;
-//        }
+        if (person == null) {
+            return null;
+        }
 
         grantedAuthorities.add(new SimpleGrantedAuthority(""));
 
