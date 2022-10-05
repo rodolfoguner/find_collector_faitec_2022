@@ -15,8 +15,25 @@ public class Collect extends BaseEntity {
     private String district;
     private String number;
     private City cityId;
-    private Collector collectorId;
+    private int collectorId;
+    private Person collector;
     private Recycler recyclerId;
+
+    public int getCollectorId() {
+        return collectorId;
+    }
+
+    public void setCollectorId(int collectorId) {
+        this.collectorId = collectorId;
+    }
+
+    public Person getCollector() {
+        return collector;
+    }
+
+    public void setCollector(Person collector) {
+        this.collector = collector;
+    }
 
     public Timestamp getDateAndTime() {
         return dateAndTime;
@@ -98,13 +115,6 @@ public class Collect extends BaseEntity {
         this.cityId = cityId;
     }
 
-    public Collector getCollectorId() {
-        return collectorId;
-    }
-
-    public void setCollectorId(Collector collectorId) {
-        this.collectorId = collectorId;
-    }
 
     public Recycler getRecyclerId() {
         return recyclerId;
