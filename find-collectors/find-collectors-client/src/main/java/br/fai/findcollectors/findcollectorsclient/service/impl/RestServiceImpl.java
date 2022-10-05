@@ -2,8 +2,13 @@ package br.fai.findcollectors.findcollectorsclient.service.impl;
 
 
 import br.fai.findcollectors.findcollectorsclient.service.RestService;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -28,7 +33,31 @@ public class RestServiceImpl<T> implements RestService<T> {
 
     @Override
     public List<T> get(String resource) {
-        return null;
+
+        List<T> response = null;
+
+        final RestTemplate restTemplate = new RestTemplate();
+
+
+        try {
+
+            final HttpEntity<String> requestEntity = new HttpEntity<>("");
+
+            ResponseEntity<List<T>> requestResponse = restTemplate.exchange(
+                    buildEndPoint(resource),
+                    HttpMethod.GET,
+                    requestEntity,
+                    new ParameterizedTypeReference<List<T>>() {
+                    }
+            );
+
+            response = requestResponse.getBody();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
 
     @Override
