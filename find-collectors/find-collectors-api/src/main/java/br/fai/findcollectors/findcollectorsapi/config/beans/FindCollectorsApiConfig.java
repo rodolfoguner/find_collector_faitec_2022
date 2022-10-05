@@ -1,7 +1,6 @@
 package br.fai.findcollectors.findcollectorsapi.config.beans;
 
 import br.fai.findcollectors.entities.Collect;
-import br.fai.findcollectors.entities.Collector;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.entities.Recycler;
 import br.fai.findcollectors.findcollectorsdatabase.dao.*;
@@ -11,11 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FindCollectorsApiConfig {
-
-    @Bean
-    public CollectorDao<Collector> getCollectorDao() {
-        return new CollectorDaoImpl();
-    }
 
     @Bean
     public CollectDao<Collect> getCollectDao() {
