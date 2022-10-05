@@ -120,7 +120,30 @@ public class RestServiceImpl<T> implements RestService<T> {
 
     @Override
     public boolean put(String resource, T entity) {
-        return false;
+
+        boolean response = false;
+
+        final RestTemplate restTemplate = new RestTemplate();
+
+        try {
+
+            final HttpEntity<T> httpEntity = new HttpEntity<>(entity);
+
+            final ResponseEntity<Boolean> responseEntity = restTemplate.exchange(
+                    buildEndPoint(resource),
+                    HttpMethod.PUT,
+                    httpEntity,
+                    Boolean.class
+            );
+
+            response = responseEntity.getBody();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return response;
     }
 
     @Override
