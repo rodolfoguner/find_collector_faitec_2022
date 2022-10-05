@@ -93,7 +93,29 @@ public class RestServiceImpl<T> implements RestService<T> {
 
     @Override
     public int post(String resource, T entity) {
-        return 0;
+
+        final RestTemplate restTemplate = new RestTemplate();
+
+        try {
+
+            final HttpEntity<T> httpEntity = new HttpEntity<>(entity);
+
+            final ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    buildEndPoint(resource),
+                    HttpMethod.POST,
+                    httpEntity,
+                    String.class
+            );
+
+            final String response = responseEntity.getBody();
+
+            return Integer.parseInt(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
     }
 
     @Override
