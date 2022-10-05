@@ -17,7 +17,8 @@ public class Collect extends BaseEntity {
     private City cityId;
     private int collectorId;
     private Person collector;
-    private Recycler recyclerId;
+    private int recyclerId;
+    private Person recycler;
 
     public int getCollectorId() {
         return collectorId;
@@ -116,11 +117,19 @@ public class Collect extends BaseEntity {
     }
 
 
-    public Recycler getRecyclerId() {
+    public int getRecyclerId() {
         return recyclerId;
     }
 
-    public void setRecyclerId(Recycler recyclerId) {
+    public void setRecyclerId(int recyclerId) {
         this.recyclerId = recyclerId;
+    }
+
+    public Person getRecycler() {
+        return recycler;
+    }
+
+    public void setRecycler(Person recycler) {
+        this.recycler = recycler;
     }
 }
