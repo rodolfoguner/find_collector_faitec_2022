@@ -10,6 +10,12 @@ import java.util.List;
 @Service
 public class RestServiceImpl<T> implements RestService<T> {
 
+    private static final String BASE_ENDPOINT = "http://localhost:8081/api/";
+
+    private String buildEndPoint(String resource) {
+        return BASE_ENDPOINT + resource;
+    }
+
     @Override
     public HttpHeaders getAuthenticatedHeaders(String username, String password) {
         return null;
