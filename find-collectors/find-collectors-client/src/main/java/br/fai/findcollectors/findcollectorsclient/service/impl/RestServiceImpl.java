@@ -2,6 +2,7 @@ package br.fai.findcollectors.findcollectorsclient.service.impl;
 
 
 import br.fai.findcollectors.findcollectorsclient.service.RestService;
+import com.google.gson.Gson;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -62,7 +63,32 @@ public class RestServiceImpl<T> implements RestService<T> {
 
     @Override
     public T getById(String resource, Class<T> clazz) {
-        return null;
+
+        T response = null;
+
+        final RestTemplate restTemplate = new RestTemplate();
+
+
+        try {
+
+            final HttpEntity<String> requestEntity = new HttpEntity<>("");
+
+            ResponseEntity<String> requestResponse = restTemplate.exchange(
+                    buildEndPoint(resource),
+                    HttpMethod.GET,
+                    requestEntity,
+                    String.class
+            );
+
+            final Gson gson = new Gson();
+
+            response = gson.fromJson(requestResponse.getBody(), clazz);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
 
     @Override
