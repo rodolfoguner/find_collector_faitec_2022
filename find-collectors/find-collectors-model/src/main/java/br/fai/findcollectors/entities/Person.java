@@ -1,5 +1,8 @@
 package br.fai.findcollectors.entities;
 
+import br.fai.findcollectors.enums.GarbageType;
+import br.fai.findcollectors.enums.PersonType;
+
 public class Person extends BaseEntity {
 
     private String email;
@@ -10,6 +13,18 @@ public class Person extends BaseEntity {
     private String address;
     private String district;
     private String number;
+
+    private PersonType personType;
+
+    private int godfatherId;
+
+    private Person godfather;
+
+    private GarbageType garbageType;
+
+    private String description;
+
+    private boolean collectPoint;
 
     private City cityId;
 
@@ -39,6 +54,54 @@ public class Person extends BaseEntity {
 
     public String getTelephone() {
         return telephone;
+    }
+
+    public PersonType getPersonType() {
+        return personType;
+    }
+
+    public void setPersonType(PersonType personType) {
+        this.personType = personType;
+    }
+
+    public int getGodfatherId() {
+        return godfatherId;
+    }
+
+    public void setGodfatherId(int godfatherId) {
+        this.godfatherId = godfatherId;
+    }
+
+    public Person getGodfather() {
+        return godfather;
+    }
+
+    public void setGodfather(Person godfather) {
+        this.godfather = godfather;
+    }
+
+    public GarbageType getGarbageType() {
+        return garbageType;
+    }
+
+    public void setGarbageType(GarbageType garbageType) {
+        this.garbageType = garbageType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isCollectPoint() {
+        return collectPoint;
+    }
+
+    public void setCollectPoint(boolean collectPoint) {
+        this.collectPoint = collectPoint;
     }
 
     public void setTelephone(String telephone) {
