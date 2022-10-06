@@ -28,7 +28,8 @@ public class Person extends BaseEntity {
 
     private boolean collectPoint;
 
-    private City cityId;
+    private int cityId;
+    private City city;
 
     public String getEmail() {
         return email;
@@ -142,11 +143,19 @@ public class Person extends BaseEntity {
         this.number = number;
     }
 
-    public City getCityId() {
+    public int getCityId() {
         return cityId;
     }
 
-    public void setCityId(City cityId) {
+    public void setCityId(int cityId) {
         this.cityId = cityId;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 }
