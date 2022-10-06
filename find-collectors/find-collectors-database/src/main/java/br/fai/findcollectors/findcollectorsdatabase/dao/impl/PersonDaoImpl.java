@@ -274,14 +274,17 @@ public class PersonDaoImpl implements PersonDao<Person> {
         City city = cityDao.findById(resultSet.getInt("municipio_id"));
         String personType = resultSet.getString("tipo_pessoa");
         Array garbageTypes = resultSet.getArray("tipo_lixo");
-        String garbageTypesArray[] = (String[])garbageTypes.getArray();
         List<GarbageType> garbageTypeList = new ArrayList<>();
 
-        for (String garbageType : garbageTypesArray) {
+        if (garbageTypes != null) {
 
-            garbageTypeList.add(Enum.valueOf(GarbageType.class, garbageType));
+            String garbageTypesArray[] = (String[]) garbageTypes.getArray();
+
+            for (String garbageType : garbageTypesArray) {
+
+                garbageTypeList.add(Enum.valueOf(GarbageType.class, garbageType));
+            }
         }
-
 
         person.setId(resultSet.getInt("id"));
         person.setEmail(resultSet.getString("email"));
