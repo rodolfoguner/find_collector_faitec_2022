@@ -3,6 +3,8 @@ package br.fai.findcollectors.entities;
 import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.enums.PersonType;
 
+import java.util.List;
+
 public class Person extends BaseEntity {
 
     private String email;
@@ -20,7 +22,7 @@ public class Person extends BaseEntity {
 
     private Person godfather;
 
-    private GarbageType garbageType;
+    private List<GarbageType> garbageType;
 
     private String description;
 
@@ -80,11 +82,11 @@ public class Person extends BaseEntity {
         this.godfather = godfather;
     }
 
-    public GarbageType getGarbageType() {
+    public List<GarbageType> getGarbageType() {
         return garbageType;
     }
 
-    public void setGarbageType(GarbageType garbageType) {
+    public void setGarbageType(List<GarbageType> garbageType) {
         this.garbageType = garbageType;
     }
 
