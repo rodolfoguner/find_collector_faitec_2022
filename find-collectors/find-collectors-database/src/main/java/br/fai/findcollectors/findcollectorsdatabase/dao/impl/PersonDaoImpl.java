@@ -2,6 +2,7 @@ package br.fai.findcollectors.findcollectorsdatabase.dao.impl;
 
 import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.entities.Person;
+import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.enums.PersonType;
 import br.fai.findcollectors.findcollectorsdatabase.connection.ConnectionFactory;
 import br.fai.findcollectors.findcollectorsdatabase.dao.CityDao;
@@ -272,6 +273,15 @@ public class PersonDaoImpl implements PersonDao<Person> {
         Person godfather = this.findById(resultSet.getInt("padrinho_id"));
         City city = cityDao.findById(resultSet.getInt("municipio_id"));
         String personType = resultSet.getString("tipo_pessoa");
+        Array garbageTypes = resultSet.getArray("tipo_lixo");
+        String garbageTypesArray[] = (String[])garbageTypes.getArray();
+        List<GarbageType> garbageTypeList = new ArrayList<>();
+
+        for (String garbageType : garbageTypesArray) {
+
+            garbageTypeList.add(Enum.valueOf(GarbageType.class, garbageType));
+        }
+
 
         person.setId(resultSet.getInt("id"));
         person.setEmail(resultSet.getString("email"));
@@ -284,6 +294,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
         person.setGodfather(godfather);
         person.setGodfatherId(resultSet.getInt("padrinho_id"));
         person.setPersonType(Enum.valueOf(PersonType.class, personType));
+        person.setGarbageType(garbageTypeList);
         person.setCityId(city);
         person.setCreatedAt(resultSet.getTimestamp("criado_em"));
         person.setLastModified(resultSet.getTimestamp("alterado_em"));
