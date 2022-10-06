@@ -269,6 +269,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
     public Person loadValues(ResultSet resultSet) throws SQLException {
 
         Person person = new Person();
+        Person godfather = this.findById(resultSet.getInt("padrinho_id"));
         City city = cityDao.findById(resultSet.getInt("municipio_id"));
         String personType = resultSet.getString("tipo_pessoa");
 
@@ -280,6 +281,8 @@ public class PersonDaoImpl implements PersonDao<Person> {
         person.setAddress(resultSet.getString("endereco"));
         person.setDistrict(resultSet.getString("bairro"));
         person.setNumber(resultSet.getString("numero"));
+        person.setGodfather(godfather);
+        person.setGodfatherId(resultSet.getInt("padrinho_id"));
         person.setPersonType(Enum.valueOf(PersonType.class, personType));
         person.setCityId(city);
         person.setCreatedAt(resultSet.getTimestamp("criado_em"));
