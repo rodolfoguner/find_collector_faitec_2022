@@ -42,7 +42,7 @@ CREATE TABLE
     endereco VARCHAR(100),
     bairro VARCHAR(100),
     numero VARCHAR(10),
-    tipo_pessoa TIPO_PESSOA,
+    tipo_pessoa TIPO_PESSOA NOT NULL DEFAULT 'RECICLADOR',
     tipo_lixo TIPO_LIXO[],
     descricao TEXT,
     ponto_coleta BOOLEAN DEFAULT FALSE,
