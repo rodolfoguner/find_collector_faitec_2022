@@ -2,6 +2,7 @@ package br.fai.findcollectors.findcollectorsdatabase.dao.impl;
 
 import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.entities.Person;
+import br.fai.findcollectors.enums.PersonType;
 import br.fai.findcollectors.findcollectorsdatabase.connection.ConnectionFactory;
 import br.fai.findcollectors.findcollectorsdatabase.dao.CityDao;
 import br.fai.findcollectors.findcollectorsdatabase.dao.PersonDao;
@@ -269,6 +270,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
 
         Person person = new Person();
         City city = cityDao.findById(resultSet.getInt("municipio_id"));
+        String personType = resultSet.getString("tipo_pessoa");
 
         person.setId(resultSet.getInt("id"));
         person.setEmail(resultSet.getString("email"));
@@ -278,6 +280,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
         person.setAddress(resultSet.getString("endereco"));
         person.setDistrict(resultSet.getString("bairro"));
         person.setNumber(resultSet.getString("numero"));
+        person.setPersonType(Enum.valueOf(PersonType.class, personType));
         person.setCityId(city);
         person.setCreatedAt(resultSet.getTimestamp("criado_em"));
         person.setLastModified(resultSet.getTimestamp("alterado_em"));
