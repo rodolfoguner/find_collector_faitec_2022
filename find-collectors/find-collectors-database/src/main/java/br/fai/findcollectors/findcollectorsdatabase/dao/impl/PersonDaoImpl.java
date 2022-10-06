@@ -165,7 +165,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
             preparedStatement.setString(4, entity.getAddress());
             preparedStatement.setString(5, entity.getDistrict());
             preparedStatement.setString(6, entity.getNumber());
-            preparedStatement.setInt(7, entity.getCityId().getId());
+            preparedStatement.setInt(7, entity.getCityId());
             preparedStatement.setInt(8, entity.getId());
             preparedStatement.execute();
 
@@ -295,7 +295,8 @@ public class PersonDaoImpl implements PersonDao<Person> {
         person.setGodfatherId(resultSet.getInt("padrinho_id"));
         person.setPersonType(Enum.valueOf(PersonType.class, personType));
         person.setGarbageType(garbageTypeList);
-        person.setCityId(city);
+        person.setCity(city);
+        person.setCityId(resultSet.getInt("municipio_id"));
         person.setCreatedAt(resultSet.getTimestamp("criado_em"));
         person.setLastModified(resultSet.getTimestamp("alterado_em"));
 
