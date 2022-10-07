@@ -58,10 +58,10 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
         person.setDistrict(entity.getDistrict());
         person.setNumber(entity.getNumber());
         person.setCityId(entity.getCityId());
-        person.setCity(entity.getCity());
         person.setPersonType(entity.getPersonType());
         person.setCollectPoint(entity.isCollectPoint());
         person.setGarbageType(entity.getGarbageType());
+        person.setDescription(entity.getDescription());
 
         return personDao.update(person);
     }
