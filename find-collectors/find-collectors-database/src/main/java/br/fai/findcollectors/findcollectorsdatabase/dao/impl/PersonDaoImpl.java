@@ -146,7 +146,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
                 "numero = ?, " +
                 "municipio_id = ?," +
                 "descricao = ?, " +
-                "tipo_pessoa = ?, " +
+                "tipo_pessoa = ?::\"tipo_pessoa\", " +
                 "tipo_lixo = ?, " +
                 "alterado_em = NOW() " +
                 "WHERE " +
@@ -161,7 +161,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
             connection = ConnectionFactory.getConnection();
             connection.setAutoCommit(false);
 
-            Array garbageType = connection.createArrayOf("VARCHAR", entity.getGarbageType().toArray());
+            Array garbageType = connection.createArrayOf("tipo_lixo", entity.getGarbageType().toArray());
 
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, entity.getName());
@@ -172,7 +172,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
             preparedStatement.setString(6, entity.getNumber());
             preparedStatement.setInt(7, entity.getCityId());
             preparedStatement.setString(8, entity.getDescription());
-//            preparedStatement.setString(9, entity.getPersonType().toString());
+            preparedStatement.setString(9, entity.getPersonType().toString());
             preparedStatement.setArray(10, garbageType);
             preparedStatement.setInt(11, entity.getId());
             preparedStatement.execute();
