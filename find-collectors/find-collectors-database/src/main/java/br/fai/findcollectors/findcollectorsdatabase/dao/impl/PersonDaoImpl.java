@@ -148,7 +148,6 @@ public class PersonDaoImpl implements PersonDao<Person> {
                 "descricao = ?, " +
                 "tipo_pessoa = ?, " +
                 "tipo_lixo = ?, " +
-                "ponto_coleta = ?, " +
                 "alterado_em = NOW() " +
                 "WHERE " +
                 "id = ?;";
@@ -173,9 +172,9 @@ public class PersonDaoImpl implements PersonDao<Person> {
             preparedStatement.setString(6, entity.getNumber());
             preparedStatement.setInt(7, entity.getCityId());
             preparedStatement.setString(8, entity.getDescription());
-            preparedStatement.setString(9, entity.getPersonType().toString());
+//            preparedStatement.setString(9, entity.getPersonType().toString());
             preparedStatement.setArray(10, garbageType);
-            preparedStatement.setInt(12, entity.getId());
+            preparedStatement.setInt(11, entity.getId());
             preparedStatement.execute();
 
             connection.commit();
