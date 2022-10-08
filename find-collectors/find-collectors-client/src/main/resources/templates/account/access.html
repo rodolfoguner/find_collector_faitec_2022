@@ -1,143 +1,120 @@
 <!DOCTYPE html>
-<html lang="pt-br" >
-<head>
-  <meta charset="UTF-8">
-  <title>CodePen - The prismatic forms </title>
-  <link rel="stylesheet" href="/css/style2.css" type="text/css">
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+              rel="stylesheet">
 
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
-  <div class="container">
-      <div class="container-fluid">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-              <a class="navbar-brand" href="#"><img src="/assets/logo-sem-fundo2.png" alt="Logo">
-              </a>
-          </div>
+    </head>
+    <body>
 
-
-      </div>
-  </div>
-  <!-- =============== container-fluid =============== -->
-</nav>
-
-<ul class="nav">
-  <li onclick="showLogin()">Logar</li>
-  <li onclick="showSignup()">Cadastrar-se</li>
-  <li onclick="showForgotPassword()">Esqueceu a senha</li>
-  <li onclick="showSubscribe()">Se inscrever</li>
-  <li onclick="showContactUs()">Contate nos</li>
-</ul>
-<div class="wrapper">
-  <div class="rec-prism">
-    <div class="face face-top">
-      <div class="content">
-        <h2>Subscribe</h2>
-        <small>Digite seu e-mail para que possamos enviar as atualizações mais recentes!</small>
-        <form onsubmit="event.preventDefault()">
-          <div class="field-wrapper">
-            <input type="text" name="email" placeholder="email">
-            <label>e-mail</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="submit" onclick="showThankYou()">
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="face face-front">
-      <div class="content">
-        <h2>Entrar</h2>
-        <form onsubmit="event.preventDefault()">
-          <div class="field-wrapper">
-            <input type="text" name="username" placeholder="username">
-            <label>usuario</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="password" name="password" placeholder="password" autocomplete="new-password">
-            <label>senha</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="submit" onclick="showThankYou()">
-          </div>
-          <span class="psw" onclick="showForgotPassword()">Esqueceu a Senha?   </span>
-          <span class="signup" onclick="showSignup()">Não é usuario? cadastre</span>
-        </form>
-      </div>
-    </div>
-    <div class="face face-back">
-      <div class="content">
-        <h2>Esqueceu a Senha?</h2>
-        <small>Digite seu e-mail para que possamos enviar um link de redefinição para sua senha</small>
-        <form onsubmit="event.preventDefault()">
-          <div class="field-wrapper">
-            <input type="text" name="email" placeholder="email">
-            <label>e-mail</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="submit" onclick="showThankYou()">
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="face face-right">
-      <div class="content">
-        <h2>inscrever-se</h2>
-        <form onsubmit="event.preventDefault()">
-          <div class="field-wrapper">
-            <input type="text" name="email" placeholder="email">
-            <label>e-mail</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="password" name="password" placeholder="password" autocomplete="new-password">
-            <label>senha</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="password" name="password2" placeholder="password" autocomplete="new-password">
-            <label>repita a senha</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="submit" onclick="showThankYou()">
-          </div>
-          <span class="singin" onclick="showLogin()">Já é um usuário? Entrar</span>
-        </form>
-      </div>
-    </div>
-    <div class="face face-left">
-      <div class="content">
-        <h2>Contate nos</h2>
-        <form onsubmit="event.preventDefault()">
-          <div class="field-wrapper">
-            <input type="text" name="name" placeholder="name">
-            <label>Name</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="text" name="email" placeholder="email">
-            <label>e-mail</label>
-          </div>
-          <div class="field-wrapper">
-            <textarea placeholder="your message"></textarea>
-            <label>sua mensagem</label>
-          </div>
-          <div class="field-wrapper">
-            <input type="submit" onclick="showThankYou()">
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="face face-bottom">
-      <div class="content">
-        <div class="thank-you-msg">
-          Obrigado!
+        <div style="width: 100%; height: 100vh; background-image: linear-gradient(to right, #598a74, #93C4AC);">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-9">
+                        <div class="card my-5">
+                            <div class="card-body p-0">
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <img alt="Imagem de fundo" src="/assets/logo-sem-fundo.png"
+                                             style="max-width: 100%; max-height: 100%;"/>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="row">
+                                            <div class="col-1 pb-2"></div>
+                                            <div class="col-10 pb-2">
+                                                <form class="needs-validation" method="POST" novalidate
+                                                      th:action="@{/account/login}">
+                                                    <div class="my-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="username">
+                                                                Insira um email
+                                                            </label>
+                                                            <input class="form-control"
+                                                                   id="username"
+                                                                   name="username"
+                                                                   required
+                                                                   type="email">
+                                                            <div class="invalid-feedback">
+                                                                Por favor insira um email válido
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="my-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="password">
+                                                                Insira a senha
+                                                            </label>
+                                                            <input class="form-control form-control-user" id="password"
+                                                                   minlength="4"
+                                                                   name="password"
+                                                                   required
+                                                                   type="password">
+                                                            <div class="invalid-feedback">
+                                                                Por favor insira uma senha com no minimo 4 digitos
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="my-3">
+                                                        <button class="btn btn-primary col-12"
+                                                                type="submit">
+                                                            Entrar
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                                <hr>
+                                                <div>
+                                                    <a class="small" th:href="@{/account/password-recovery}">Esqueceu
+                                                        sua senha?</a>
+                                                </div>
+                                                <div>
+                                                    <a class="small" th:href="@{/account/sign-up}">Crie sua conta!</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-1 pb-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- partial -->
-  <script src="/js/script.js"></script>
 
-</body>
+        <script crossorigin="anonymous"
+                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+        <script>
+            (function () {
+              'use strict'
+
+              var forms = document.querySelectorAll('.needs-validation')
+
+              Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                  form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                      event.preventDefault()
+                      event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                  }, false)
+                })
+            })()
+
+
+
+
+
+
+
+        </script>
+
+    </body>
 </html>
