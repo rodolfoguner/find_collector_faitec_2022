@@ -148,6 +148,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
                 "descricao = ?, " +
                 "tipo_pessoa = ?::\"tipo_pessoa\", " +
                 "tipo_lixo = ?, " +
+                "ponto_coleta = ?, " +
                 "alterado_em = NOW() " +
                 "WHERE " +
                 "id = ?;";
@@ -174,7 +175,8 @@ public class PersonDaoImpl implements PersonDao<Person> {
             preparedStatement.setString(8, entity.getDescription());
             preparedStatement.setString(9, entity.getPersonType().toString());
             preparedStatement.setArray(10, garbageType);
-            preparedStatement.setInt(11, entity.getId());
+            preparedStatement.setBoolean(11, entity.isCollectPoint());
+            preparedStatement.setInt(12, entity.getId());
             preparedStatement.execute();
 
             connection.commit();
@@ -308,6 +310,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
         person.setGarbageType(garbageTypeList);
         person.setCity(city);
         person.setCityId(resultSet.getInt("municipio_id"));
+        person.setCollectPoint(resultSet.getBoolean("ponto_coleta"));
         person.setCreatedAt(resultSet.getTimestamp("criado_em"));
         person.setLastModified(resultSet.getTimestamp("alterado_em"));
 
