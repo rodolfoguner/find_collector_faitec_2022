@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,7 +61,7 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
         person.setCityId(entity.getCityId());
         person.setPersonType(entity.getPersonType());
         person.setCollectPoint(entity.isCollectPoint());
-        person.setGarbageType(entity.getGarbageType());
+        person.setGarbageType(entity.getGarbageType() != null ? entity.getGarbageType() : new ArrayList<>());
         person.setDescription(entity.getDescription());
 
         return personDao.update(person);

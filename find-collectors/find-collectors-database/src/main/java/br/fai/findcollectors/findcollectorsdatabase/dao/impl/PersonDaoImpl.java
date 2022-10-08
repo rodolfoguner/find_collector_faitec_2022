@@ -144,7 +144,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
                 "endereco = ?, " +
                 "bairro = ?, " +
                 "numero = ?, " +
-                "municipio_id = ?," +
+                "municipio_id = ?, " +
                 "descricao = ?, " +
                 "tipo_pessoa = ?::\"tipo_pessoa\", " +
                 "tipo_lixo = ?, " +
