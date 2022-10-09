@@ -14,4 +14,9 @@ public class AccountController {
         return "account/sign-in-page";
     }
 
+    @GetMapping("/sign-up")
+    public String getSignUpPage() {
+        return "account/sign-up-page";
+    }
+
 }
