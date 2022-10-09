@@ -11,7 +11,7 @@ public class AccountController {
 
     @GetMapping("/sign-in")
     public String getLoginPage() {
-        return "account/access";
+        return "account/sign-in-page";
     }
 
 }
