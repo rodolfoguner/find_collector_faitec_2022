@@ -27,17 +27,16 @@ public class FindCollectorsAuthenticationProvider implements AuthenticationProvi
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-
         Person person = personService.validateLogin(username, password);
 
         if (person == null) {
             return null;
         }
 
-        grantedAuthorities.add(new SimpleGrantedAuthority(""));
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"));
 
-        return new UsernamePasswordAuthenticationToken(new Person(), password, grantedAuthorities);
+        return new UsernamePasswordAuthenticationToken(person, password, grantedAuthorities);
     }
 
     @Override
