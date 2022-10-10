@@ -2,6 +2,7 @@ package br.fai.findcollectors.findcollectorsdatabase.dao.impl;
 
 import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.entities.Collect;
+import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.findcollectorsdatabase.connection.ConnectionFactory;
 import br.fai.findcollectors.findcollectorsdatabase.dao.CityDao;
@@ -53,7 +54,35 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
     @Override
     public Collect findById(int id) {
-        return null;
+
+        Collect collect = null;
+
+        final String sql = "SELECT * FROM coleta where id = ?";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            collect = loadValues(resultSet);
+
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return collect;
     }
 
     @Override
@@ -76,6 +105,8 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
         Collect collect = new Collect();
         City city = cityDao.findById(resultSet.getInt("municipio_id"));
+        Person collector = (Person) personDao.findById(resultSet.getInt("catador_id"));
+        Person recycler = (Person) personDao.findById(resultSet.getInt("catador_id"));
         Array garbageTypes = resultSet.getArray("tipo_lixo");
         List<GarbageType> garbageTypeList = new ArrayList<>();
 
@@ -101,7 +132,10 @@ public class CollectDaoImpl implements CollectDao<Collect> {
         collect.setNumber(resultSet.getString("numero"));
         collect.setCity(city);
         collect.setCityId(resultSet.getInt("municipio_id"));
-        collect.setCollector();
+        collect.setCollector(collector);
+        collect.setCollectorId(resultSet.getInt("catador_id"));
+        collect.setRecycler(recycler);
+        collect.setRecyclerId(resultSet.getInt("reciclador_id"));
         collect.setCreatedAt(resultSet.getTimestamp("criado_em"));
         collect.setLastModified(resultSet.getTimestamp("alterado_em"));
 
