@@ -87,6 +87,7 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
     @Override
     public int create(Collect entity) {
+        
         return 0;
     }
 
@@ -97,7 +98,44 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
     @Override
     public boolean deleteById(int id) {
-        return false;
+
+
+        boolean result = false;
+
+        final String sql = "DELETE FROM coleta c WHERE c.id = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+
+            connection.commit();
+
+            result = true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                connection.rollback();
+
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+        } finally {
+
+            ConnectionFactory.close(connection, preparedStatement);
+
+        }
+
+        return result;
     }
 
     @Override
