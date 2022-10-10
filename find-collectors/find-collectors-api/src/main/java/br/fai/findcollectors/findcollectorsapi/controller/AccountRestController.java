@@ -27,8 +27,8 @@ public class AccountRestController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Integer> signUp(@RequestBody Account account) {
-        int id = personPersonRestService.signUp(account);
+    public ResponseEntity<Integer> signUp(@RequestBody Person person) {
+        int id = personPersonRestService.create(person);
 
         if (id <= 0) {
             return ResponseEntity.badRequest().build();
