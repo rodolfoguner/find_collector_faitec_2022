@@ -87,8 +87,55 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
     @Override
     public int create(Collect entity) {
-        
-        return 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        int id = -1;
+
+        try {
+
+            final String sql = "INSERT INTO coleta (id,data_e_hora, tipo_de_lixo, recorrente, cep, endereco, bairro, numero, municipio_id, reciclador_id, criado_em ) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, now());";
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setTimestamp(1, entity.getDateAndTime());
+            preparedStatement.setArray(2, (Array) entity.getGarbageType());
+            preparedStatement.setBoolean(3, entity.isRecurrent());
+            preparedStatement.setString(4, entity.getCep());
+            preparedStatement.setString(5, entity.getAddress());
+            preparedStatement.setString(6, entity.getDistrict());
+            preparedStatement.setString(7, entity.getNumber());
+            preparedStatement.setInt(8, entity.getCityId());
+            preparedStatement.setInt(9, entity.getRecyclerId());
+
+
+            preparedStatement.execute();
+
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+
+            connection.commit();
+
+            return id;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                e.printStackTrace();
+            }
+
+            return id;
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
     }
 
     @Override
