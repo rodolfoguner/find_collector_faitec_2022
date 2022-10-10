@@ -18,13 +18,20 @@ import java.util.List;
 @Service
 public class PersonServiceImpl implements PersonService<Person> {
 
+    final String resource = "person";
+
     @Autowired
     RestService<Person> restService;
 
 
     @Override
     public int create(Person entity) {
-        return 0;
+
+        if (entity == null) {
+            return -1;
+        }
+
+        return restService.post("/signup", entity);
     }
 
     @Override
