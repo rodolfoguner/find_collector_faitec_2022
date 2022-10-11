@@ -1,25 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
     <head>
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>Inner Page - Amoeba Bootstrap Template</title>
-        <meta content="" name="description">
-        <meta content="" name="keywords">
+        <title>Find Colletors</title>
 
-        <link href="assets/img/favicon.png" rel="icon">
+        <link href="/img/reciclagem.png" rel="icon">
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Lato:400,300,700,900"
               rel="stylesheet">
 
-        <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-        <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-        <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-        <link href="assets/css/style.css" rel="stylesheet">
+        <div th:replace="/fragments/header-imports::css"></div>
+        <div th:replace="/fragments/header-imports::bootstrap-css"></div>
 
     </head>
     <body>
@@ -27,39 +24,74 @@
             <div class="container d-flex align-items-center">
 
                 <div class="logo me-auto">
-                    <!--                    <h1><a href="index.html">Amoeba</a></h1>-->
+                    <h1>
+                        <a th:href="@{/}">Find Collectors</a>
+                    </h1>
                     <!-- Uncomment below if you prefer to use an image logo -->
-                    <a href="index.html">
-                        <img alt="" class="img-fluid" src="assets/img/logo.png">
-                    </a>
+                    <!-- <a href="index.html">-->
+                    <!-- <img alt="Logo" class="img-fluid" src="/img/logo.png">-->
+                    <!-- </a>-->
                 </div>
 
                 <nav class="navbar" id="navbar">
                     <ul>
-                        <li><a class="nav-link scrollto " href="#hero">Home</a></li>
-                        <li><a class="nav-link scrollto" href="#about">About Us</a></li>
-                        <li><a class="nav-link scrollto" href="#services">Services</a></li>
-                        <li><a class="nav-link scrollto" href="#portfolio">Portfolio</a></li>
-                        <li><a class="nav-link scrollto" href="#team">Team</a></li>
-                        <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
-                            <ul>
-                                <li><a href="#">Drop Down 1</a></li>
-                                <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i
-                                        class="bi bi-chevron-right"></i></a>
-                                    <ul>
-                                        <li><a href="#">Deep Drop Down 1</a></li>
-                                        <li><a href="#">Deep Drop Down 2</a></li>
-                                        <li><a href="#">Deep Drop Down 3</a></li>
-                                        <li><a href="#">Deep Drop Down 4</a></li>
-                                        <li><a href="#">Deep Drop Down 5</a></li>
-                                    </ul>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/}">Home</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="!isAuthenticated()">
+                            <a class="nav-link scrollto" href="#about">
+                                Sobre
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="!isAuthenticated()">
+                            <a class="nav-link scrollto" href="#curiosities">
+                                Curiosidades
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="!isAuthenticated()">
+                            <a class="nav-link" th:href="@{/sign-in}">
+                                Entrar/Cadastrar-se
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" th:href="@{/collect}">
+                                Cadastrar Coleta
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" th:href="@{/collect}">
+                                Pontos de coleta
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('RECICLADOR')">
+                            <a class="nav-link" th:href="@{/collect}">
+                                Cadastrar Catador
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('CATADOR')">
+                            <a class="nav-link" th:href="@{/collect}">
+                                Ver coletas disponíveis
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                            <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                               href="#" id="navbarDropdown" role="button">
+                                Minha Conta
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Minhas informações
+                                    </a>
                                 </li>
-                                <li><a href="#">Drop Down 2</a></li>
-                                <li><a href="#">Drop Down 3</a></li>
-                                <li><a href="#">Drop Down 4</a></li>
+                                <li>
+                                    <a class="dropdown-item" data-bs-target="#logoutModal" data-bs-toggle="modal"
+                                       href="#">
+                                        Logout
+                                    </a>
+                                </li>
                             </ul>
                         </li>
-                        <li><a class="nav-link scrollto" href="#contact">Contact Us</a></li>
                     </ul>
                     <i class="bi bi-list mobile-nav-toggle"></i>
                 </nav>
@@ -67,29 +99,44 @@
             </div>
         </header>
         <main id="main">
-
+            <div class="container-fluid p-0">
+                <div layout:fragment="body"></div>
+            </div>
         </main>
 
 
         <footer id="footer">
             <div class="container">
                 <div class="copyright">
-                    &copy; Copyright <strong><span>Amoeba</span></strong>. All Rights Reserved
+                    &copy; Copyright <strong><span>Find Collectors</span></strong>. All Rights Reserved
                 </div>
             </div>
         </footer>
 
-        <a class="back-to-top d-flex align-items-center justify-content-center" href="#">
+        <a class="back-to-top d-flex align-items-center justify-content-center" th:href="@{/}">
             <i class="bi bi-arrow-up-short"></i>
         </a>
 
-        <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-        <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-        <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-        <script src="assets/vendor/php-email-form/validate.js"></script>
+        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="logoutModal" role="dialog"
+             tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancel</button>
+                        <a class="btn btn-primary" th:href="@{/logout}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <script src="assets/js/main.js"></script>
-
+        <div th:replace="/fragments/footer-imports::scripts"></div>
+        <div th:replace="/fragments/footer-imports::bootstrap-scripts"></div>
     </body>
 </html>
