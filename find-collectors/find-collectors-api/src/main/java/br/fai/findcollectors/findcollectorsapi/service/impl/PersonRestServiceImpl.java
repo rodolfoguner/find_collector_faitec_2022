@@ -36,6 +36,15 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
     @Override
     public int create(Person entity) {
+
+        if (entity.getEmail().isEmpty() || entity.getPassword().isEmpty()) {
+            return -1;
+        }
+
+        final String password = BCrypt.hashpw(entity.getPassword(), salt);
+
+        entity.setPassword(password);
+
         return personDao.create(entity);
     }
 
@@ -96,21 +105,5 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
         return person;
     }
-
-    @Override
-    public int signUp(Account account) {
-
-        if (account.getEmail().isEmpty() || account.getPassword().isEmpty()) {
-            return -1;
-        }
-
-        Person person = new Person();
-
-        final String password = BCrypt.hashpw(account.getPassword(), salt);
-
-        person.setEmail(account.getEmail());
-        person.setPassword(password);
-
-        return this.create(person);
-    }
+    
 }
