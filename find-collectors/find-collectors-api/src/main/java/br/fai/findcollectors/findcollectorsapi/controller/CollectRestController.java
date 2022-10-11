@@ -1,7 +1,6 @@
 package br.fai.findcollectors.findcollectorsapi.controller;
 
 import br.fai.findcollectors.entities.Collect;
-import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.findcollectorsapi.service.CollectRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,17 @@ public class CollectRestController {
 
     @Autowired
     CollectRestService<Collect> collectRestService;
+
+    @PostMapping("")
+    public ResponseEntity<Integer> create(@RequestBody Collect collect) {
+        int id = collectRestService.create(collect);
+
+        if (id <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(id);
+    }
 
     @GetMapping("")
     public ResponseEntity<List<Collect>> findAll() {
