@@ -22,7 +22,7 @@ public class CollectDaoImpl implements CollectDao<Collect> {
     CityDao cityDao;
 
     @Autowired
-    PersonDao personDao;
+    PersonDao<Person> personDao;
 
     @Override
     public List<Collect> find() {
@@ -76,7 +76,7 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
             collect = loadValues(resultSet);
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             ConnectionFactory.close(connection, preparedStatement, resultSet);
@@ -142,7 +142,7 @@ public class CollectDaoImpl implements CollectDao<Collect> {
     public boolean update(Collect entity) {
 
         final String sql = "UPDATE coleta SET " +
-                "aceito = ?" +
+                "aceito = ?," +
                 "coletado = ?, " +
                 "catador_id = ?, " +
                 "alterado_em = NOW() " +
@@ -231,9 +231,9 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
         Collect collect = new Collect();
         City city = cityDao.findById(resultSet.getInt("municipio_id"));
-        Person collector = (Person) personDao.findById(resultSet.getInt("catador_id"));
-        Person recycler = (Person) personDao.findById(resultSet.getInt("catador_id"));
-        Array garbageTypes = resultSet.getArray("tipo_lixo");
+        Person collector = personDao.findById(resultSet.getInt("catador_id"));
+        Person recycler = personDao.findById(resultSet.getInt("reciclador_id"));
+        Array garbageTypes = resultSet.getArray("tipo_de_lixo");
         List<GarbageType> garbageTypeList = new ArrayList<>();
 
         if (garbageTypes != null) {
