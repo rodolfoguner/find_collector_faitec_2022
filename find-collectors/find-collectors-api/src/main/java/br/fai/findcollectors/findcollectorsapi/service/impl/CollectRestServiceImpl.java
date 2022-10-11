@@ -35,7 +35,7 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
 
     @Override
     public boolean update(int id, Collect entity) {
-        return false;
+        return collectDao.update(entity);
     }
 
     @Override

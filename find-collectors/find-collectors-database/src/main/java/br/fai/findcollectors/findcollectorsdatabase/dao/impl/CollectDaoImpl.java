@@ -140,7 +140,48 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
     @Override
     public boolean update(Collect entity) {
-        return false;
+
+        final String sql = "UPDATE coleta SET " +
+                "aceito = ?" +
+                "coletado = ?, " +
+                "catador_id = ?, " +
+                "alterado_em = NOW() " +
+                "WHERE " +
+                "id = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setBoolean(1, entity.isAccept());
+            preparedStatement.setBoolean(2, entity.isCollected());
+            preparedStatement.setInt(3, entity.getCollectorId());
+            preparedStatement.setInt(4, entity.getId());
+            preparedStatement.execute();
+
+            connection.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                connection.commit();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+            return false;
+
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement);
+        }
     }
 
     @Override
