@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Login</title>
-        
+
         <link href="/img/reciclagem.png" rel="icon">
         <div th:replace="/fragments/header-imports::bootstrap-css"></div>
 
@@ -85,27 +85,8 @@
         </div>
 
         <div th:replace="/fragments/footer-imports::bootstrap-scripts"></div>
-
-        <script>
-            (function () {
-              'use strict'
-
-              var forms = document.querySelectorAll('.needs-validation')
-
-              Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                  form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                      event.preventDefault()
-                      event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                  }, false)
-                })
-            })()
-
-        </script>
+        <div th:replace="/fragments/footer-imports::scripts-personal"></div>
+        <div th:replace="/fragments/footer-imports::main"></div>
 
     </body>
 </html>

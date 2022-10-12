@@ -2,8 +2,8 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
-        <title>Login</title>
-        
+        <title>Cadastre-se</title>
+
         <link href="/img/reciclagem.png" rel="icon">
         <div th:replace="/fragments/header-imports::bootstrap-css"></div>
 
@@ -103,40 +103,8 @@
         </div>
 
         <div th:replace="/fragments/footer-imports::bootstrap-scripts"></div>
-
-        <script>
-
-            function checkValues() {
-                var form = document.querySelectorAll('.needs-validation')[0];
-                
-                if (!form.checkValidity()) {
-                    form.classList.add('was-validated');
-                    return false;
-                }
-                return true;
-            }
-            
-            function checkPassword() {         
-                
-                var password = document.getElementById("password");
-                var passwordConfirm = document.getElementById("passwordConfirm");
-
-                passwordConfirm.addEventListener('keyup', () => {
-                    if (password.value) {
-                        if (passwordConfirm.value.length >= 4) {
-                            var forms = document.querySelectorAll('.needs-validation');
-                            forms[0].classList.add('was-validated');
-                         
-                            if (password.value !== passwordConfirm.value) {
-                                passwordConfirm.setCustomValidity('isvalid');
-                            } else {
-                                passwordConfirm.setCustomValidity('');
-                            }
-                        }
-                    }
-                });   
-            }
-        </script>
+        <div th:replace="/fragments/footer-imports::scripts-personal"></div>
+        <div th:replace="/fragments/footer-imports::main"></div>
 
     </body>
 </html>
