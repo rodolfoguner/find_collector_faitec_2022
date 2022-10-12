@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout}">
+    <head>
+        <meta charset="UTF-8">
+        <title>Home</title>
+    </head>
+    <body onload="loadCities()">
+        <div layout:fragment="body">
+            <div class="container">
+                <h1 class="pt-5">Cadastrar coleta</h1>
+                <div class="ml-2">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/}">Home</a>
+                        </li>
+                        <li aria-current="page" class="breadcrumb-item active">
+                            Cadastrar coleta
+                        </li>
+                    </ol>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="card mb-5">
+                        <div class="card-body">
+                            <form class="row g-3 needs-validation" method="POST" novalidate
+                                  th:action="@{/collect/create}">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="garbageType">Lixo a ser coletado</label>
+                                    <select class="form-select" id="garbageType" name="garbageType" required>
+                                        <option disabled selected value="">Escolha...</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Escolha ao menos um tipo de lixo
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="dateAndTime">Data e hora coleta</label>
+                                    <input class="form-control" id="dateAndTime" name="dateAndTime" required
+                                           type="datetime-local">
+                                    <div class="invalid-feedback">
+                                        Seleciona ao menos uma data
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <label class="form-label" for="address">Rua</label>
+                                    <div class="input-group has-validation">
+                                        <input class="form-control"
+                                               id="address"
+                                               name="address"
+                                               required type="text">
+                                        <div class="invalid-feedback">
+                                            Digite seu endereço
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label" for="validationCustom03">Número</label>
+                                    <input class="form-control" id="validationCustom03" required type="number">
+                                    <div class="invalid-feedback">
+                                        Digite um número válido
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label" for="district">Bairro</label>
+                                    <input class="form-control" id="district" name="district" required type="text">
+                                    <div class="invalid-feedback">
+                                        Digite um bairro válido
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="cep">Cep</label>
+                                    <input class="form-control" id="cep" maxlength="9" pattern="\d{5}-?\d{3}" required
+                                           type="text">
+                                    <div class="invalid-feedback">
+                                        Digite seu cep
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="state">Estado</label>
+                                    <select class="form-select" id="state" name="state" required>
+                                        <option disabled selected value="">Escolha...</option>
+                                        <div th:each="state : ${states}">
+                                            <option th:value="${state.id}" th:text="${state.stateName}"></option>
+                                        </div>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Escolha um estado
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="cities">Cidade</label>
+                                    <select class="form-select" id="cities" name="cities" required>
+                                        <option disabled selected value="">Escolha...</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Escolha uma cidade
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" id="isRecurrent" name="isRecurrent"
+                                               type="checkbox">
+                                        <label class="form-check-label" for="isRecurrent">
+                                            Coleta recorrente
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-primary" type="submit">Cadastrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,7 +36,7 @@ public class RestServiceImpl<T> implements RestService<T> {
     @Override
     public List<T> get(String resource) {
 
-        List<T> response = null;
+        List<T> response = new ArrayList<>();
 
         final RestTemplate restTemplate = new RestTemplate();
 
