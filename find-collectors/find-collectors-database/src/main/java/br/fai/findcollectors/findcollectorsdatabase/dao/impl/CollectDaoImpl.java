@@ -95,14 +95,29 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
         try {
 
-            final String sql = "INSERT INTO coleta (id,data_e_hora, tipo_de_lixo, recorrente, cep, endereco, bairro, numero, municipio_id, reciclador_id, criado_em ) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, now());";
+            final String sql = "INSERT INTO coleta " +
+                    "(id," +
+                    "data_e_hora, " +
+                    "tipo_de_lixo, " +
+                    "recorrente, " +
+                    "cep, " +
+                    "endereco, " +
+                    "bairro, " +
+                    "numero, " +
+                    "municipio_id, " +
+                    "reciclador_id, " +
+                    "criado_em) " +
+                    "VALUES " +
+                    "(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, now());";
 
             connection = ConnectionFactory.getConnection();
             connection.setAutoCommit(false);
 
+            Array garbageType = connection.createArrayOf("tipo_lixo", entity.getGarbageType().toArray());
+
             preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setTimestamp(1, entity.getDateAndTime());
-            preparedStatement.setArray(2, (Array) entity.getGarbageType());
+            preparedStatement.setArray(2, garbageType);
             preparedStatement.setBoolean(3, entity.isRecurrent());
             preparedStatement.setString(4, entity.getCep());
             preparedStatement.setString(5, entity.getAddress());
