@@ -157,9 +157,14 @@ public class CollectDaoImpl implements CollectDao<Collect> {
     public boolean update(Collect entity) {
 
         final String sql = "UPDATE coleta SET " +
-                "aceito = ?," +
-                "coletado = ?, " +
-                "catador_id = ?, " +
+                "data_e_hora = ?," +
+                "tipo_de_lixo = ?   " +
+                "recorrente = ?, " +
+                "cep = ?, " +
+                "endereco = ? " +
+                "bairro = ?" +
+                "numero = ?" +
+                "municipio_id = ?" +
                 "alterado_em = NOW() " +
                 "WHERE " +
                 "id = ?;";
@@ -173,11 +178,18 @@ public class CollectDaoImpl implements CollectDao<Collect> {
             connection = ConnectionFactory.getConnection();
             connection.setAutoCommit(false);
 
+            Array garbageType = connection.createArrayOf("tipo_lixo", entity.getGarbageType().toArray());
+
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setBoolean(1, entity.isAccept());
-            preparedStatement.setBoolean(2, entity.isCollected());
-            preparedStatement.setInt(3, entity.getCollectorId());
-            preparedStatement.setInt(4, entity.getId());
+            preparedStatement.setTimestamp(1, entity.getDateAndTime());
+            preparedStatement.setArray(2, garbageType);
+            preparedStatement.setBoolean(3, entity.isRecurrent());
+            preparedStatement.setString(4, entity.getCep());
+            preparedStatement.setString(5, entity.getAddress());
+            preparedStatement.setString(6, entity.getDistrict());
+            preparedStatement.setString(7, entity.getNumber());
+            preparedStatement.setInt(8, entity.getCityId());
+            preparedStatement.setInt(9, entity.getId());
             preparedStatement.execute();
 
             connection.commit();
@@ -281,5 +293,91 @@ public class CollectDaoImpl implements CollectDao<Collect> {
         collect.setLastModified(resultSet.getTimestamp("alterado_em"));
 
         return collect;
+    }
+
+    @Override
+    public boolean acceptCollect(Collect entity) {
+
+        final String sql = "UPDATE coleta SET " +
+                "aceito = ?," +
+                "catador_id = ?, " +
+                "alterado_em = NOW() " +
+                "WHERE " +
+                "id = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setBoolean(1, entity.isAccept());
+            preparedStatement.setInt(2, entity.getCollectorId());
+            preparedStatement.setInt(3, entity.getId());
+            preparedStatement.execute();
+
+            connection.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                connection.commit();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+            return false;
+
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement);
+        }
+    }
+
+    @Override
+    public boolean closeCollect(Collect entity) {
+
+        final String sql = "UPDATE coleta SET " +
+                "coletado = ?," +
+                "alterado_em = NOW() " +
+                "WHERE " +
+                "id = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setBoolean(1, entity.isCollected());
+            preparedStatement.setInt(2, entity.getId());
+            preparedStatement.execute();
+
+            connection.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                connection.commit();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+            return false;
+
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement);
+        }
     }
 }

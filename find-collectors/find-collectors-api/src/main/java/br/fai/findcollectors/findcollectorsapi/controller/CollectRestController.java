@@ -65,4 +65,26 @@ public class CollectRestController {
 
         return ResponseEntity.ok(true);
     }
+
+    @PutMapping("/accept-collect/{id}")
+    public ResponseEntity<Boolean> acceptCollect(@PathVariable("id") int id, @RequestBody Collect collect) {
+        boolean updated = collectRestService.acceptCollect(id, collect);
+
+        if (!updated) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("/close-collect/{id}")
+    public ResponseEntity<Boolean> closeCollect(@PathVariable("id") int id, @RequestBody Collect collect) {
+        boolean updated = collectRestService.closeCollect(id, collect);
+
+        if (!updated) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(true);
+    }
 }

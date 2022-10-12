@@ -41,10 +41,32 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
     @Override
     public boolean deleteById(int id) {
 
-        if (id <= 0){
+        if (id <= 0) {
             return false;
         }
 
         return collectDao.deleteById(id);
+    }
+
+    @Override
+    public boolean acceptCollect(int id, Collect entity) {
+
+        if (id <= 0) {
+            return false;
+        }
+
+
+        return collectDao.acceptCollect(entity);
+    }
+
+    @Override
+    public boolean closeCollect(int id, Collect entity) {
+
+        if (id <= 0) {
+            return false;
+        }
+
+
+        return collectDao.closeCollect(entity);
     }
 }
