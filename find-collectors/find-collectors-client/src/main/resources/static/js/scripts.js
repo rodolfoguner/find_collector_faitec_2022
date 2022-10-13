@@ -84,20 +84,26 @@ function setRequired(elements, required) {
   }
 }
 
+function verifyType(type, collectorData) {
+  if (type === "CATADOR") {
+    collectorData.hidden = false;
+    setRequired(collectorData, true);
+  } else {
+    collectorData.hidden = true;
+    setRequired(collectorData, false);
+  }
+}
+
 function changeUserType() {
   const personType = document.getElementById("personType");
+
+  const collectorData = document.getElementById("collectorData");
+
+  verifyType(personType.value, collectorData);
 
   personType.addEventListener("change", (typeEvent) => {
     const type = typeEvent.target.value;
 
-    const collectorData = document.getElementById("collectorData");
-
-    if (type === "CATADOR") {
-      collectorData.hidden = false;
-      setRequired(collectorData, true);
-    } else {
-      collectorData.hidden = true;
-      setRequired(collectorData, false);
-    }
+    verifyType(type, collectorData);
   });
 }

@@ -140,10 +140,10 @@
                                         Escolha um tipo de usuário
                                     </div>
                                 </div>
-                                <div id="collectorData" th:if="${currentUser.personType == personTypes[1]}">
+                                <div id="collectorData" hidden>
                                     <div class="col-md-6 pt-2">
                                         <label class="form-label" for="garbageType">Lixo a ser coletado</label>
-                                        <select class="form-select" id="garbageType" name="garbageType" required>
+                                        <select class="form-select" id="garbageType" name="garbageType">
                                             <option disabled selected value="">Escolha...</option>
                                             <div th:switch="${#lists.size(currentUser.garbageType)}">
                                                 <div th:case="'1'">
