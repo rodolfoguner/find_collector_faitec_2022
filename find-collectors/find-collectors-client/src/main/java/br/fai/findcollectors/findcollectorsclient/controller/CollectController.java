@@ -3,6 +3,7 @@ package br.fai.findcollectors.findcollectorsclient.controller;
 
 import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.entities.State;
+import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.findcollectorsclient.service.CollectService;
 import br.fai.findcollectors.findcollectorsclient.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class CollectController {
             states = new ArrayList<>();
         }
 
+        GarbageType[] garbageTypes = GarbageType.values();
+
+        model.addAttribute("garbageTypes", garbageTypes);
         model.addAttribute("states", states);
 
         return "collect/create";

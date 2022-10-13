@@ -28,6 +28,9 @@
                                     <label class="form-label" for="garbageType">Lixo a ser coletado</label>
                                     <select class="form-select" id="garbageType" name="garbageType" required>
                                         <option disabled selected value="">Escolha...</option>
+                                        <div th:each="garbageType : ${garbageTypes}">
+                                            <option th:value="${garbageType}" th:text="${garbageType}"></option>
+                                        </div>
                                     </select>
                                     <div class="invalid-feedback">
                                         Escolha ao menos um tipo de lixo
