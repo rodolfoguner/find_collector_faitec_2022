@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <title>Home</title>
     </head>
-    <body onload="loadCities()">
+    <body onload="loadCities(); formatDateAndTime()">
         <div layout:fragment="body">
             <div class="container">
                 <h1 class="pt-5">Cadastrar coleta</h1>
@@ -37,8 +37,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label" for="dateAndTime">Data e hora coleta</label>
-                                    <input class="form-control" id="dateAndTime" name="dateAndTime" required
+                                    <label class="form-label" for="dateCollect">Data e hora coleta</label>
+                                    <input class="form-control" id="dateCollect" name="dateCollect" required
                                            type="datetime-local">
                                     <div class="invalid-feedback">
                                         Seleciona ao menos uma data
@@ -57,8 +57,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label" for="validationCustom03">Número</label>
-                                    <input class="form-control" id="validationCustom03" required type="number">
+                                    <label class="form-label" for="number">Número</label>
+                                    <input class="form-control" id="number" name="number" required type="number">
                                     <div class="invalid-feedback">
                                         Digite um número válido
                                     </div>
@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label" for="cep">Cep</label>
-                                    <input class="form-control" id="cep" maxlength="9" pattern="\d{5}-?\d{3}" required
+                                    <input class="form-control" id="cep" name="cep" maxlength="9" pattern="\d{5}-?\d{3}" required
                                            type="text">
                                     <div class="invalid-feedback">
                                         Digite seu cep
@@ -91,8 +91,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label" for="cities">Cidade</label>
-                                    <select class="form-select" id="cities" name="cities" required>
+                                    <label class="form-label" for="cityId">Cidade</label>
+                                    <select class="form-select" id="cityId" name="cityId" required>
                                         <option disabled selected value="">Escolha...</option>
                                     </select>
                                     <div class="invalid-feedback">
@@ -101,15 +101,21 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-check">
-                                        <input class="form-check-input" id="isRecurrent" name="isRecurrent"
+                                        <input class="form-check-input" id="recurrent" name="recurrent"
                                                type="checkbox">
-                                        <label class="form-check-label" for="isRecurrent">
+                                        <label class="form-check-label" for="recurrent">
                                             Coleta recorrente
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <button class="btn btn-primary" type="submit">Cadastrar</button>
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" name="dateAndTime" id="dateAndTime" class="d-none">
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" name="recyclerId" id="recyclerId" class="d-none" th:value="${recyclerId}">
                                 </div>
                             </form>
                         </div>

@@ -38,7 +38,7 @@ function loadCities() {
   const statesSelect = document.getElementById("state");
 
   statesSelect.addEventListener("change", async (state) => {
-    const citiesSelect = document.getElementById("cities");
+    const citiesSelect = document.getElementById("cityId");
 
     removeOptions(citiesSelect);
 
@@ -51,5 +51,25 @@ function loadCities() {
     cities.forEach((city) => {
       citiesSelect.appendChild(new Option(city.name, city.id));
     });
+  });
+}
+
+function format(date) {
+  return (
+    [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-") +
+    " " +
+    [date.getHours(), date.getMinutes(), date.getSeconds()].join(":")
+  );
+}
+
+function formatDateAndTime() {
+  const dateSelected = document.getElementById("dateCollect");
+
+  dateSelected.addEventListener("change", (date) => {
+    const dateCollect = new Date(date.target.value);
+
+    const dateAndTime = document.getElementById("dateAndTime");
+
+    dateAndTime.value = format(dateCollect);
   });
 }

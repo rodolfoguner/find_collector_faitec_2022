@@ -2,15 +2,28 @@ package br.fai.findcollectors.findcollectorsclient.service.impl;
 
 import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.findcollectorsclient.service.CollectService;
+import br.fai.findcollectors.findcollectorsclient.service.RestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class CollectServiceImpl implements CollectService<Collect> {
+
+    final String resource = "collect";
+
+    @Autowired
+    RestService<Collect> restService;
+
     @Override
     public int create(Collect entity) {
-        return 0;
+
+        if (entity == null) {
+            return -1;
+        }
+
+        return restService.post(resource, entity);
     }
 
     @Override
