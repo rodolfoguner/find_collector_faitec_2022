@@ -87,4 +87,11 @@ public class CollectRestController {
 
         return ResponseEntity.ok(true);
     }
+
+    @GetMapping("/free-collects")
+    public ResponseEntity<List<Collect>> freeCollects() {
+
+        return ResponseEntity.ok(collectRestService.findFreeCollects());
+
+    }
 }
