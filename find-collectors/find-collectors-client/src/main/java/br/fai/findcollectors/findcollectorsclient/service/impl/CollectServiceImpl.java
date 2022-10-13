@@ -52,6 +52,11 @@ public class CollectServiceImpl implements CollectService<Collect> {
 
     @Override
     public boolean deleteById(int id) {
-        return false;
+
+        if (id <= 0) {
+            return false;
+        }
+
+        return restService.deleteById(resource + id);
     }
 }

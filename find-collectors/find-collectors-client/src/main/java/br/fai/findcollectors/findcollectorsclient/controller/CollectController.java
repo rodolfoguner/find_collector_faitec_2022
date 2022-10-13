@@ -122,4 +122,15 @@ public class CollectController {
 
         return "redirect:/collect/";
     }
+
+    @GetMapping("/delete/{id}")
+    public String deleteCollect(@PathVariable final int id) {
+        boolean deleted = collectService.deleteById(id);
+
+        if (!deleted) {
+            return "redirect:/common/not-found";
+        }
+
+        return "redirect:/collect/";
+    }
 }
