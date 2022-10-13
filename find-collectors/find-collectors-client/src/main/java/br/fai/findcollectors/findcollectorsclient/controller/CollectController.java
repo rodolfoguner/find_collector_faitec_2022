@@ -27,6 +27,20 @@ public class CollectController {
     @Autowired
     StateService stateService;
 
+    @GetMapping("/")
+    public String getListCollect(Model model) {
+
+        List<Collect> collects = collectService.find();
+
+        if (collects == null || collects.isEmpty()) {
+            collects = new ArrayList<>();
+        }
+
+        model.addAttribute("collects", collects);
+
+        return "collect/list";
+    }
+
     @GetMapping("/create")
     public String getCreatePage(Model model, HttpSession session) {
 
@@ -49,14 +63,13 @@ public class CollectController {
     @PostMapping("/create")
     public String createCollect(Collect collect) {
 
-
         int collectId = collectService.create(collect);
 
         if (collectId <= 0) {
             return "redirect/common/not-found";
         }
 
-        return "redirect:/";
+        return "redirect:/collect/";
     }
 
 }

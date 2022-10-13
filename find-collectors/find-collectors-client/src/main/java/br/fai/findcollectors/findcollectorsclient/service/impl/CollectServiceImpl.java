@@ -28,7 +28,7 @@ public class CollectServiceImpl implements CollectService<Collect> {
 
     @Override
     public List<Collect> find() {
-        return null;
+        return restService.get(resource);
     }
 
     @Override

@@ -3,7 +3,7 @@
       layout:decorate="~{layout}">
     <head>
         <meta charset="UTF-8">
-        <title>Home</title>
+        <title>Find Collectors</title>
     </head>
     <body onload="loadCities(); formatDateAndTime()">
         <div layout:fragment="body">
@@ -13,6 +13,9 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
                             <a th:href="@{/}">Home</a>
+                        </li>
+                        <li  class="breadcrumb-item active">
+                            <a th:href="@{collect/}">Coletas</a>
                         </li>
                         <li aria-current="page" class="breadcrumb-item active">
                             Cadastrar coleta
