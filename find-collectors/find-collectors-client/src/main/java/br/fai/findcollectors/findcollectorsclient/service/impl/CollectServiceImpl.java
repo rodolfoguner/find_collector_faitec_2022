@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class CollectServiceImpl implements CollectService<Collect> {
 
-    final String resource = "collect";
+    final String resource = "collect/";
 
     @Autowired
     RestService<Collect> restService;
@@ -33,7 +33,11 @@ public class CollectServiceImpl implements CollectService<Collect> {
 
     @Override
     public Collect findById(int id) {
-        return null;
+        if (id <= 0) {
+            return null;
+        }
+
+        return restService.getById(resource + id, Collect.class);
     }
 
     @Override

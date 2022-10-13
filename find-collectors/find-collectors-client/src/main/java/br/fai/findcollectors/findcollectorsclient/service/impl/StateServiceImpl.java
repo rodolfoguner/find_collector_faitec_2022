@@ -11,17 +11,24 @@ import java.util.List;
 @Service
 public class StateServiceImpl implements StateService {
 
+    final String resource = "state/";
+
     @Autowired
     RestService<State> restService;
 
     @Override
     public List<State> find() {
-        return restService.get("/state");
+        return restService.get(resource);
     }
 
     @Override
     public State findById(int id) {
-        return null;
+
+        if (id <= 0) {
+            return null;
+        }
+
+        return restService.getById(resource + id, State.class);
     }
 
     @Override

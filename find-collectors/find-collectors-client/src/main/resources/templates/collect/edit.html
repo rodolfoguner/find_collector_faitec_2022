@@ -8,17 +8,17 @@
     <body onload="loadCities(); formatDateAndTime()">
         <div layout:fragment="body">
             <div class="container">
-                <h1 class="pt-5">Cadastrar coleta</h1>
+                <h1 class="pt-5">Editar coleta</h1>
                 <div class="ml-2">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
                             <a th:href="@{/}">Home</a>
                         </li>
                         <li class="breadcrumb-item active">
-                            <a th:href="@{collect/}">Coletas</a>
+                            <a th:href="@{/collect/}">Coletas</a>
                         </li>
                         <li aria-current="page" class="breadcrumb-item active">
-                            Cadastrar coleta
+                            Editar coleta
                         </li>
                     </ol>
                 </div>
@@ -26,12 +26,13 @@
                     <div class="card mb-5">
                         <div class="card-body">
                             <form class="row g-3 needs-validation" method="POST" novalidate
-                                  th:action="@{/collect/create}">
+                                  th:action="@{/collect/edit}" th:object="${Collect}">
                                 <div class="col-md-6">
                                     <label class="form-label" for="garbageType">Lixo a ser coletado</label>
                                     <select class="form-select" id="garbageType" name="garbageType" required>
                                         <option disabled selected value="">Escolha...</option>
                                         <option th:each="garbageType : ${garbageTypes}"
+                                                th:selected="${garbageType == collect.garbageType[0]}"
                                                 th:text="${garbageType}"
                                                 th:value="${garbageType}"></option>
                                     </select>
@@ -42,7 +43,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label" for="dateCollect">Data e hora coleta</label>
                                     <input class="form-control" id="dateCollect" name="dateCollect" required
-                                           type="datetime-local">
+                                           th:value="${collect.dateAndTime}" type="datetime-local">
                                     <div class="invalid-feedback">
                                         Seleciona ao menos uma data
                                     </div>
@@ -53,7 +54,8 @@
                                         <input class="form-control"
                                                id="address"
                                                name="address"
-                                               required type="text">
+                                               required th:value="${collect.address}"
+                                               type="text">
                                         <div class="invalid-feedback">
                                             Digite seu endereço
                                         </div>
@@ -61,14 +63,16 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label" for="number">Número</label>
-                                    <input class="form-control" id="number" name="number" required type="number">
+                                    <input class="form-control" id="number" name="number" required th:value="${collect.number}"
+                                           type="number">
                                     <div class="invalid-feedback">
                                         Digite um número válido
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <label class="form-label" for="district">Bairro</label>
-                                    <input class="form-control" id="district" name="district" required type="text">
+                                    <input class="form-control" id="district" name="district" required th:value="${collect.district}"
+                                           type="text">
                                     <div class="invalid-feedback">
                                         Digite um bairro válido
                                     </div>
@@ -77,6 +81,7 @@
                                     <label class="form-label" for="cep">Cep</label>
                                     <input class="form-control" id="cep" maxlength="9" name="cep" pattern="\d{5}-?\d{3}"
                                            required
+                                           th:value="${collect.cep}"
                                            type="text">
                                     <div class="invalid-feedback">
                                         Digite seu cep
@@ -86,7 +91,8 @@
                                     <label class="form-label" for="state">Estado</label>
                                     <select class="form-select" id="state" name="state" required>
                                         <option disabled selected value="">Escolha...</option>
-                                        <option th:each="state : ${states}" th:text="${state.stateName}"
+                                        <option th:each="state : ${states}" th:selected="${collect.city.stateId.id == state.id}"
+                                                th:text="${state.stateName}"
                                                 th:value="${state.id}"></option>
                                     </select>
                                     <div class="invalid-feedback">
@@ -97,6 +103,9 @@
                                     <label class="form-label" for="cityId">Cidade</label>
                                     <select class="form-select" id="cityId" name="cityId" required>
                                         <option disabled selected value="">Escolha...</option>
+                                        <option th:each="city : ${cities}" th:selected="${collect.city.id == city.id}"
+                                                th:text="${city.name}"
+                                                th:value="${city.id}"></option>
                                     </select>
                                     <div class="invalid-feedback">
                                         Escolha uma cidade
@@ -104,7 +113,7 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-check">
-                                        <input class="form-check-input" id="recurrent" name="recurrent"
+                                        <input class="form-check-input" id="recurrent" name="recurrent" th:value="${collect.recurrent}"
                                                type="checkbox">
                                         <label class="form-check-label" for="recurrent">
                                             Coleta recorrente
@@ -113,6 +122,7 @@
                                 </div>
                                 <div class="col-12">
                                     <button class="btn btn-primary" type="submit">Cadastrar</button>
+                                    <button class="btn btn-danger" type="button">Cancelar</button>
                                 </div>
                                 <div class="col-12">
                                     <input class="d-none" id="dateAndTime" name="dateAndTime" type="text">
@@ -120,6 +130,9 @@
                                 <div class="col-12">
                                     <input class="d-none" id="recyclerId" name="recyclerId" th:value="${recyclerId}"
                                            type="text">
+                                </div>
+                                <div class="col-12">
+                                    <input class="d-none" id="id" name="id" th:value="${collect.id}" type="text">
                                 </div>
                             </form>
                         </div>
