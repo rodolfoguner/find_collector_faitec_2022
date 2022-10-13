@@ -1,10 +1,12 @@
 package br.fai.findcollectors.findcollectorsclient.controller;
 
 
+import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.entities.State;
 import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.enums.PersonType;
+import br.fai.findcollectors.findcollectorsclient.service.CityService;
 import br.fai.findcollectors.findcollectorsclient.service.PersonService;
 import br.fai.findcollectors.findcollectorsclient.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class AccountController {
     @Autowired
     StateService stateService;
 
+    @Autowired
+    CityService cityService;
+
     @GetMapping("/sign-in")
     public String getLoginPage() {
         return "account/sign-in-page";
@@ -41,13 +46,26 @@ public class AccountController {
     @GetMapping("/edit-profile")
     public String getEditProfilePage(final Model model, final HttpSession session) {
 
-        Person person = (Person) session.getAttribute("currentUser");
+        Person loggedPerson = (Person) session.getAttribute("currentUser");
 
-        if (person == null) {
+        if (loggedPerson == null) {
             return "redirect:/common/not-found";
         }
 
+        Person person = personService.findById(loggedPerson.getId());
+
+        if (person != null) {
+            session.setAttribute("currentUser", person);
+            loggedPerson = person;
+        }
+
         List<State> states = stateService.find();
+        List<City> cities = new ArrayList<>();
+
+        if (loggedPerson.getCityId() > 0) {
+            cities = cityService.findByStateId(loggedPerson.getCity().getStateId().getId());
+        }
+
 
         if (states == null || states.isEmpty()) {
             states = new ArrayList<>();
@@ -59,7 +77,8 @@ public class AccountController {
         model.addAttribute("garbageTypes", garbageTypes);
         model.addAttribute("personTypes", personTypes);
         model.addAttribute("states", states);
-        model.addAttribute("currentUser", person);
+        model.addAttribute("cities", cities);
+        model.addAttribute("currentUser", loggedPerson);
 
         return "account/edit-profile";
     }
@@ -74,6 +93,20 @@ public class AccountController {
         }
 
         return "redirect:/account/sign-in";
+    }
+
+
+    @PostMapping("/update")
+    public String updatePersonInformation(Person person) {
+
+        boolean updated = personService.update(person.getId(), person);
+
+        if (!updated) {
+            return "redirect:/common/access-denied";
+        }
+
+        return "redirect:/account/edit-profile";
+
     }
 
 }

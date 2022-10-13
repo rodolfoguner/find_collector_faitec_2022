@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class PersonServiceImpl implements PersonService<Person> {
 
-    final String resource = "person";
+    final String resource = "person/";
 
     @Autowired
     RestService<Person> restService;
@@ -41,12 +41,22 @@ public class PersonServiceImpl implements PersonService<Person> {
 
     @Override
     public Person findById(int id) {
-        return null;
+
+        if (id <= 0) {
+            return null;
+        }
+
+        return restService.getById(resource + id, Person.class);
     }
 
     @Override
     public boolean update(int id, Person entity) {
-        return false;
+
+        if (id <= 0) {
+            return false;
+        }
+
+        return restService.put(resource + id, entity);
     }
 
     @Override
