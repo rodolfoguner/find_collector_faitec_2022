@@ -380,4 +380,34 @@ public class CollectDaoImpl implements CollectDao<Collect> {
             ConnectionFactory.close(connection, preparedStatement);
         }
     }
+
+    @Override
+    public List<Collect> findFreeCollects() {
+        List<Collect> collects = new ArrayList<Collect>();
+
+        final String sql = "SELECT * FROM coleta C" +
+                " WHERE C.aceito = FALSE" +
+                " AND C.coletado= FALSE;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Collect collect = loadValues(resultSet);
+
+                collects.add(collect);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+        return collects;
+    }
 }
