@@ -3,10 +3,11 @@ package br.fai.findcollectors.entities;
 import br.fai.findcollectors.enums.GarbageType;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Collect extends BaseEntity {
     private Timestamp dateAndTime;
-    private GarbageType type;
+    private List<GarbageType> garbageType;
     private boolean accept;
     private boolean collected;
     private boolean recurrent;
@@ -14,7 +15,9 @@ public class Collect extends BaseEntity {
     private String address;
     private String district;
     private String number;
-    private City cityId;
+    private City city;
+
+    private int cityId;
     private int collectorId;
     private Person collector;
     private int recyclerId;
@@ -44,12 +47,12 @@ public class Collect extends BaseEntity {
         this.dateAndTime = dateAndTime;
     }
 
-    public GarbageType getType() {
-        return type;
+    public List<GarbageType> getGarbageType() {
+        return garbageType;
     }
 
-    public void setType(GarbageType type) {
-        this.type = type;
+    public void setGarbageType(List<GarbageType> garbageType) {
+        this.garbageType = garbageType;
     }
 
     public boolean isAccept() {
@@ -108,14 +111,21 @@ public class Collect extends BaseEntity {
         this.number = number;
     }
 
-    public City getCityId() {
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public int getCityId() {
         return cityId;
     }
 
-    public void setCityId(City cityId) {
+    public void setCityId(int cityId) {
         this.cityId = cityId;
     }
-
 
     public int getRecyclerId() {
         return recyclerId;

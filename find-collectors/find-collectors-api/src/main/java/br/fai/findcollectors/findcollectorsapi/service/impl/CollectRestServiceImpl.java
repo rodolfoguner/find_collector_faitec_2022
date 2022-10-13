@@ -2,34 +2,71 @@ package br.fai.findcollectors.findcollectorsapi.service.impl;
 
 import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.findcollectorsapi.service.CollectRestService;
+import br.fai.findcollectors.findcollectorsdatabase.dao.CollectDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class CollectRestServiceImpl implements CollectRestService<Collect> {
+
+    @Autowired
+    CollectDao<Collect> collectDao;
+
     @Override
     public List<Collect> find() {
-        return null;
+        return collectDao.find();
     }
 
     @Override
     public Collect findById(int id) {
-        return null;
+        if (id <= 0) {
+            return null;
+        }
+
+        return collectDao.findById(id);
     }
 
     @Override
     public int create(Collect entity) {
-        return 0;
+        return collectDao.create(entity);
     }
 
     @Override
     public boolean update(int id, Collect entity) {
-        return false;
+        return collectDao.update(entity);
     }
 
     @Override
     public boolean deleteById(int id) {
-        return false;
+
+        if (id <= 0) {
+            return false;
+        }
+
+        return collectDao.deleteById(id);
+    }
+
+    @Override
+    public boolean acceptCollect(int id, Collect entity) {
+
+        if (id <= 0) {
+            return false;
+        }
+
+
+        return collectDao.acceptCollect(entity);
+    }
+
+    @Override
+    public boolean closeCollect(int id, Collect entity) {
+
+        if (id <= 0) {
+            return false;
+        }
+
+
+        return collectDao.closeCollect(entity);
     }
 }
