@@ -158,13 +158,13 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
         final String sql = "UPDATE coleta SET " +
                 "data_e_hora = ?," +
-                "tipo_de_lixo = ?   " +
+                "tipo_de_lixo = ?,   " +
                 "recorrente = ?, " +
                 "cep = ?, " +
-                "endereco = ? " +
-                "bairro = ?" +
-                "numero = ?" +
-                "municipio_id = ?" +
+                "endereco = ?, " +
+                "bairro = ?," +
+                "numero = ?," +
+                "municipio_id = ?," +
                 "alterado_em = NOW() " +
                 "WHERE " +
                 "id = ?;";
