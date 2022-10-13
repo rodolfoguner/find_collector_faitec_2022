@@ -100,15 +100,26 @@ public class CollectController {
     }
 
     @PostMapping("/create")
-    public String createCollect(Collect collect) {
+    public String createCollect(final Collect collect) {
 
         int collectId = collectService.create(collect);
 
         if (collectId <= 0) {
-            return "redirect/common/not-found";
+            return "redirect:/common/not-found";
         }
 
         return "redirect:/collect/";
     }
 
+    @PostMapping("/update")
+    public String updateCollect(final Collect collect) {
+
+        boolean updated = collectService.update(collect.getId(), collect);
+
+        if (!updated) {
+            return "redirect:/common/not-found";
+        }
+
+        return "redirect:/collect/";
+    }
 }

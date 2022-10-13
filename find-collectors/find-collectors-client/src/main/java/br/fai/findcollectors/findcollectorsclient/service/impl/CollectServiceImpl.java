@@ -42,7 +42,12 @@ public class CollectServiceImpl implements CollectService<Collect> {
 
     @Override
     public boolean update(int id, Collect entity) {
-        return false;
+
+        if (id <= 0 || entity == null) {
+            return false;
+        }
+
+        return restService.put(resource + id, entity);
     }
 
     @Override
