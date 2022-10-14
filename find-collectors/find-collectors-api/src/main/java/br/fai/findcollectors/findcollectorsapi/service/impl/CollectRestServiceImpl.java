@@ -1,7 +1,9 @@
 package br.fai.findcollectors.findcollectorsapi.service.impl;
 
 import br.fai.findcollectors.entities.Collect;
+import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.findcollectorsapi.service.CollectRestService;
+import br.fai.findcollectors.findcollectorsapi.service.PersonRestService;
 import br.fai.findcollectors.findcollectorsdatabase.dao.CollectDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
 
     @Autowired
     CollectDao<Collect> collectDao;
+
+    @Autowired
+    PersonRestService<Person> personRestService;
 
     @Override
     public List<Collect> find() {
@@ -30,6 +35,17 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
 
     @Override
     public int create(Collect entity) {
+
+        if (entity == null) {
+            return -1;
+        }
+
+        Person recycler = personRestService.findById(entity.getRecyclerId());
+
+        if (recycler == null) {
+            return -1;
+        }
+
         return collectDao.create(entity);
     }
 

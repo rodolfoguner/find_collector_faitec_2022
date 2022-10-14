@@ -26,9 +26,9 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
     @Override
     public List<Collect> find() {
-        List<Collect> collects = new ArrayList<Collect>();
+        List<Collect> collects = new ArrayList<>();
 
-        final String sql = "SELECT * FROM coleta";
+        final String sql = "SELECT * FROM coleta ORDER BY id DESC;";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -57,7 +57,7 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
         Collect collect = null;
 
-        final String sql = "SELECT * FROM coleta where id = ?";
+        final String sql = "SELECT * FROM coleta WHERE id = ?";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -108,7 +108,7 @@ public class CollectDaoImpl implements CollectDao<Collect> {
                     "reciclador_id, " +
                     "criado_em) " +
                     "VALUES " +
-                    "(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, now());";
+                    "(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW());";
 
             connection = ConnectionFactory.getConnection();
             connection.setAutoCommit(false);
