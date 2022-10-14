@@ -59,4 +59,19 @@ public class CollectServiceImpl implements CollectService<Collect> {
 
         return restService.deleteById(resource + id);
     }
+
+    @Override
+    public boolean acceptCollect(int id, Collect entity) {
+        return false;
+    }
+
+    @Override
+    public boolean closeCollect(int id, Collect entity) {
+        return false;
+    }
+
+    @Override
+    public List<Collect> findFreeCollects() {
+        return restService.get(resource + "free-collects");
+    }
 }
