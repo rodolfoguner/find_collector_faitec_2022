@@ -25,6 +25,9 @@ import java.util.List;
 public class AccountController {
 
     @Autowired
+    HttpSession session;
+
+    @Autowired
     PersonService<Person> personService;
 
     @Autowired
@@ -44,19 +47,12 @@ public class AccountController {
     }
 
     @GetMapping("/edit-profile")
-    public String getEditProfilePage(final Model model, final HttpSession session) {
+    public String getEditProfilePage(final Model model) {
 
         Person loggedPerson = (Person) session.getAttribute("currentUser");
 
         if (loggedPerson == null) {
             return "redirect:/common/not-found";
-        }
-
-        Person person = personService.findById(loggedPerson.getId());
-
-        if (person != null) {
-            session.setAttribute("currentUser", person);
-            loggedPerson = person;
         }
 
         List<State> states = stateService.find();
@@ -65,7 +61,6 @@ public class AccountController {
         if (loggedPerson.getCityId() > 0) {
             cities = cityService.findByStateId(loggedPerson.getCity().getStateId().getId());
         }
-
 
         if (states == null || states.isEmpty()) {
             states = new ArrayList<>();
@@ -105,7 +100,11 @@ public class AccountController {
             return "redirect:/common/access-denied";
         }
 
-        return "redirect:/account/edit-profile";
+        Person updatedPerson = personService.findById(person.getId());
+
+        session.setAttribute("currentUser", updatedPerson);
+
+        return "redirect:/";
 
     }
 
