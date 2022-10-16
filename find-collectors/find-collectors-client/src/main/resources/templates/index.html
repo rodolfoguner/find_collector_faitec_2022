@@ -3,18 +3,78 @@
       layout:decorate="~{layout}">
     <head>
         <meta charset="UTF-8">
-        <title>Find Collectors</title>
+        <title>Home</title>
     </head>
     <body>
         <div layout:fragment="body">
-            <section id="hero">
-                <div class="hero-container">
-                    <h1>Bem vindo ao Find Collectors</h1>
-                    <h2>We are team of talented designers making websites with Bootstrap</h2>
-                    <a th:href="@{/account/sign-in}" class="btn-get-started">Cadastre-se aqui</a>
+            <div class="row">
+                <div class="col">
+                    <section sec:authorize="!isAuthenticated()" id="hero">
+                        <div class="hero-container">
+                            <h1>Bem vindo ao Find Collectors</h1>
+                            <h2>Brasil é o 4º país que mais produz lixo no mundo</h2>
+                            <a th:href="@{/account/sign-in}" class="btn-get-started">Cadastre-se aqui</a>
+                            
+                        </div>
+                    </section><!-- #hero -->
                 </div>
-            </section><!-- #hero -->
+            </div>
+         
+            <div sec:authorize="hasRole('CATADOR')" class="row justify-content-center">
+                <div th:each="freeCollect : ${freeCollects}" class="col-lg-2 col-md-4 col-12 pt-5">
+                    <div class="card mb-5">
+                        <div class="card-body">
+                            <span th:text="${freeCollect.number}"></span>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+
+            <div sec:authorize="hasRole('CATADOR')" class="container">
+                <div class="top">
+                    <h1>Minhas Coletas</h1>
+                </div>
+
+                <div class="package-container">
+                    <div class="packages">
+                        <h1>Tipo de Lixo</h1>
+                        <ul class="list">
+                            <li class="first">Rua</li>
+                            <li>Bairro</li>
+                            <li>Numero</li>
+                            <li>Data</li>
+                        </ul>
+                        <a href="#" class="button button1">Ver Detalhes</a>
+                    </div>
+                    <div class="packages">
+                        <h1>Tipo de Lixo</h1>
+                        <ul class="list">
+                            <li class="first">Rua</li>
+                            <li>Bairro</li>
+                            <li>Numero</li>
+                            <li>Data</li>
+                        </ul>
+                        <a href="#" class="button button1">Ver Detalhes</a>
+                    </div>
+                    <div class="packages">
+                        <h1>Tipo de Lixo</h1>
+                        <ul class="list">
+                            <li class="first">Rua</li>
+                            <li>Bairro</li>
+                            <li>Numero</li>
+                            <li>Data</li>
+                        </ul>
+                        <a href="#" class="button button1">Ver Detalhes</a>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+
+        
+
         </div>
+        
 
     </body>
 </html>
