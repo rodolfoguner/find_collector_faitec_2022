@@ -97,5 +97,17 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
         return freeCollects;
     }
 
+    @Override
+    public List<Collect> myCollects(int id) {
+
+        List<Collect> myCollects = collectDao.MyCollects(id);
+
+        if (myCollects.isEmpty()) {
+            return null;
+        }
+
+        return myCollects;
+    }
+
 
 }

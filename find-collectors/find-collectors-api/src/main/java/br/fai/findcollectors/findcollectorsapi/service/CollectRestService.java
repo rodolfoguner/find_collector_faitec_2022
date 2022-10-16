@@ -10,4 +10,6 @@ public interface CollectRestService<T> extends BaseRestService<T> {
 
     List<T> findFreeCollects();
 
+    List<T> myCollects(int id);
+
 }

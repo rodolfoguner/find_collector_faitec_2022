@@ -410,4 +410,38 @@ public class CollectDaoImpl implements CollectDao<Collect> {
         }
         return collects;
     }
+
+    @Override
+    public List<Collect> MyCollects(int id) {
+        List<Collect> collects = new ArrayList<Collect>();
+
+        final String sql = "select * from coleta c where c.reciclador_id  = ? and c.coletado = false;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+
+                Collect collect = loadValues(resultSet);
+
+                collects.add(collect);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return collects;
+    }
 }

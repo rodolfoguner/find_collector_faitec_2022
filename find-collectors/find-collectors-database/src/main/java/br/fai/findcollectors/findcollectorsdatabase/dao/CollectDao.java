@@ -9,4 +9,6 @@ public interface CollectDao<T> extends BaseDao<T> {
     boolean closeCollect(T entity);
 
     List<T> findFreeCollects();
+
+    List<T> MyCollects(int id);
 }
