@@ -87,4 +87,18 @@ public class CollectRestController {
 
         return ResponseEntity.ok(true);
     }
+
+    @GetMapping("/free-collects")
+    public ResponseEntity<List<Collect>> freeCollects() {
+
+        return ResponseEntity.ok(collectRestService.findFreeCollects());
+
+    }
+
+    @GetMapping("/my-collects/{id}")
+    public ResponseEntity<List<Collect>> myCollects(@PathVariable("id") int id) {
+
+        return ResponseEntity.ok(collectRestService.myCollects(id));
+
+    }
 }

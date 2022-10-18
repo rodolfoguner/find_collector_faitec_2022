@@ -85,4 +85,29 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
 
         return collectDao.closeCollect(entity);
     }
+
+    @Override
+    public List<Collect> findFreeCollects() {
+        List<Collect> freeCollects = collectDao.findFreeCollects();
+
+        if (freeCollects.isEmpty()) {
+            return null;
+        }
+
+        return freeCollects;
+    }
+
+    @Override
+    public List<Collect> myCollects(int id) {
+
+        List<Collect> myCollects = collectDao.MyCollects(id);
+
+        if (myCollects.isEmpty()) {
+            return null;
+        }
+
+        return myCollects;
+    }
+
+
 }
