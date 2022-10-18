@@ -1079,7 +1079,6 @@ body {
   width: 300px;
   padding-bottom: 1.5em;
   height: 100%;
-  background-color: #1e2321;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1087,13 +1086,8 @@ body {
   border-radius: 20px;
   box-shadow: 0 19px 38px rgba(30, 35, 33, 1), 0 15px 12px rgba(30, 35, 33, 0.2);
   flex-wrap: wrap;
-  color: #f4f4f4;
 }
 
-h1,
-h2 {
-  font-size: 2.2em;
-}
 .text1,
 .text2{
     color: #fff;
@@ -1109,7 +1103,7 @@ h2 {
 }
 
 .first {
-  margin-top: 40px;
+  margin-top: 25px;
   border-top: 1px solid #f4f4f4;
 }
 
@@ -1117,6 +1111,7 @@ h2 {
   width: 80%;
 }
 
+.list,
 ol,
 ul {
   padding: 0;
@@ -1151,7 +1146,6 @@ label {
 
 .button1 {
   background-color: #00cc99;
-  box-shadow: 0 0 10px 0 #00cc99 inset, 0 0 20px 2px #00cc99;
 }
 
 .button2 {

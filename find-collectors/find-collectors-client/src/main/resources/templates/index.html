@@ -20,61 +20,36 @@
                 </div>
             </div>
          
-            <div sec:authorize="hasRole('CATADOR')" class="row justify-content-center">
-                <div th:each="freeCollect : ${freeCollects}" class="col-lg-2 col-md-4 col-12 pt-5">
-                    <div class="card mb-5">
-                        <div class="card-body">
-                            <span th:text="${freeCollect.number}"></span>
-                        </div>
-                    </div> 
-                </div>
-            </div>
-
             <div sec:authorize="hasRole('CATADOR')" class="container">
                 <div class="top">
-                    <h1>Minhas Coletas</h1>
+                    <h1>Coletas Disponíveis</h1>
                 </div>
 
                 <div class="package-container">
-                    <div class="packages">
-                        <h1>Tipo de Lixo</h1>
+                    <div class="packages" th:each="freeCollect : ${freeCollects}">
+                        <h2 class="pt-2" th:text="${freeCollect.garbageType}"></h2>
                         <ul class="list">
-                            <li class="first">Rua</li>
-                            <li>Bairro</li>
-                            <li>Numero</li>
-                            <li>Data</li>
+                            <li class="first">
+                                Rua: 
+                                <span th:text="${freeCollect.address}"></span> 
+                            </li>
+                            <li>
+                                Bairro: 
+                                <span th:text="${freeCollect.district}"></span> 
+                            </li>
+                            <li>
+                                Número: 
+                                <span th:text="${freeCollect.number}"></span> 
+                            </li>
+                            <li>
+                                Data: 
+                                <span th:text="${freeCollect.dateAndTime}"></span> 
+                            </li>
                         </ul>
-                        <a href="#" class="button button1">Ver Detalhes</a>
-                    </div>
-                    <div class="packages">
-                        <h1>Tipo de Lixo</h1>
-                        <ul class="list">
-                            <li class="first">Rua</li>
-                            <li>Bairro</li>
-                            <li>Numero</li>
-                            <li>Data</li>
-                        </ul>
-                        <a href="#" class="button button1">Ver Detalhes</a>
-                    </div>
-                    <div class="packages">
-                        <h1>Tipo de Lixo</h1>
-                        <ul class="list">
-                            <li class="first">Rua</li>
-                            <li>Bairro</li>
-                            <li>Numero</li>
-                            <li>Data</li>
-                        </ul>
-                        <a href="#" class="button button1">Ver Detalhes</a>
-                    </div>
+                        <a th:href="@{/collect/edit/{id} (id=${freeCollect.id})}" class="button button1">Ver Detalhes</a>
                     </div>
                 </div>
             </div>
-
-
-        
-
         </div>
-        
-
     </body>
 </html>
