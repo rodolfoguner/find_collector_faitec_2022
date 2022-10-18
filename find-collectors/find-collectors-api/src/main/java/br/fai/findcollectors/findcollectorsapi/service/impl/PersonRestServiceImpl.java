@@ -105,5 +105,23 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
         return person;
     }
-    
+
+    @Override
+    public boolean changePassword(Account account) {
+
+        if (account.getEmail().isEmpty() || account.getPassword().isEmpty()) {
+            return false;
+        }
+
+        Person person = personDao.findPersonByEmail(account.getEmail());
+
+        if (person == null) return false;
+
+        final String password = BCrypt.hashpw(account.getPassword(), salt);
+
+        person.setPassword(password);
+
+        return personDao.changePassword(person);
+    }
+
 }
