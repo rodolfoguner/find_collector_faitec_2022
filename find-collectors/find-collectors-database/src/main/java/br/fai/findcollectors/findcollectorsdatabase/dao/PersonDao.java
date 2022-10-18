@@ -6,4 +6,6 @@ public interface PersonDao<T> extends BaseDao<T> {
 
     Person findPersonByEmail(String email);
 
+    boolean changePassword(T entity);
+
 }
