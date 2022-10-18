@@ -73,3 +73,37 @@ function formatDateAndTime() {
     dateAndTime.value = format(dateCollect);
   });
 }
+
+function setRequired(elements, required) {
+  const elementsList = elements.getElementsByTagName("div");
+  for (const element of elementsList) {
+    const inputsAndCheckBox = element.getElementsByClassName("form-select")[0];
+    if (inputsAndCheckBox) {
+      inputsAndCheckBox.required = required;
+    }
+  }
+}
+
+function verifyType(type, collectorData) {
+  if (type === "CATADOR") {
+    collectorData.hidden = false;
+    setRequired(collectorData, true);
+  } else {
+    collectorData.hidden = true;
+    setRequired(collectorData, false);
+  }
+}
+
+function changeUserType() {
+  const personType = document.getElementById("personType");
+
+  const collectorData = document.getElementById("collectorData");
+
+  verifyType(personType.value, collectorData);
+
+  personType.addEventListener("change", (typeEvent) => {
+    const type = typeEvent.target.value;
+
+    verifyType(type, collectorData);
+  });
+}
