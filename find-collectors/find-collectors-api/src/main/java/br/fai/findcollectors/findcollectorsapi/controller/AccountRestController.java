@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class AccountRestController {
 
     @Autowired
-    PersonRestService<Person> personPersonRestService;
+    PersonRestService<Person> personRestService;
 
     @PostMapping("/login")
     public ResponseEntity<Person> login(@RequestBody Account account) {
-        Person person = personPersonRestService.validateLogin(account);
+        Person person = personRestService.validateLogin(account);
 
         if (person == null) {
             return ResponseEntity.badRequest().build();
@@ -28,12 +28,21 @@ public class AccountRestController {
 
     @PostMapping("/signup")
     public ResponseEntity<Integer> signUp(@RequestBody Person person) {
-        int id = personPersonRestService.create(person);
+        int id = personRestService.create(person);
 
         if (id <= 0) {
             return ResponseEntity.badRequest().build();
         }
 
         return ResponseEntity.ok(id);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Boolean> forgotPassword(@RequestBody Account account) {
+        boolean result = personRestService.changePassword(account);
+
+        if (!result) return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok(result);
     }
 }
