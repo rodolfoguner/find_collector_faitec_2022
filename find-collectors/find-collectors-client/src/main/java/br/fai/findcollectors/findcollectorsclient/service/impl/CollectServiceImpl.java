@@ -62,7 +62,14 @@ public class CollectServiceImpl implements CollectService<Collect> {
 
     @Override
     public boolean acceptCollect(int id, Collect entity) {
-        return false;
+
+        if (id <= 0 || entity == null || entity.getCollectorId() <= 0) {
+            return false;
+        }
+
+        entity.setAccept(true);
+
+        return restService.put(resource + "accept-collect/" + id, entity);
     }
 
     @Override
@@ -73,5 +80,15 @@ public class CollectServiceImpl implements CollectService<Collect> {
     @Override
     public List<Collect> findFreeCollects() {
         return restService.get(resource + "free-collects");
+    }
+
+    @Override
+    public List<Collect> myCollects(int id) {
+
+        if (id <= 0) {
+            return null;
+        }
+
+        return restService.get(resource + "my-collects/" + id);
     }
 }
