@@ -7,6 +7,6 @@ public enum GarbageType {
     PLASTICO,
     METAL,
     ORGANICO,
-    NAORECICLAVEL
+    NAO_RECICLAVEL
 
 }

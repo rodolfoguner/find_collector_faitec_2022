@@ -8,7 +8,7 @@ public interface CollectRestService<T> extends BaseRestService<T> {
 
     boolean closeCollect(int id, T entity);
 
-    List<T> findFreeCollects();
+    List<T> findFreeCollects(int id);
 
     List<T> myCollects(int id);
 

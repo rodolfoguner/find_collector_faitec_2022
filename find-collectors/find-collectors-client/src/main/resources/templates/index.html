@@ -7,6 +7,18 @@
     </head>
     <body>
         <div layout:fragment="body">
+            <div class="row">
+                <div class="col">
+                    <section sec:authorize="!isAuthenticated()" id="hero">
+                        <div class="hero-container">
+                            <h1>Bem vindo ao Find Collectors</h1>
+                            <h2>Brasil é o 4º país que mais produz lixo no mundo</h2>
+                            <a th:href="@{/account/sign-in}" class="btn-get-started">Cadastre-se aqui</a>
+                            
+                        </div>
+                    </section><!-- #hero -->
+                </div>
+            </div>
         </div>
     </body>
 </html>

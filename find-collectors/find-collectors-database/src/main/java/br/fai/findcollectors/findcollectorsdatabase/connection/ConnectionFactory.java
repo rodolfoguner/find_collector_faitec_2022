@@ -5,7 +5,7 @@ import java.sql.*;
 public class ConnectionFactory {
 
     private static final String DATABASE = "find-collectors";
-    private static final String PORT = "3000";
+    private static final String PORT = "5432";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "postgres";
     private static final String URL = "jdbc:postgresql://localhost:" + PORT + "/" + DATABASE + "";

@@ -33,11 +33,19 @@ public class CollectController {
     @Autowired
     CityService cityService;
 
+    @Autowired
+    HttpSession session;
 
     @GetMapping("/")
     public String getListCollect(Model model) {
 
-        List<Collect> collects = collectService.find();
+        Person person = (Person) session.getAttribute("currentUser");
+
+        if (person == null) {
+            return "redirect:/common/not-found";
+        }
+
+        List<Collect> collects = collectService.myCollects(person.getId());
 
         if (collects == null || collects.isEmpty()) {
             collects = new ArrayList<>();
@@ -49,7 +57,7 @@ public class CollectController {
     }
 
     @GetMapping("/edit/{id}")
-    public String getCreatePage(@PathVariable final int id, Model model, HttpSession session) {
+    public String getCreatePage(@PathVariable final int id, Model model) {
 
         Collect collect = collectService.findById(id);
 
@@ -72,7 +80,7 @@ public class CollectController {
         GarbageType[] garbageTypes = GarbageType.values();
 
         model.addAttribute("collect", collect);
-        model.addAttribute("recyclerId", person.getId());
+        model.addAttribute("currentUser", person.getId());
         model.addAttribute("garbageTypes", garbageTypes);
         model.addAttribute("states", states);
         model.addAttribute("cities", cities);
@@ -92,7 +100,7 @@ public class CollectController {
         Person person = (Person) session.getAttribute("currentUser");
         GarbageType[] garbageTypes = GarbageType.values();
 
-        model.addAttribute("recyclerId", person.getId());
+        model.addAttribute("currentUser", person.getId());
         model.addAttribute("garbageTypes", garbageTypes);
         model.addAttribute("states", states);
 
@@ -132,5 +140,37 @@ public class CollectController {
         }
 
         return "redirect:/collect/";
+    }
+
+    @PostMapping("/accept-collect")
+    public String acceptCollect(final Collect collect) {
+
+        boolean accepted = collectService.acceptCollect(collect.getId(), collect);
+
+        if (!accepted) {
+            return "redirect:/common/not-found";
+        }
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/available-collects")
+    public String availableCollects(Model model) {
+
+        Person loggedPerson = (Person) session.getAttribute("currentUser");
+
+        if (loggedPerson == null) {
+            return "redirect:/common/not-found";
+        }
+
+        List<Collect> freeCollects = collectService.findFreeCollects(loggedPerson.getId());
+
+        if (freeCollects == null || freeCollects.isEmpty()) {
+            freeCollects = new ArrayList<>();
+        }
+
+        model.addAttribute("freeCollects", freeCollects);
+
+        return "collect/available-collects";
     }
 }
