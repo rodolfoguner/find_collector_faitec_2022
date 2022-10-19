@@ -12,4 +12,6 @@ public interface PersonRestService<T> extends BaseRestService<T> {
 
     List<Person> godfatherCollectors(int id);
 
+    boolean updateGodfather(int id, Person entity);
+
 }

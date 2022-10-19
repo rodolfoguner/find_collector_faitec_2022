@@ -369,6 +369,62 @@ public class PersonDaoImpl implements PersonDao<Person> {
     }
 
     @Override
+    public boolean updateGodfather(int id, Person person) {
+        final String sql = "UPDATE pessoa SET " +
+                "nome = ?, " +
+                "cep = ?, " +
+                "endereco = ?, " +
+                "bairro = ?, " +
+                "numero = ?, " +
+                "municipio_id = ?, " +
+                "descricao = ?, " +
+                "ponto_coleta = ?, " +
+                "alterado_em = NOW() " +
+                "WHERE " +
+                "id = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, person.getName());
+            preparedStatement.setString(2, person.getCep());
+            preparedStatement.setString(3, person.getAddress());
+            preparedStatement.setString(4, person.getDistrict());
+            preparedStatement.setString(5, person.getNumber());
+            preparedStatement.setInt(6, person.getCityId());
+            preparedStatement.setString(7, person.getDescription());
+            preparedStatement.setBoolean(8, person.isCollectPoint());
+            preparedStatement.setInt(9, person.getId());
+            preparedStatement.execute();
+
+            connection.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                connection.commit();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+            return false;
+
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement);
+
+        }
+    }
+
+    @Override
     public Person loadValues(ResultSet resultSet) throws SQLException {
 
         Person person = new Person();
@@ -403,6 +459,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
         person.setCity(city);
         person.setCityId(resultSet.getInt("municipio_id"));
         person.setCollectPoint(resultSet.getBoolean("ponto_coleta"));
+        person.setDescription(resultSet.getString("descricao"));
         person.setCreatedAt(resultSet.getTimestamp("criado_em"));
         person.setLastModified(resultSet.getTimestamp("alterado_em"));
 

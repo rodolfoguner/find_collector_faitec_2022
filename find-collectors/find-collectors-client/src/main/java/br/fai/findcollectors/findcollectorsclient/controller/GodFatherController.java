@@ -1,6 +1,7 @@
 package br.fai.findcollectors.findcollectorsclient.controller;
 
 
+import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.entities.State;
 import br.fai.findcollectors.enums.GarbageType;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -86,6 +88,48 @@ public class GodFatherController {
         int created = personService.godfather(person, godfather);
 
         if (created <= 0) {
+            return "redirect:/common/not-found";
+        }
+        return "redirect:/godfather/";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String getGodfatherCollectorPage(@PathVariable("id") final int id, Model model) {
+
+        Person collector = personService.findById(id);
+        Person godfather = (Person) session.getAttribute("currentUser");
+
+        if (collector == null || godfather == null) {
+            return "redirect:/common/not-found";
+        }
+
+        List<State> states = stateService.find();
+
+        if (states == null || states.isEmpty()) {
+            states = new ArrayList<>();
+        }
+
+        List<City> cities = new ArrayList<>();
+        if (godfather.getCityId() > 0) {
+            cities = cityService.findByStateId(godfather.getCity().getStateId().getId());
+        }
+
+        model.addAttribute("collector", collector);
+        model.addAttribute("godfatherId", godfather.getId());
+        model.addAttribute("garbageTypes", GarbageType.values());
+        model.addAttribute("personTypes", PersonType.values());
+        model.addAttribute("states", states);
+        model.addAttribute("cities", cities);
+
+        return "godfather/edit";
+    }
+
+    @PostMapping("/update")
+    public String getUpdateCollectorPage(Person person) {
+
+        boolean updated = personService.updateGodfather(person.getId(), person);
+
+        if (!updated) {
             return "redirect:/common/not-found";
         }
         return "redirect:/godfather/";

@@ -70,4 +70,14 @@ public class PersonRestController {
     public ResponseEntity<List<Person>> getGodfatherCollectors(@PathVariable("id") final int id) {
         return ResponseEntity.ok(personRestService.godfatherCollectors(id));
     }
+
+    @PutMapping("/godfather/{id}")
+    public ResponseEntity<Boolean> godfather(@PathVariable("id") final int id, @RequestBody Person person) {
+        boolean updated = personRestService.updateGodfather(id, person);
+
+        if (!updated) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(updated);
+    }
 }

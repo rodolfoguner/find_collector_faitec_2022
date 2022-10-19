@@ -12,4 +12,6 @@ public interface PersonService<T> extends BaseService<T> {
 
     List<Person> godfatherCollectors(int id);
 
+    boolean updateGodfather(int id, Person person);
+
 }
