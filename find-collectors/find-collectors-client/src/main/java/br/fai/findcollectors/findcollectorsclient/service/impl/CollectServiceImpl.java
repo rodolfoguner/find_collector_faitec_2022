@@ -78,8 +78,8 @@ public class CollectServiceImpl implements CollectService<Collect> {
     }
 
     @Override
-    public List<Collect> findFreeCollects() {
-        return restService.get(resource + "free-collects");
+    public List<Collect> findFreeCollects(int loggedPersonId) {
+        return restService.get(resource + "free-collects/" + loggedPersonId);
     }
 
     @Override

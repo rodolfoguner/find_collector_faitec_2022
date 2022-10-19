@@ -156,7 +156,14 @@ public class CollectController {
 
     @GetMapping("/available-collects")
     public String availableCollects(Model model) {
-        List<Collect> freeCollects = collectService.findFreeCollects();
+
+        Person loggedPerson = (Person) session.getAttribute("currentUser");
+
+        if (loggedPerson == null) {
+            return "redirect:/common/not-found";
+        }
+
+        List<Collect> freeCollects = collectService.findFreeCollects(loggedPerson.getId());
 
         if (freeCollects == null || freeCollects.isEmpty()) {
             freeCollects = new ArrayList<>();
