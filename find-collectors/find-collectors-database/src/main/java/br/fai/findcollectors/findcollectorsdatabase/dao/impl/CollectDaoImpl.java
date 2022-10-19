@@ -382,12 +382,13 @@ public class CollectDaoImpl implements CollectDao<Collect> {
     }
 
     @Override
-    public List<Collect> findFreeCollects() {
-        List<Collect> collects = new ArrayList<Collect>();
+    public List<Collect> findFreeCollects(int id) {
+        List<Collect> collects = new ArrayList<>();
 
         final String sql = "SELECT * FROM coleta C" +
                 " WHERE C.aceito = FALSE" +
-                " AND C.coletado= FALSE;";
+                " AND C.coletado= FALSE" +
+                " AND C.reciclador_id != ?;";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -396,6 +397,7 @@ public class CollectDaoImpl implements CollectDao<Collect> {
         try {
             connection = ConnectionFactory.getConnection();
             preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
