@@ -8,6 +8,11 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: "Open Sans", sans-serif;
   color: #777;
@@ -205,7 +210,6 @@ section {
   background: url("/img/coleta-lixo.png") top center;
   background-size: cover;
   position: relative;
-  margin-bottom: -80px;
 }
 
 #hero:before {
