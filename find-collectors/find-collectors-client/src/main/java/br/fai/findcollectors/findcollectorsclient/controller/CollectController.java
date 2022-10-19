@@ -8,6 +8,7 @@ import br.fai.findcollectors.entities.State;
 import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.findcollectorsclient.service.CityService;
 import br.fai.findcollectors.findcollectorsclient.service.CollectService;
+import br.fai.findcollectors.findcollectorsclient.service.PersonService;
 import br.fai.findcollectors.findcollectorsclient.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,9 @@ public class CollectController {
 
     @Autowired
     HttpSession session;
+
+    @Autowired
+    PersonService<Person> personService;
 
     @GetMapping("/")
     public String getListCollect(Model model) {
@@ -203,6 +207,20 @@ public class CollectController {
         }
 
         return "redirect:/collect/accepted-collects";
+    }
+
+    @GetMapping("/collect-point")
+    public String getCollectPointPage(Model model) {
+
+        List<Person> collectPoints = personService.getCollectPoints();
+
+        if (collectPoints == null || collectPoints.isEmpty()) {
+            collectPoints = new ArrayList<>();
+        }
+
+        model.addAttribute("collectPoints", collectPoints);
+
+        return "collect/collect-point";
     }
 
 }

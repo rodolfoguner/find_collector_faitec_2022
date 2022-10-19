@@ -80,4 +80,9 @@ public class PersonRestController {
         }
         return ResponseEntity.ok(updated);
     }
+
+    @GetMapping("/collect-points")
+    public ResponseEntity<List<Person>> getCollectPoints() {
+        return ResponseEntity.ok(personRestService.getCollectPoints());
+    }
 }

@@ -127,4 +127,9 @@ public class PersonServiceImpl implements PersonService<Person> {
 
         return restService.put(resource + "godfather/" + id, person);
     }
+
+    @Override
+    public List<Person> getCollectPoints() {
+        return restService.get(resource + "collect-points");
+    }
 }

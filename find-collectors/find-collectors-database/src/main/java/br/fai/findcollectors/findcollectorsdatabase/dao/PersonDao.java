@@ -14,4 +14,6 @@ public interface PersonDao<T> extends BaseDao<T> {
 
     boolean updateGodfather(int id, Person person);
 
+    List<Person> getCollectPoints();
+
 }

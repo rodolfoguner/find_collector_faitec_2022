@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout}">
+    <head>
+        <meta charset="UTF-8">
+        <title>Find Collectors</title>
+    </head>
+    <body>
+        <div layout:fragment="body">
+            <div class="container py-4">
+                <div class="top">
+                    <h1>Pontos de coleta</h1>
+                </div>
+                <div class="package-container">
+                    <div class="packages" th:each="collectPoint : ${collectPoints}">
+                        <h4 class="pt-2" th:text="${collectPoint.name}"></h4>
+                        <ul class="list">
+                            <li class="first">
+                                Rua:
+                                <span th:text="${collectPoint.address}"></span>
+                            </li>
+                            <li>
+                                Bairro:
+                                <span th:text="${collectPoint.district}"></span>
+                            </li>
+                            <li>
+                                Número:
+                                <span th:text="${collectPoint.number}"></span>
+                            </li>
+                        </ul>
+                        <a class="button button1" th:href="@{/collect/edit/{id} (id=${collectPoint.id})}">Ver
+                            Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

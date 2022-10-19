@@ -143,4 +143,9 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
         return personDao.updateGodfather(id, person);
     }
 
+    @Override
+    public List<Person> getCollectPoints() {
+        return personDao.getCollectPoints();
+    }
+
 }
