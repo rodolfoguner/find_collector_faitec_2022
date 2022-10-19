@@ -115,7 +115,9 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
         Person person = personDao.findPersonByEmail(account.getEmail());
 
-        if (person == null) return false;
+        if (person == null) {
+            return false;
+        }
 
         final String password = BCrypt.hashpw(account.getPassword(), salt);
 

@@ -57,11 +57,13 @@ public class PersonRestController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/change-password")
+    @PutMapping("/change-password")
     public ResponseEntity<Boolean> changePassword(@RequestBody Account account) {
         boolean result = personRestService.changePassword(account);
 
-        if (!result) return ResponseEntity.badRequest().build();
+        if (!result) {
+            return ResponseEntity.badRequest().build();
+        }
 
         return ResponseEntity.ok(true);
     }

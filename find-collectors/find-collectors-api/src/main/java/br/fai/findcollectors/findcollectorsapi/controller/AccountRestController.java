@@ -37,12 +37,14 @@ public class AccountRestController {
         return ResponseEntity.ok(id);
     }
 
-    @PostMapping("/forgot-password")
+    @PutMapping("/forgot-password")
     public ResponseEntity<Boolean> forgotPassword(@RequestBody Account account) {
         boolean result = personRestService.changePassword(account);
 
-        if (!result) return ResponseEntity.badRequest().build();
+        if (!result) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(true);
     }
 }
