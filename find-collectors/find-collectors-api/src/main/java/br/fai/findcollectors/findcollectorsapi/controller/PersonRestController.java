@@ -65,4 +65,9 @@ public class PersonRestController {
         }
         return ResponseEntity.ok(id);
     }
+
+    @GetMapping("/godfather/{id}")
+    public ResponseEntity<List<Person>> getGodfatherCollectors(@PathVariable("id") final int id) {
+        return ResponseEntity.ok(personRestService.godfatherCollectors(id));
+    }
 }

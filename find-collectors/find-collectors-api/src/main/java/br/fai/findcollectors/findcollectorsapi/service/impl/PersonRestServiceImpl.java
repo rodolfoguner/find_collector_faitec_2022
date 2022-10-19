@@ -112,4 +112,14 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
         return personDao.godfather(person);
     }
 
+    @Override
+    public List<Person> godfatherCollectors(int id) {
+
+        if (id <= 0) {
+            return new ArrayList<>();
+        }
+
+        return personDao.godfatherCollectors(id);
+    }
+
 }

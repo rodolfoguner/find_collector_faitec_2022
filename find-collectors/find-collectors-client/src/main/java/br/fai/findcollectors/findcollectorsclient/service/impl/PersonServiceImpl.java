@@ -96,4 +96,14 @@ public class PersonServiceImpl implements PersonService<Person> {
         }
 
     }
+
+    @Override
+    public int godfather(Person person) {
+        return 0;
+    }
+
+    @Override
+    public List<Person> godfatherCollectors(int id) {
+        return restService.get(resource + "godfather/" + id);
+    }
 }

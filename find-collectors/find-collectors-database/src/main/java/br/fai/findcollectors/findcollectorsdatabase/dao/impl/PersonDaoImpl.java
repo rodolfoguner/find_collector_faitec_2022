@@ -337,6 +337,38 @@ public class PersonDaoImpl implements PersonDao<Person> {
     }
 
     @Override
+    public List<Person> godfatherCollectors(int id) {
+
+        List<Person> collectors = new ArrayList<>();
+
+        final String sql = "SELECT * FROM pessoa p WHERE p.padrinho_id = ? ORDER BY p.id;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = ConnectionFactory.getConnection();
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                collectors.add(loadValues(resultSet));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+
+        return collectors;
+    }
+
+    @Override
     public Person loadValues(ResultSet resultSet) throws SQLException {
 
         Person person = new Person();

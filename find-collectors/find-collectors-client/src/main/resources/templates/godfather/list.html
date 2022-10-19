@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout}">
+    <head>
+        <meta charset="UTF-8">
+        <title>Find Collectors</title>
+    </head>
+    <body>
+        <div layout:fragment="body">
+            <div class="container">
+                <h1 class="pt-5">Catadores Apadrinhados</h1>
+                <div class="ml-2">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/}">Home</a>
+                        </li>
+                        <li aria-current="page" class="breadcrumb-item active">
+                            Catadores apadrinhados
+                        </li>
+                    </ol>
+                </div>
+                <div class="row justify-content-end">
+                    <div class="col-2 d-grid p-0 mb-3">
+                        <a class="btn btn-primary" th:href="@{/godfather/create}">Apadrinhar</a>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="card mb-5">
+                        <div class="card-body">
+                            <table class="table table-striped table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Tipo de lixo</th>
+                                        <th scope="col">Descrição</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="collector : ${collectors}">
+                                        <th scope="row" th:text="${collector.name}"></th>
+                                        <td th:text="${collector.garbageType}"></td>
+                                        <td th:text="${collector.description}"></td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <a class="btn btn-primary"
+                                                       th:href="@{/godfather/edit/{id} (id=${collector.id})}">
+                                                        <i class="bi bi-pencil-fill"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="col-4">
+                                                    <a class="btn btn-secondary"
+                                                       th:href="@{/godfather/delete/{id} (id=${collector.id})}">
+                                                        <i class="fa-solid fa-handshake"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="col-4">
+                                                    <a class="btn btn-danger"
+                                                       th:href="@{/godfather/delete/{id} (id=${collector.id})}">
+                                                        <i class="bi bi-trash3-fill"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
