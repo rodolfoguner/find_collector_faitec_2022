@@ -151,7 +151,7 @@ public class CollectController {
             return "redirect:/common/not-found";
         }
 
-        return "redirect:/";
+        return "redirect:/collect/available-collects";
     }
 
     @GetMapping("/available-collects")
@@ -173,4 +173,36 @@ public class CollectController {
 
         return "collect/available-collects";
     }
+
+    @GetMapping("/accepted-collects")
+    public String getAcceptedCollects(Model model) {
+        Person person = (Person) session.getAttribute("currentUser");
+
+        if (person == null) {
+            return "redirect:/common/not-found";
+        }
+
+        List<Collect> collects = collectService.acceptedCollects(person.getId());
+
+        if (collects == null || collects.isEmpty()) {
+            collects = new ArrayList<>();
+        }
+
+        model.addAttribute("collects", collects);
+
+        return "collect/accepted-collects";
+    }
+
+    @PostMapping("/close-collect")
+    public String closeCollect(Collect collect) {
+
+        boolean closed = collectService.closeCollect(collect.getId(), collect);
+
+        if (!closed) {
+            return "redirect:/common/not-found";
+        }
+
+        return "redirect:/collect/accepted-collects";
+    }
+
 }

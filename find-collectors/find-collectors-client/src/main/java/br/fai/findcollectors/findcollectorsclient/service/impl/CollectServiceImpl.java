@@ -74,7 +74,14 @@ public class CollectServiceImpl implements CollectService<Collect> {
 
     @Override
     public boolean closeCollect(int id, Collect entity) {
-        return false;
+
+        if (id <= 0) {
+            return false;
+        }
+
+        entity.setCollected(true);
+
+        return restService.put(resource + "close-collect/" + id, entity);
     }
 
     @Override
@@ -90,5 +97,15 @@ public class CollectServiceImpl implements CollectService<Collect> {
         }
 
         return restService.get(resource + "my-collects/" + id);
+    }
+
+    @Override
+    public List<Collect> acceptedCollects(int id) {
+
+        if (id <= 0) {
+            return null;
+        }
+
+        return restService.get(resource + "accepted-collects/" + id);
     }
 }

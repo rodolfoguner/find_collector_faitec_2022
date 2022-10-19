@@ -102,6 +102,15 @@
                     <li>
                       <a
                         class="dropdown-item"
+                        sec:authorize="hasRole('CATADOR')"
+                        th:href="@{/collect/accepted-collects}"
+                      >
+                        Coletas Aceitas
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
                         th:href="@{/collect/collect-points}"
                       >
                         Pontos de coleta

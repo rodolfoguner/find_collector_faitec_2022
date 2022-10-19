@@ -12,4 +12,6 @@ public interface CollectService<T> extends BaseService<T> {
 
     List<T> myCollects(int id);
 
+    List<T> acceptedCollects(int id);
+
 }
