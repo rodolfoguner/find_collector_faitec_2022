@@ -141,7 +141,7 @@ public class CollectController {
 
         return "redirect:/collect/";
     }
-    
+
     @PostMapping("/accept-collect")
     public String acceptCollect(final Collect collect) {
 
@@ -152,5 +152,18 @@ public class CollectController {
         }
 
         return "redirect:/";
+    }
+
+    @GetMapping("/available-collects")
+    public String availableCollects(Model model) {
+        List<Collect> freeCollects = collectService.findFreeCollects();
+
+        if (freeCollects == null || freeCollects.isEmpty()) {
+            freeCollects = new ArrayList<>();
+        }
+
+        model.addAttribute("freeCollects", freeCollects);
+
+        return "collect/available-collects";
     }
 }

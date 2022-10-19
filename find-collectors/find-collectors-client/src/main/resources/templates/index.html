@@ -19,37 +19,6 @@
                     </section><!-- #hero -->
                 </div>
             </div>
-         
-            <div sec:authorize="hasRole('CATADOR')" class="container">
-                <div class="top">
-                    <h1>Coletas Disponíveis</h1>
-                </div>
-
-                <div class="package-container">
-                    <div class="packages" th:each="freeCollect : ${freeCollects}">
-                        <h2 class="pt-2" th:text="${freeCollect.garbageType}"></h2>
-                        <ul class="list">
-                            <li class="first">
-                                Rua: 
-                                <span th:text="${freeCollect.address}"></span> 
-                            </li>
-                            <li>
-                                Bairro: 
-                                <span th:text="${freeCollect.district}"></span> 
-                            </li>
-                            <li>
-                                Número: 
-                                <span th:text="${freeCollect.number}"></span> 
-                            </li>
-                            <li>
-                                Data: 
-                                <span th:text="${freeCollect.dateAndTime}"></span> 
-                            </li>
-                        </ul>
-                        <a th:href="@{/collect/edit/{id} (id=${freeCollect.id})}" class="button button1">Ver Detalhes</a>
-                    </div>
-                </div>
-            </div>
         </div>
     </body>
 </html>

@@ -27,15 +27,6 @@ public class HomeController {
             return "redirect:/account/edit-profile";
         }
         
-        
-        List<Collect> freeCollects = collectService.findFreeCollects();
-
-        if (freeCollects == null || freeCollects.isEmpty()) {
-            freeCollects = new ArrayList<>();
-        }
-
-        model.addAttribute("freeCollects", freeCollects);
-
         return "index";
 
     }

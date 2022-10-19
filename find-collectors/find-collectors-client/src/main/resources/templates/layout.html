@@ -81,8 +81,8 @@
                   </a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('CATADOR')">
-                  <a class="nav-link text-light" th:href="@{/collect}">
-                    Ver coletas disponíveis
+                  <a class="nav-link text-light" th:href="@{/collect/available-collects}">
+                    Coletas disponíveis
                   </a>
                 </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
