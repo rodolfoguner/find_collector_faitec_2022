@@ -7,14 +7,14 @@
     </head>
     <body>
         <div layout:fragment="body">
-            <div class="container-fluid p-0 text-center" sec:authorize="!isAuthenticated()">
+            <div class="container-fluid p-0 text-center">
                 <div class="row">
                     <div class="col">
                         <section id="hero">
                             <div class="hero-container">
                                 <h1>Bem vindo ao Find Collectors</h1>
                                 <h2>Brasil é o 4º país que mais produz lixo no mundo</h2>
-                                <a th:href="@{/account/sign-in}" class="btn-get-started">Entrar</a>
+                                <a th:href="@{/account/sign-in}" sec:authorize="!isAuthenticated()" class="btn-get-started">Entrar</a>
                                 
                             </div>
                         </section><!-- #hero -->
