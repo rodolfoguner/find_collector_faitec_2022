@@ -277,6 +277,66 @@ public class PersonDaoImpl implements PersonDao<Person> {
     }
 
     @Override
+    public int godfather(Person entity) {
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        int id = -1;
+
+        try {
+
+            final String sql = "INSERT INTO pessoa " +
+                    "(id, email, nome, cep, endereco, bairro, numero, tipo_pessoa, tipo_lixo, descricao, ponto_coleta, padrinho_id, municipio_id, criado_em) " +
+                    "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, 'CATADOR', ?, ?, ?, ?, ?, DEFAULT);";
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            Array garbageType = connection.createArrayOf("tipo_lixo", entity.getGarbageType().toArray());
+
+            preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, entity.getEmail());
+            preparedStatement.setString(2, entity.getName());
+            preparedStatement.setString(3, entity.getCep());
+            preparedStatement.setString(4, entity.getAddress());
+            preparedStatement.setString(5, entity.getDistrict());
+            preparedStatement.setString(6, entity.getNumber());
+            preparedStatement.setArray(7, garbageType);
+            preparedStatement.setString(8, entity.getDescription());
+            preparedStatement.setBoolean(9, entity.isCollectPoint());
+            preparedStatement.setInt(10, entity.getGodfatherId());
+            preparedStatement.setInt(11, entity.getCityId());
+
+
+            preparedStatement.execute();
+
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+
+            connection.commit();
+
+            return id;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                e.printStackTrace();
+            }
+
+            return id;
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement, resultSet);
+        }
+    }
+
+    @Override
     public Person loadValues(ResultSet resultSet) throws SQLException {
 
         Person person = new Person();

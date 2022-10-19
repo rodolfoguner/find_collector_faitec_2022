@@ -105,5 +105,11 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
         return person;
     }
-    
+
+    @Override
+    public int godfather(Person person) {
+
+        return personDao.godfather(person);
+    }
+
 }

@@ -55,4 +55,14 @@ public class PersonRestController {
 
         return ResponseEntity.ok(true);
     }
+
+    @PostMapping("/godfather")
+    public ResponseEntity<Integer> godfather(@RequestBody Person person) {
+        int id = personRestService.godfather(person);
+
+        if (id <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(id);
+    }
 }

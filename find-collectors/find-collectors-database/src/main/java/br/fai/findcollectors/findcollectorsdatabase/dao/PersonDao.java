@@ -6,4 +6,6 @@ public interface PersonDao<T> extends BaseDao<T> {
 
     Person findPersonByEmail(String email);
 
+    int godfather(Person person);
+
 }
