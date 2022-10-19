@@ -98,8 +98,20 @@ public class PersonServiceImpl implements PersonService<Person> {
     }
 
     @Override
-    public int godfather(Person person) {
-        return 0;
+    public int godfather(Person person, Person godfather) {
+
+        if (person == null) {
+            return -1;
+        }
+
+        String[] godfatherEmail = godfather.getEmail().split("@");
+
+        String email = godfatherEmail[0] + person.getName().replace("\\s", "").toLowerCase()
+                + "@" + godfatherEmail[1];
+
+        person.setEmail(email);
+
+        return restService.post(resource + "godfather/", person);
     }
 
     @Override

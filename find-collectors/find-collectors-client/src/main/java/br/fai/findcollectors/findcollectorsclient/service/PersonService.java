@@ -8,7 +8,7 @@ public interface PersonService<T> extends BaseService<T> {
 
     Person validateLogin(String username, String password);
 
-    int godfather(Person person);
+    int godfather(Person person, Person godfather);
 
     List<Person> godfatherCollectors(int id);
 
