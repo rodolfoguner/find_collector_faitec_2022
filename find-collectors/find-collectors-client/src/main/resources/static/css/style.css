@@ -16,6 +16,7 @@ html, body {
 body {
   font-family: "Open Sans", sans-serif;
   color: #777;
+  background-image: linear-gradient(to right, #a3cab5, #1d9c4e);
 }
 
 a {
