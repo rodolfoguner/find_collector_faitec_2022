@@ -39,11 +39,26 @@
                                         <td th:text="${collect.accept} ? 'Sim' : 'Não'"></td>
                                         <td th:text="${collect.collected} ? 'Sim' : 'Não'"></td>
                                         <td>
-                                            <div class="row">
+                                            <div th:if="${!collect.collected}" class="row">
                                                 <div class="col-6">
                                                     <a class="btn btn-primary"
-                                                       th:href="@{/collect/edit/{id} (id=${collect.id})}">
+                                                        th:href="@{/collect/edit/{id} (id=${collect.id})}">
                                                         <i class="bi bi-pencil-fill"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a class="btn btn-secondary"
+                                                        th:href="@{/collect/close-collect/{id} (id=${collect.id})}">
+                                                        <i class="fa-solid fa-check"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div th:if="${collect.collected}" class="row">
+                                                <div class="col-6"></div>
+                                                <div class="col-6">
+                                                    <a class="btn btn-success"
+                                                        th:href="@{/collect/edit/{id} (id=${collect.id})}">
+                                                        <i class="fa-solid fa-check-double"></i>
                                                     </a>
                                                 </div>
                                             </div>
