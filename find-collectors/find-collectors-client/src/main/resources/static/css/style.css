@@ -876,6 +876,7 @@ body {
   border-radius: 20px;
   box-shadow: 0 19px 38px rgba(30, 35, 33, 1), 0 15px 12px rgba(30, 35, 33, 0.2);
   flex-wrap: wrap;
+  background-color: #fff;
 }
 
 .text1,
