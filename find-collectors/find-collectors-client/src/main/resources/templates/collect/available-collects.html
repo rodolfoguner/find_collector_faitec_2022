@@ -33,7 +33,9 @@
                                 <span th:text="${freeCollect.dateAndTime}"></span> 
                             </li>
                         </ul>
-                        <a th:href="@{/collect/edit/{id} (id=${freeCollect.id})}" class="button button1">Ver Detalhes</a>
+                        <a th:href="@{/collect/edit/{id} (id=${freeCollect.id})}" class="button button1">
+                            Ver Detalhes <i class="fa-solid fa-eye"></i>
+                        </a>
                     </div>
                 </div>
             </div>

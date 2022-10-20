@@ -128,9 +128,12 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button class="btn btn-primary" type="submit">Atualizar</button>
-                                    <a class="btn btn-danger" th:href="@{/collect/}">Cancelar <i
-                                            class="fa-solid fa-ban"></i></a>
+                                    <button class="btn btn-primary" type="submit">
+                                        Atualizar <i class="fa-solid fa-floppy-disk"></i>
+                                    </button>
+                                    <a class="btn btn-danger" th:href="@{/collect/}">
+                                        Cancelar <i class="fa-solid fa-ban"></i>
+                                    </a>
                                 </div>
                                 <div class="col-12">
                                     <input class="d-none" id="dateAndTime" name="dateAndTime"
@@ -250,8 +253,12 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button class="btn btn-primary" type="submit">Aceitar</button>
-                                    <a class="btn btn-danger" th:href="@{/collect/available-collects}">Cancelar</a>
+                                    <button class="btn btn-primary" type="submit">
+                                        Aceitar <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <a class="btn btn-danger" th:href="@{/collect/available-collects}">
+                                        Cancelar <i class="fa-solid fa-xmark"></i>
+                                    </a>
                                 </div>
                                 <div class="col-12">
                                     <input class="d-none" id="dateAndTime" name="dateAndTime"
@@ -375,9 +382,11 @@
                                 </div>
                                 <div class="col-12">
                                     <button class="btn btn-primary" th:if="${!collect.collected}" type="submit">
-                                        Finalizar
+                                        Finalizar <i class="fa-solid fa-check-double"></i>
                                     </button>
-                                    <a class="btn btn-danger" th:href="@{/collect/accepted-collects}">Cancelar</a>
+                                    <a class="btn btn-danger" th:href="@{/collect/accepted-collects}">
+                                        Cancelar <i class="fa-solid fa-xmark"></i>
+                                    </a>
                                 </div>
                                 <div class="col-12">
                                     <input class="d-none" id="dateAndTime" name="dateAndTime"
