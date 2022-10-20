@@ -197,10 +197,22 @@ public class CollectController {
         return "collect/accepted-collects";
     }
 
-    @PostMapping("/close-collect")
-    public String closeCollect(Collect collect) {
+    @GetMapping("/close-collect/{id}")
+    public String getCloseCollect(@PathVariable("id") final int id, Collect collect) {
 
-        boolean closed = collectService.closeCollect(collect.getId(), collect);
+        boolean closed = collectService.closeCollect(id, collect);
+
+        if (!closed) {
+            return "redirect:/common/not-found";
+        }
+
+        return "redirect:/collect/accepted-collects";
+    }
+
+    @PostMapping("/close-collect/{id}")
+    public String closeCollect(@PathVariable("id") final int id, Collect collect) {
+
+        boolean closed = collectService.closeCollect(id, collect);
 
         if (!closed) {
             return "redirect:/common/not-found";
