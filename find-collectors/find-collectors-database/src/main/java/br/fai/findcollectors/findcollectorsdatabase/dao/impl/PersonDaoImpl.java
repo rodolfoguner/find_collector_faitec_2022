@@ -277,6 +277,48 @@ public class PersonDaoImpl implements PersonDao<Person> {
     }
 
     @Override
+    public boolean changePassword(Person entity) {
+
+        final String sql = "UPDATE pessoa SET " +
+                "senha = ?, " +
+                "alterado_em = NOW() " +
+                "WHERE " +
+                "email = ?;";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+
+        try {
+
+            connection = ConnectionFactory.getConnection();
+            connection.setAutoCommit(false);
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, entity.getPassword());
+            preparedStatement.setString(2, entity.getEmail());
+            preparedStatement.execute();
+
+            connection.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                connection.commit();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+
+            return false;
+
+        } finally {
+            ConnectionFactory.close(connection, preparedStatement);
+        }
+    }
+
+    @Override
     public Person loadValues(ResultSet resultSet) throws SQLException {
 
         Person person = new Person();

@@ -1,6 +1,7 @@
 package br.fai.findcollectors.findcollectorsapi.controller;
 
 
+import br.fai.findcollectors.entities.Account;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.findcollectorsapi.service.PersonRestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,17 @@ public class PersonRestController {
         boolean deleted = personRestService.deleteById(id);
 
         if (!deleted) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<Boolean> changePassword(@RequestBody Account account) {
+        boolean result = personRestService.changePassword(account);
+
+        if (!result) {
             return ResponseEntity.badRequest().build();
         }
 
