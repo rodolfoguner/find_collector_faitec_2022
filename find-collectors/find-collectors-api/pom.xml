@@ -9,8 +9,6 @@
 	</parent>
 
 	<artifactId>find-collectors-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-
 
 	<dependencies>
 		<dependency>
@@ -53,7 +51,15 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
 
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
