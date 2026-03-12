@@ -1,22 +1,24 @@
 package br.fai.findcollectors.entities;
 
-public class City extends BaseEntity {
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "cities")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class City extends Auditable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
-    private State stateId;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public State getStateId() {
-        return stateId;
-    }
-
-    public void setStateId(State stateId) {
-        this.stateId = stateId;
-    }
+    @ManyToOne
+    @JoinColumn(name = "state_id")
+    private State state;
 }
