@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>br.fai.find-collectors</groupId>
-			<artifactId>find-collectors-model</artifactId>
+			<artifactId>domain</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

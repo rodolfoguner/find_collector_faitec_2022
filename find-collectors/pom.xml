@@ -19,7 +19,7 @@
     <modules>
         <module>find-collectors-api</module>
         <module>find-collectors-database</module>
-        <module>find-collectors-model</module>
+        <module>domain</module>
     </modules>
 
     <packaging>pom</packaging>

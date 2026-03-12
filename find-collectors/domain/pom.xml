@@ -9,7 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>find-collectors-model</artifactId>
+	<artifactId>domain</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
