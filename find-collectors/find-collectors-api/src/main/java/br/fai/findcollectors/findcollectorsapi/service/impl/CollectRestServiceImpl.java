@@ -40,11 +40,11 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
             return -1;
         }
 
-        Person recycler = personRestService.findById(entity.getRecyclerId());
-
-        if (recycler == null) {
-            return -1;
-        }
+//        Person recycler = personRestService.findById(entity.getRecyclerId());
+//
+//        if (recycler == null) {
+//            return -1;
+//        }
 
         return collectDao.create(entity);
     }

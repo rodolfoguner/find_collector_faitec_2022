@@ -238,18 +238,18 @@ public class CityDaoImpl implements CityDao {
         City city = new City();
         State state = new State();
 
-        city.setId(resultSet.getInt("id"));
+        city.setId(resultSet.getLong("id"));
         city.setName(resultSet.getString("cidade"));
-        city.setCreatedAt(resultSet.getTimestamp("criado_em"));
-        city.setLastModified(resultSet.getTimestamp("alterado_em"));
+        city.setCreatedAt(resultSet.getTimestamp("criado_em").toLocalDateTime());
+        city.setLastModified(resultSet.getTimestamp("alterado_em").toLocalDateTime());
 
-        state.setId(resultSet.getInt("estado_id"));
+//        state.setId(resultSet.getInt("estado_id"));
         state.setUf(resultSet.getString("uf"));
         state.setStateName(resultSet.getString("nome_estado"));
-        state.setCreatedAt(resultSet.getTimestamp(9));
-        state.setLastModified(resultSet.getTimestamp(10));
+//        state.setCreatedAt(resultSet.getTimestamp(9));
+//        state.setLastModified(resultSet.getTimestamp(10));
 
-        city.setStateId(state);
+//        city.setStateId(state);
         return city;
     }
 

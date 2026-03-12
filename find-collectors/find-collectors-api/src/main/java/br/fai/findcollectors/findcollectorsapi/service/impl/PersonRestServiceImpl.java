@@ -67,7 +67,7 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
         person.setAddress(entity.getAddress());
         person.setDistrict(entity.getDistrict());
         person.setNumber(entity.getNumber());
-        person.setCityId(entity.getCityId());
+//        person.setCityId(entity.getCityId());
         person.setPersonType(entity.getPersonType());
         person.setCollectPoint(entity.isCollectPoint());
         person.setGarbageType(entity.getGarbageType() != null ? entity.getGarbageType() : new ArrayList<>());
@@ -136,7 +136,7 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
         person.setAddress(entity.getAddress());
         person.setDistrict(entity.getDistrict());
         person.setNumber(entity.getNumber());
-        person.setCityId(entity.getCityId());
+//        person.setCityId(entity.getCityId());
         person.setCollectPoint(entity.isCollectPoint());
         person.setDescription(entity.getDescription());
 

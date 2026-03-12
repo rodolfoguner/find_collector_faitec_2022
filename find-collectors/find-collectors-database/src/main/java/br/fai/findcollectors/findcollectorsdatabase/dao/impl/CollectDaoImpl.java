@@ -116,15 +116,15 @@ public class CollectDaoImpl implements CollectDao<Collect> {
             Array garbageType = connection.createArrayOf("tipo_lixo", entity.getGarbageType().toArray());
 
             preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setTimestamp(1, entity.getDateAndTime());
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(entity.getDateAndTime()));
             preparedStatement.setArray(2, garbageType);
             preparedStatement.setBoolean(3, entity.isRecurrent());
             preparedStatement.setString(4, entity.getCep());
             preparedStatement.setString(5, entity.getAddress());
             preparedStatement.setString(6, entity.getDistrict());
             preparedStatement.setString(7, entity.getNumber());
-            preparedStatement.setInt(8, entity.getCityId());
-            preparedStatement.setInt(9, entity.getRecyclerId());
+//            preparedStatement.setInt(8, entity.getCityId());
+//            preparedStatement.setInt(9, entity.getRecyclerId());
 
 
             preparedStatement.execute();
@@ -181,15 +181,15 @@ public class CollectDaoImpl implements CollectDao<Collect> {
             Array garbageType = connection.createArrayOf("tipo_lixo", entity.getGarbageType().toArray());
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setTimestamp(1, entity.getDateAndTime());
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(entity.getDateAndTime()));
             preparedStatement.setArray(2, garbageType);
             preparedStatement.setBoolean(3, entity.isRecurrent());
             preparedStatement.setString(4, entity.getCep());
             preparedStatement.setString(5, entity.getAddress());
             preparedStatement.setString(6, entity.getDistrict());
             preparedStatement.setString(7, entity.getNumber());
-            preparedStatement.setInt(8, entity.getCityId());
-            preparedStatement.setInt(9, entity.getId());
+//            preparedStatement.setInt(8, entity.getCityId());
+//            preparedStatement.setInt(9, entity.getId());
             preparedStatement.execute();
 
             connection.commit();
@@ -273,8 +273,8 @@ public class CollectDaoImpl implements CollectDao<Collect> {
             }
         }
 
-        collect.setId(resultSet.getInt("id"));
-        collect.setDateAndTime(resultSet.getTimestamp("data_e_hora"));
+        collect.setId(resultSet.getLong("id"));
+        collect.setDateAndTime(resultSet.getTimestamp("data_e_hora").toLocalDateTime());
         collect.setGarbageType(garbageTypeList);
         collect.setAccept(resultSet.getBoolean("aceito"));
         collect.setCollected(resultSet.getBoolean("coletado"));
@@ -284,13 +284,13 @@ public class CollectDaoImpl implements CollectDao<Collect> {
         collect.setDistrict(resultSet.getString("bairro"));
         collect.setNumber(resultSet.getString("numero"));
         collect.setCity(city);
-        collect.setCityId(resultSet.getInt("municipio_id"));
+//        collect.setCityId(resultSet.getInt("municipio_id"));
         collect.setCollector(collector);
-        collect.setCollectorId(resultSet.getInt("catador_id"));
+//        collect.setCollectorId(resultSet.getInt("catador_id"));
         collect.setRecycler(recycler);
-        collect.setRecyclerId(resultSet.getInt("reciclador_id"));
-        collect.setCreatedAt(resultSet.getTimestamp("criado_em"));
-        collect.setLastModified(resultSet.getTimestamp("alterado_em"));
+//        collect.setRecyclerId(resultSet.getInt("reciclador_id"));
+        collect.setCreatedAt(resultSet.getTimestamp("criado_em").toLocalDateTime());
+        collect.setLastModified(resultSet.getTimestamp("alterado_em").toLocalDateTime());
 
         return collect;
     }
@@ -316,8 +316,8 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setBoolean(1, entity.isAccept());
-            preparedStatement.setInt(2, entity.getCollectorId());
-            preparedStatement.setInt(3, entity.getId());
+//            preparedStatement.setInt(2, entity.getCollectorId());
+            preparedStatement.setLong(3, entity.getId());
             preparedStatement.execute();
 
             connection.commit();
@@ -359,7 +359,7 @@ public class CollectDaoImpl implements CollectDao<Collect> {
 
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setBoolean(1, entity.isCollected());
-            preparedStatement.setInt(2, entity.getId());
+            preparedStatement.setLong(2, entity.getId());
             preparedStatement.execute();
 
             connection.commit();

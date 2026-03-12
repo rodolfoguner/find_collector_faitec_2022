@@ -125,11 +125,11 @@ public class StateDaoImpl implements StateDao {
     @Override
     public State loadValues(ResultSet resultSet) throws SQLException {
         State state = new State();
-        state.setId(resultSet.getInt("id"));
+        state.setId(resultSet.getLong("id"));
         state.setStateName(resultSet.getString("nome_estado"));
         state.setUf(resultSet.getString("uf"));
-        state.setCreatedAt(resultSet.getTimestamp("criado_em"));
-        state.setLastModified(resultSet.getTimestamp("alterado_em"));
+        state.setCreatedAt(resultSet.getTimestamp("criado_em").toLocalDateTime());
+        state.setLastModified(resultSet.getTimestamp("alterado_em").toLocalDateTime());
         return state;
     }
 

@@ -171,12 +171,12 @@ public class PersonDaoImpl implements PersonDao<Person> {
             preparedStatement.setString(4, entity.getAddress());
             preparedStatement.setString(5, entity.getDistrict());
             preparedStatement.setString(6, entity.getNumber());
-            preparedStatement.setInt(7, entity.getCityId());
+//            preparedStatement.setInt(7, entity.getCityId());
             preparedStatement.setString(8, entity.getDescription());
             preparedStatement.setString(9, entity.getPersonType().toString());
             preparedStatement.setArray(10, garbageType);
             preparedStatement.setBoolean(11, entity.isCollectPoint());
-            preparedStatement.setInt(12, entity.getId());
+            preparedStatement.setLong(12, entity.getId());
             preparedStatement.execute();
 
             connection.commit();
@@ -306,8 +306,8 @@ public class PersonDaoImpl implements PersonDao<Person> {
             preparedStatement.setArray(7, garbageType);
             preparedStatement.setString(8, entity.getDescription());
             preparedStatement.setBoolean(9, entity.isCollectPoint());
-            preparedStatement.setInt(10, entity.getGodfatherId());
-            preparedStatement.setInt(11, entity.getCityId());
+//            preparedStatement.setInt(10, entity.getGodfatherId());
+//            preparedStatement.setInt(11, entity.getCityId());
 
 
             preparedStatement.execute();
@@ -398,10 +398,10 @@ public class PersonDaoImpl implements PersonDao<Person> {
             preparedStatement.setString(3, person.getAddress());
             preparedStatement.setString(4, person.getDistrict());
             preparedStatement.setString(5, person.getNumber());
-            preparedStatement.setInt(6, person.getCityId());
+//            preparedStatement.setInt(6, person.getCityId());
             preparedStatement.setString(7, person.getDescription());
             preparedStatement.setBoolean(8, person.isCollectPoint());
-            preparedStatement.setInt(9, person.getId());
+//            preparedStatement.setInt(9, person.getId());
             preparedStatement.execute();
 
             connection.commit();
@@ -477,7 +477,7 @@ public class PersonDaoImpl implements PersonDao<Person> {
             }
         }
 
-        person.setId(resultSet.getInt("id"));
+        person.setId(resultSet.getLong("id"));
         person.setEmail(resultSet.getString("email"));
         person.setName(resultSet.getString("nome"));
         person.setTelephone(resultSet.getString("telefone"));
@@ -486,15 +486,15 @@ public class PersonDaoImpl implements PersonDao<Person> {
         person.setDistrict(resultSet.getString("bairro"));
         person.setNumber(resultSet.getString("numero"));
         person.setGodfather(godfather);
-        person.setGodfatherId(resultSet.getInt("padrinho_id"));
+//        person.setGodfatherId(resultSet.getInt("padrinho_id"));
         person.setPersonType(Enum.valueOf(PersonType.class, personType));
         person.setGarbageType(garbageTypeList);
         person.setCity(city);
-        person.setCityId(resultSet.getInt("municipio_id"));
+//        person.setCityId(resultSet.getInt("municipio_id"));
         person.setCollectPoint(resultSet.getBoolean("ponto_coleta"));
         person.setDescription(resultSet.getString("descricao"));
-        person.setCreatedAt(resultSet.getTimestamp("criado_em"));
-        person.setLastModified(resultSet.getTimestamp("alterado_em"));
+        person.setCreatedAt(resultSet.getTimestamp("criado_em").toLocalDateTime());
+        person.setLastModified(resultSet.getTimestamp("alterado_em").toLocalDateTime());
 
         return person;
     }
