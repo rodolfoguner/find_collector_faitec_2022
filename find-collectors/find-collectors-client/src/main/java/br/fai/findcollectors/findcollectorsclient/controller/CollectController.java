@@ -8,6 +8,7 @@ import br.fai.findcollectors.entities.State;
 import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.findcollectorsclient.service.CityService;
 import br.fai.findcollectors.findcollectorsclient.service.CollectService;
+import br.fai.findcollectors.findcollectorsclient.service.PersonService;
 import br.fai.findcollectors.findcollectorsclient.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,9 @@ public class CollectController {
 
     @Autowired
     HttpSession session;
+
+    @Autowired
+    PersonService<Person> personService;
 
     @GetMapping("/")
     public String getListCollect(Model model) {
@@ -151,7 +155,7 @@ public class CollectController {
             return "redirect:/common/not-found";
         }
 
-        return "redirect:/";
+        return "redirect:/collect/available-collects";
     }
 
     @GetMapping("/available-collects")
@@ -173,4 +177,62 @@ public class CollectController {
 
         return "collect/available-collects";
     }
+
+    @GetMapping("/accepted-collects")
+    public String getAcceptedCollects(Model model) {
+        Person person = (Person) session.getAttribute("currentUser");
+
+        if (person == null) {
+            return "redirect:/common/not-found";
+        }
+
+        List<Collect> collects = collectService.acceptedCollects(person.getId());
+
+        if (collects == null || collects.isEmpty()) {
+            collects = new ArrayList<>();
+        }
+
+        model.addAttribute("collects", collects);
+
+        return "collect/accepted-collects";
+    }
+
+    @GetMapping("/close-collect/{id}")
+    public String getCloseCollect(@PathVariable("id") final int id, Collect collect) {
+
+        boolean closed = collectService.closeCollect(id, collect);
+
+        if (!closed) {
+            return "redirect:/common/not-found";
+        }
+
+        return "redirect:/collect/accepted-collects";
+    }
+
+    @PostMapping("/close-collect/{id}")
+    public String closeCollect(@PathVariable("id") final int id, Collect collect) {
+
+        boolean closed = collectService.closeCollect(id, collect);
+
+        if (!closed) {
+            return "redirect:/common/not-found";
+        }
+
+        return "redirect:/collect/accepted-collects";
+    }
+
+    @GetMapping("/collect-point")
+    public String getCollectPointPage(Model model) {
+
+        List<Person> collectPoints = personService.getCollectPoints();
+
+        if (collectPoints == null || collectPoints.isEmpty()) {
+            collectPoints = new ArrayList<>();
+        }
+
+        model.addAttribute("collectPoints", collectPoints);
+
+        return "collect/collect-point";
+    }
+
 }

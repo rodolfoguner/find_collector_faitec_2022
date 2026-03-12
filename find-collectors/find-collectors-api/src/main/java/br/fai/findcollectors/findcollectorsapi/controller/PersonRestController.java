@@ -55,4 +55,34 @@ public class PersonRestController {
 
         return ResponseEntity.ok(true);
     }
+
+    @PostMapping("/godfather")
+    public ResponseEntity<Integer> godfather(@RequestBody Person person) {
+        int id = personRestService.godfather(person);
+
+        if (id <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(id);
+    }
+
+    @GetMapping("/godfather/{id}")
+    public ResponseEntity<List<Person>> getGodfatherCollectors(@PathVariable("id") final int id) {
+        return ResponseEntity.ok(personRestService.godfatherCollectors(id));
+    }
+
+    @PutMapping("/godfather/{id}")
+    public ResponseEntity<Boolean> godfather(@PathVariable("id") final int id, @RequestBody Person person) {
+        boolean updated = personRestService.updateGodfather(id, person);
+
+        if (!updated) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/collect-points")
+    public ResponseEntity<List<Person>> getCollectPoints() {
+        return ResponseEntity.ok(personRestService.getCollectPoints());
+    }
 }

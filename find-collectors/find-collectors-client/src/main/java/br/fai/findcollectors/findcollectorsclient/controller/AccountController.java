@@ -10,6 +10,11 @@ import br.fai.findcollectors.findcollectorsclient.service.CityService;
 import br.fai.findcollectors.findcollectorsclient.service.PersonService;
 import br.fai.findcollectors.findcollectorsclient.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,6 +106,15 @@ public class AccountController {
         }
 
         Person updatedPerson = personService.findById(person.getId());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
+        updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + updatedPerson.getPersonType()));
+
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), updatedAuthorities);
+
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
 
         session.setAttribute("currentUser", updatedPerson);
 

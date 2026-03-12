@@ -105,5 +105,47 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
 
         return person;
     }
-    
+
+    @Override
+    public int godfather(Person person) {
+
+        return personDao.godfather(person);
+    }
+
+    @Override
+    public List<Person> godfatherCollectors(int id) {
+
+        if (id <= 0) {
+            return new ArrayList<>();
+        }
+
+        return personDao.godfatherCollectors(id);
+    }
+
+    @Override
+    public boolean updateGodfather(int id, Person entity) {
+
+        Person person = personDao.findById(id);
+
+        if (person == null) {
+            return false;
+        }
+
+        person.setName(entity.getName());
+        person.setCep(entity.getCep());
+        person.setAddress(entity.getAddress());
+        person.setDistrict(entity.getDistrict());
+        person.setNumber(entity.getNumber());
+        person.setCityId(entity.getCityId());
+        person.setCollectPoint(entity.isCollectPoint());
+        person.setDescription(entity.getDescription());
+
+        return personDao.updateGodfather(id, person);
+    }
+
+    @Override
+    public List<Person> getCollectPoints() {
+        return personDao.getCollectPoints();
+    }
+
 }

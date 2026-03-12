@@ -11,4 +11,7 @@ public interface CollectDao<T> extends BaseDao<T> {
     List<T> findFreeCollects(int id);
 
     List<T> MyCollects(int id);
+
+    List<T> acceptedCollects(int id);
+
 }

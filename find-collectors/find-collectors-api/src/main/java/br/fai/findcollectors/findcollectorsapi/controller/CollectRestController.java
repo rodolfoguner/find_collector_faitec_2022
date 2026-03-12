@@ -101,4 +101,9 @@ public class CollectRestController {
         return ResponseEntity.ok(collectRestService.myCollects(id));
 
     }
+
+    @GetMapping("/accepted-collects/{id}")
+    public ResponseEntity<List<Collect>> acceptedCollects(@PathVariable("id") final int id) {
+        return ResponseEntity.ok(collectRestService.acceptedCollects(id));
+    }
 }

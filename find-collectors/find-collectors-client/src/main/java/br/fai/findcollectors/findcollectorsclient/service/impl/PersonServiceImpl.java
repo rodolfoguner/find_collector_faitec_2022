@@ -96,4 +96,40 @@ public class PersonServiceImpl implements PersonService<Person> {
         }
 
     }
+
+    @Override
+    public int godfather(Person person, Person godfather) {
+
+        if (person == null) {
+            return -1;
+        }
+
+        String[] godfatherEmail = godfather.getEmail().split("@");
+
+        String email = godfatherEmail[0] + person.getName().toLowerCase() + "@" + godfatherEmail[1];
+
+        person.setEmail(email.replaceAll("\\s+", ""));
+
+        return restService.post(resource + "godfather/", person);
+    }
+
+    @Override
+    public List<Person> godfatherCollectors(int id) {
+        return restService.get(resource + "godfather/" + id);
+    }
+
+    @Override
+    public boolean updateGodfather(int id, Person person) {
+
+        if (id <= 0 || person == null) {
+            return false;
+        }
+
+        return restService.put(resource + "godfather/" + id, person);
+    }
+
+    @Override
+    public List<Person> getCollectPoints() {
+        return restService.get(resource + "collect-points");
+    }
 }

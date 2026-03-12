@@ -103,5 +103,15 @@ public class CollectRestServiceImpl implements CollectRestService<Collect> {
         return myCollects;
     }
 
+    @Override
+    public List<Collect> acceptedCollects(int id) {
+
+        if (id <= 0) {
+            return null;
+        }
+
+        return collectDao.acceptedCollects(id);
+    }
+
 
 }
