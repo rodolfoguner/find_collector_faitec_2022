@@ -2,7 +2,6 @@ package br.fai.findcollectors.findcollectorsapi.service.impl;
 
 import br.fai.findcollectors.entities.State;
 import br.fai.findcollectors.findcollectorsapi.service.FindStatesRestService;
-import br.fai.findcollectors.findcollectorsdatabase.dao.StateDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import java.util.List;
 public class FindStatesRestServiceImpl implements FindStatesRestService {
 
     @Autowired
-    StateDao stateDao;
+    br.fai.findcollectors.repositories.StateRepository stateDao;
 
     @Override
     public List<State> find(String name) {

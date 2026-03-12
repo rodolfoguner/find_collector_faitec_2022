@@ -1,10 +1,10 @@
-package br.fai.findcollectors.findcollectorsdatabase.dao;
+package br.fai.findcollectors.repositories;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface BaseDao<T> {
+public interface BaseRepository<T> {
 
     List<T> find();
 

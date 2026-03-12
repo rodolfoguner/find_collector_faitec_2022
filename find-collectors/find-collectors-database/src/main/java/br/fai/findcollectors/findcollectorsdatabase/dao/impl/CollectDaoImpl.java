@@ -5,9 +5,9 @@ import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.findcollectorsdatabase.connection.ConnectionFactory;
-import br.fai.findcollectors.findcollectorsdatabase.dao.CityDao;
-import br.fai.findcollectors.findcollectorsdatabase.dao.CollectDao;
-import br.fai.findcollectors.findcollectorsdatabase.dao.PersonDao;
+import br.fai.findcollectors.repositories.CityRepository;
+import br.fai.findcollectors.repositories.CollectRepository;
+import br.fai.findcollectors.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class CollectDaoImpl implements CollectDao<Collect> {
+public class CollectDaoImpl implements CollectRepository<Collect> {
 
     @Autowired
-    CityDao cityDao;
+    CityRepository cityDao;
 
     @Autowired
-    PersonDao<Person> personDao;
+    PersonRepository<Person> personDao;
 
     @Override
     public List<Collect> find() {

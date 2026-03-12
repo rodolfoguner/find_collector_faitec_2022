@@ -1,10 +1,10 @@
-package br.fai.findcollectors.findcollectorsdatabase.dao;
+package br.fai.findcollectors.repositories;
 
 import br.fai.findcollectors.entities.Person;
 
 import java.util.List;
 
-public interface PersonDao<T> extends BaseDao<T> {
+public interface PersonRepository<T> extends BaseRepository<T> {
 
     Person findPersonByEmail(String email);
 

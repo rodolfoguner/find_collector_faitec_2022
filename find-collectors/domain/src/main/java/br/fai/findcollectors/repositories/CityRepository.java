@@ -1,4 +1,4 @@
-package br.fai.findcollectors.findcollectorsdatabase.dao;
+package br.fai.findcollectors.repositories;
 
 import br.fai.findcollectors.entities.City;
 
@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface CityDao {
+public interface CityRepository {
 
     List<City> find();
 

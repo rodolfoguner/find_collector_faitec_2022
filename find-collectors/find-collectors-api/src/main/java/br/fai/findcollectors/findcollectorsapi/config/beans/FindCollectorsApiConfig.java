@@ -2,10 +2,9 @@ package br.fai.findcollectors.findcollectorsapi.config.beans;
 
 import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.entities.Person;
-import br.fai.findcollectors.findcollectorsdatabase.dao.CityDao;
-import br.fai.findcollectors.findcollectorsdatabase.dao.CollectDao;
-import br.fai.findcollectors.findcollectorsdatabase.dao.PersonDao;
-import br.fai.findcollectors.findcollectorsdatabase.dao.StateDao;
+import br.fai.findcollectors.repositories.CityRepository;
+import br.fai.findcollectors.repositories.CollectRepository;
+import br.fai.findcollectors.repositories.PersonRepository;
 import br.fai.findcollectors.findcollectorsdatabase.dao.impl.CityDaoImpl;
 import br.fai.findcollectors.findcollectorsdatabase.dao.impl.CollectDaoImpl;
 import br.fai.findcollectors.findcollectorsdatabase.dao.impl.PersonDaoImpl;
@@ -17,22 +16,22 @@ import org.springframework.context.annotation.Configuration;
 public class FindCollectorsApiConfig {
 
     @Bean
-    public CollectDao<Collect> getCollectDao() {
+    public CollectRepository<Collect> getCollectDao() {
         return new CollectDaoImpl();
     }
 
     @Bean
-    public PersonDao<Person> getPersonDao() {
+    public PersonRepository<Person> getPersonDao() {
         return new PersonDaoImpl();
     }
 
     @Bean
-    public StateDao getStateDao() {
+    public br.fai.findcollectors.repositories.StateRepository getStateDao() {
         return new StateDaoImpl();
     }
 
     @Bean
-    public CityDao getCityDao() {
+    public CityRepository getCityDao() {
         return new CityDaoImpl();
     }
 

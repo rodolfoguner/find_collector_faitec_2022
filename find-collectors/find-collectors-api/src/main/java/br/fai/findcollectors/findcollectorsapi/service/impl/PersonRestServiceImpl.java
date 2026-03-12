@@ -3,7 +3,7 @@ package br.fai.findcollectors.findcollectorsapi.service.impl;
 import br.fai.findcollectors.entities.Account;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.findcollectorsapi.service.PersonRestService;
-import br.fai.findcollectors.findcollectorsdatabase.dao.PersonDao;
+import br.fai.findcollectors.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class PersonRestServiceImpl implements PersonRestService<Person> {
     private final String salt = BCrypt.gensalt(10) + pepper;
 
     @Autowired
-    PersonDao<Person> personDao;
+    PersonRepository<Person> personDao;
 
     @Override
     public List<Person> find() {

@@ -3,7 +3,7 @@ package br.fai.findcollectors.findcollectorsdatabase.dao.impl;
 import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.entities.State;
 import br.fai.findcollectors.findcollectorsdatabase.connection.ConnectionFactory;
-import br.fai.findcollectors.findcollectorsdatabase.dao.CityDao;
+import br.fai.findcollectors.repositories.CityRepository;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class CityDaoImpl implements CityDao {
+public class CityDaoImpl implements CityRepository {
     @Override
     public List<City> find() {
 

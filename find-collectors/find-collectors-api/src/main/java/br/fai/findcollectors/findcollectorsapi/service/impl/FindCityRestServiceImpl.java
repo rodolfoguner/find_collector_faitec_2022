@@ -2,7 +2,7 @@ package br.fai.findcollectors.findcollectorsapi.service.impl;
 
 import br.fai.findcollectors.entities.City;
 import br.fai.findcollectors.findcollectorsapi.service.FindCityRestService;
-import br.fai.findcollectors.findcollectorsdatabase.dao.CityDao;
+import br.fai.findcollectors.repositories.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public class FindCityRestServiceImpl implements FindCityRestService {
 
     @Autowired
-    CityDao cityDao;
+    CityRepository cityDao;
 
 
     @Override

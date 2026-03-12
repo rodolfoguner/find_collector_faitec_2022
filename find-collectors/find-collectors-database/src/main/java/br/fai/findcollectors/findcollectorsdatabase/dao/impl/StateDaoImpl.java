@@ -2,7 +2,7 @@ package br.fai.findcollectors.findcollectorsdatabase.dao.impl;
 
 import br.fai.findcollectors.entities.State;
 import br.fai.findcollectors.findcollectorsdatabase.connection.ConnectionFactory;
-import br.fai.findcollectors.findcollectorsdatabase.dao.StateDao;
+import br.fai.findcollectors.repositories.StateRepository;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class StateDaoImpl implements StateDao {
+public class StateDaoImpl implements StateRepository {
 
     @Override
     public List<State> find() {

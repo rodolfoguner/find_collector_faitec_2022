@@ -4,7 +4,7 @@ import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.findcollectorsapi.service.CollectRestService;
 import br.fai.findcollectors.findcollectorsapi.service.PersonRestService;
-import br.fai.findcollectors.findcollectorsdatabase.dao.CollectDao;
+import br.fai.findcollectors.repositories.CollectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class CollectRestServiceImpl implements CollectRestService<Collect> {
 
     @Autowired
-    CollectDao<Collect> collectDao;
+    CollectRepository<Collect> collectDao;
 
     @Autowired
     PersonRestService<Person> personRestService;

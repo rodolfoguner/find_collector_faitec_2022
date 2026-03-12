@@ -1,8 +1,8 @@
-package br.fai.findcollectors.findcollectorsdatabase.dao;
+package br.fai.findcollectors.repositories;
 
 import java.util.List;
 
-public interface CollectDao<T> extends BaseDao<T> {
+public interface CollectRepository<T> extends BaseRepository<T> {
 
     boolean acceptCollect(T entity);
 
