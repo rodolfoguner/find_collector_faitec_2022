@@ -3,18 +3,13 @@ package br.fai.findcollectors.repositories;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public interface BaseRepository<T> {
 
     List<T> find();
-
-    T findById(int id);
-
-    int create(T entity);
-
-    boolean update(T entity);
-
-    boolean deleteById(int id);
-
-    T loadValues(ResultSet resultSet) throws SQLException;
+    Optional<T> findById(Long id);
+    T create(T entity);
+    T update(T entity);
+    void deleteById(Long id);
 }

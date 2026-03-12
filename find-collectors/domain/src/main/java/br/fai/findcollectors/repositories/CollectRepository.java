@@ -1,17 +1,12 @@
 package br.fai.findcollectors.repositories;
 
+import br.fai.findcollectors.entities.Collect;
+
 import java.util.List;
 
-public interface CollectRepository<T> extends BaseRepository<T> {
+public interface CollectRepository extends BaseRepository<Collect> {
 
-    boolean acceptCollect(T entity);
-
-    boolean closeCollect(T entity);
-
-    List<T> findFreeCollects(int id);
-
-    List<T> MyCollects(int id);
-
-    List<T> acceptedCollects(int id);
-
+    List<Collect> findPendingCollects(Long id);
+    List<Collect> findMyCollects(Long id);
+    List<Collect> findCollectorAcceptedCollects(Long id);
 }

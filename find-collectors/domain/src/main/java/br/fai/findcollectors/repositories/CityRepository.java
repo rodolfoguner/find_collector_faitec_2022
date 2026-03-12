@@ -2,24 +2,15 @@ package br.fai.findcollectors.repositories;
 
 import br.fai.findcollectors.entities.City;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public interface CityRepository {
 
     List<City> find();
-
-    City findById(int id);
-
+    Optional<City> findById(Long id);
     List<City> findCityByName(String cityName);
-
     List<City> findCitiesByStateName(String stateName);
-
-    List<City> findByStateId(int id);
-
-    List<City> findByStateIdAndCityName(int stateId, String cityName);
-
-    City loadValues(ResultSet resultSet) throws SQLException;
-
+    List<City> findByStateId(Long id);
+    List<City> findByStateIdAndCityName(Long stateId, String cityName);
 }
