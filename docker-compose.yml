@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:latest
+    container_name: find-collectors
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8'
+    volumes:
+      - ./find-collectors-data:/var/lib/postgresql/data
+    ports:
+      - '${DB_PORT}:5432'
+    restart: unless-stopped
+  migration:
+    image: migration
+    build: 
+      context: ./find-collectors/db-scripts
+      target: migration
+    container_name: migrations
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: db

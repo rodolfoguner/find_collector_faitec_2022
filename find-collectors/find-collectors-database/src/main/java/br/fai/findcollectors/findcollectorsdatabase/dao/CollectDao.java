@@ -1,0 +1,17 @@
+package br.fai.findcollectors.findcollectorsdatabase.dao;
+
+import java.util.List;
+
+public interface CollectDao<T> extends BaseDao<T> {
+
+    boolean acceptCollect(T entity);
+
+    boolean closeCollect(T entity);
+
+    List<T> findFreeCollects(int id);
+
+    List<T> MyCollects(int id);
+
+    List<T> acceptedCollects(int id);
+
+}

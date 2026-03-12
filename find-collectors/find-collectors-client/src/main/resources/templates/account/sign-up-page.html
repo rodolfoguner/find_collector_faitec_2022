@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Cadastre-se</title>
+
+        <link href="/img/reciclagem.png" rel="icon">
+        <div th:replace="/fragments/header-imports::bootstrap-css"></div>
+
+    </head>
+    <body onload="checkPassword()">
+
+        <div style="width: 100%; height: 100vh; background-image: linear-gradient(to right, #598a74, #93C4AC);">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-9">
+                        <div class="card my-5">
+                            <div class="card-body p-0">
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <img alt="Imagem de fundo" src="/img/logo.png"
+                                             style="max-width: 100%; max-height: 100%;"/>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="row">
+                                            <h4 class="mt-3 text-center">Crie sua conta!</h4>
+                                            <div class="col-1 pb-2"></div>
+                                            <div class="col-10 pb-2">
+                                                <form class="needs-validation" method="POST" novalidate
+                                                      onsubmit="return checkValues()" th:action="@{/account/sign-up}">
+                                                    <div class="my-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="email">
+                                                                Insira seu email
+                                                            </label>
+                                                            <input class="form-control"
+                                                                   id="email"
+                                                                   name="email"
+                                                                   required
+                                                                   type="email">
+                                                            <div class="invalid-feedback">
+                                                                Por favor insira um email válido
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="my-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="password">
+                                                                Insira sua senha
+                                                            </label>
+                                                            <input class="form-control" id="password"
+                                                                   minlength="4"
+                                                                   name="password"
+                                                                   required
+                                                                   type="password">
+                                                            <div class="invalid-feedback">
+                                                                Por favor insira uma senha com no minimo 4 digitos
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="my-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label" for="passwordConfirm">
+                                                                Confirme sua senha
+                                                            </label>
+                                                            <input class="form-control" id="passwordConfirm"
+                                                                   minlength="4"
+                                                                   name="passwordConfirm"
+                                                                   required
+                                                                   type="password">
+                                                            <div class="invalid-feedback">
+                                                                A senha de corfimação é diferente da senha digitada
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="my-3">
+                                                        <button class="btn btn-primary col-12"
+                                                                type="submit">
+                                                            Criar conta
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                                <hr>
+                                                <div>
+                                                    <a class="small" th:href="@{/account/password-recovery}">
+                                                        Esqueceu sua senha?
+                                                    </a>
+                                                </div>
+                                                <div class="pb-3">
+                                                    <a class="small" th:href="@{/account/sign-in}">
+                                                        Já possuí uma conta? Faça o login!
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="/fragments/footer-imports::bootstrap-scripts"></div>
+        <div th:replace="/fragments/footer-imports::scripts-personal"></div>
+        <div th:replace="/fragments/footer-imports::main"></div>
+
+    </body>
+</html>

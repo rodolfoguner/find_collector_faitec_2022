@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{layout}">
+    <head>
+        <meta charset="UTF-8">
+        <title>Find Collectors</title>
+    </head>
+    <body>
+        <div layout:fragment="body">
+            <div class="container">
+                <h1 class="pt-5">Coletas aceitas</h1>
+                <div class="ml-2">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/}">Home</a>
+                        </li>
+                        <li aria-current="page" class="breadcrumb-item active">
+                            Coletas Aceitas
+                        </li>
+                    </ol>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="card mb-5">
+                        <div class="card-body">
+                            <table class="table table-striped table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Tipo de lixo</th>
+                                        <th scope="col">Data coleta</th>
+                                        <th scope="col">Aceita</th>
+                                        <th scope="col">Coletado</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="collect : ${collects}">
+                                        <th scope="row" th:text="${collect.garbageType}"></th>
+                                        <td th:text="${collect.dateAndTime}"></td>
+                                        <td th:text="${collect.accept} ? 'Sim' : 'Não'"></td>
+                                        <td th:text="${collect.collected} ? 'Sim' : 'Não'"></td>
+                                        <td>
+                                            <div th:if="${!collect.collected}" class="row">
+                                                <div class="col-6">
+                                                    <a class="btn btn-primary"
+                                                        th:href="@{/collect/edit/{id} (id=${collect.id})}">
+                                                        <i class="bi bi-pencil-fill"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a class="btn btn-secondary"
+                                                        th:href="@{/collect/close-collect/{id} (id=${collect.id})}">
+                                                        <i class="fa-solid fa-check"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div th:if="${collect.collected}" class="row">
+                                                <div class="col-6"></div>
+                                                <div class="col-6">
+                                                    <a class="btn btn-success"
+                                                        th:href="@{/collect/edit/{id} (id=${collect.id})}">
+                                                        <i class="fa-solid fa-check-double"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>Find Colletors</title>
+
+    <link href="/img/reciclagem.png" rel="icon" />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Lato:400,300,700,900"
+      rel="stylesheet"
+    />
+
+    <div th:replace="/fragments/header-imports::css"></div>
+    <div th:replace="/fragments/header-imports::bootstrap-css"></div>
+  </head>
+  <body>
+    <header class="fixed-top" id="header">
+      <nav class="navbar navbar-expand-lg p-3 px-5">
+        <div class="container-fluid">
+          <a class="navbar-brand logo" th:href="@{/}">Find Collectors <i class="fa-solid fa-recycle"></i> </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span>
+              <i class="fa-solid fa-bars text-light"></i>
+            </span>
+          </button>
+          <div
+            class="collapse navbar-collapse d-lg-flex justify-content-lg-end"
+            id="navbarNavDropdown"
+          >
+            <div class="d-md-flex justify-content-md-end d-flex justify-content-end">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a
+                    class="nav-link text-light"
+                    aria-current="page"
+                    th:href="@{/}"
+                  >
+                    Home
+                    <i class="fa-solid fa-house-chimney"></i>
+                  </a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                  <a class="nav-link text-light" href="#about"> Sobre <i class="fa-solid fa-circle-info"></i> </a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                  <a class="nav-link text-light" href="#curiosities"> Curiosidades <i class="fa-solid fa-trash-can"></i> </a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                  <a class="nav-link text-light" th:href="@{/account/sign-in}">
+                    Entrar/Cadastrar-se
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                  </a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('RECICLADOR')">
+                  <a class="nav-link text-light" th:href="@{/godfather/}">
+                    Apadrinhar Catador
+                    <i class="fa-solid fa-user-helmet-safety"></i>
+                  </a>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                  <a
+                    aria-expanded="false"
+                    class="nav-link text-light dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                  >
+                    Coletas
+                    <i class="fa-solid fa-trash-can"></i>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        th:href="@{/collect/}"
+                      >
+                        Cadastrar/Editar Coleta
+
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        sec:authorize="hasRole('CATADOR')"
+                        th:href="@{/collect/available-collects}"
+                      >
+                        Coletas disponíveis
+                        <i class="fa-solid fa-trash-can-list"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        sec:authorize="hasRole('CATADOR')"
+                        th:href="@{/collect/accepted-collects}"
+                      >
+                        Coletas Aceitas
+                        <i class="fa-regular fa-thumbs-up"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        th:href="@{/collect/collect-point}"
+                      >
+                        Pontos de coleta
+
+                        <i class="fa-solid fa-map-location-dot"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                  <a
+                    aria-expanded="false"
+                    class="nav-link text-light dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                  >
+                    Minha Conta
+                    <i class="fa-solid fa-user-tie"></i>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        th:href="@{/account/edit-profile}"
+                      >
+                        Minhas informações
+                        <i class="fa-solid fa-user-large"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        data-bs-target="#logoutModal"
+                        data-bs-toggle="modal"
+                        href="#"
+                      >
+                        Logout
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main" class="d-block">
+      <div class="container-fluid p-0">
+        <div layout:fragment="body"></div>
+      </div>
+    </main>
+
+    <footer id="footer">
+      <div class="container">
+        <div class="copyright">
+          &copy; Copyright <strong><span>Find Collectors</span></strong
+          >. All Rights Reserved
+        </div>
+      </div>
+    </footer>
+
+    <a
+      class="back-to-top d-flex align-items-center justify-content-center"
+      href="#"
+    >
+      <i class="bi bi-arrow-up-short"></i>
+    </a>
+
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Pronto para sair?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Selecione "Logout" se você deseja sair da sua sessão atual.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancelar <i class="fa-solid fa-xmark"></i>
+            </button>
+            <a class="btn btn-primary" th:href="@{/logout}">
+              Sair <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="/fragments/footer-imports::scripts"></div>
+    <div th:replace="/fragments/footer-imports::bootstrap-scripts"></div>
+  </body>
+</html>
