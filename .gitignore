@@ -255,6 +255,8 @@ nbdist/
 *find-collectors-data/
 
 *.env
+.envrc
+.tool-versions
 
 # Support for Project snippet scope
 

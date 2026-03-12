@@ -12,29 +12,25 @@
 	<artifactId>find-collectors-database</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target>
-	</properties>
-
 	<dependencies>
 
 		<!--Dependencias internas do projeto-->
 		<dependency>
 			<groupId>br.fai.find-collectors</groupId>
 			<artifactId>find-collectors-model</artifactId>
-		</dependency>
-
-		<!--Dependencias externas do projeto-->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
+		
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 </project>
