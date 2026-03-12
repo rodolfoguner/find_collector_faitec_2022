@@ -18,7 +18,7 @@
 
     <modules>
         <module>find-collectors-api</module>
-        <module>find-collectors-database</module>
+        <module>infrastructure</module>
         <module>domain</module>
     </modules>
 
