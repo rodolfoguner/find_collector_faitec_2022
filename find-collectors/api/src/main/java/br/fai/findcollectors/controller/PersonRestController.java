@@ -17,7 +17,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/person")
-@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class PersonRestController {
 

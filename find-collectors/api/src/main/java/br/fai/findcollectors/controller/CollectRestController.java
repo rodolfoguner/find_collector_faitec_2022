@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/collect")
-@CrossOrigin(origins = "*")
 public class CollectRestController {
 
     @Autowired

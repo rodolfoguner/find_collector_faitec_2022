@@ -2,17 +2,14 @@ package br.fai.findcollectors.controller;
 
 import br.fai.findcollectors.entities.Account;
 import br.fai.findcollectors.entities.Person;
-import br.fai.findcollectors.service.PersonRestService;
 import br.fai.findcollectors.usecases.auth.AuthenticateUserUseCase;
 import br.fai.findcollectors.usecases.person.CreatePersonUseCase;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class AccountRestController {
 
