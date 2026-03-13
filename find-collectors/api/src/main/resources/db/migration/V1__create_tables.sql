@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS states (
     id SERIAL PRIMARY KEY,
     uf VARCHAR(2) NOT NULL UNIQUE,
-    state_name VARCHAR (30) NOT NULL,
+    name VARCHAR (30) NOT NULL,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS persons(
     person_type VARCHAR(20) NOT NULL,
     description TEXT,
     collect_point BOOLEAN DEFAULT FALSE,
-    god_father_id BIGINT REFERENCES persons(id) ON UPDATE CASCADE ON DELETE NO ACTION,
+    godfather_id BIGINT REFERENCES persons(id) ON UPDATE CASCADE ON DELETE NO ACTION,
     city_id BIGINT REFERENCES cities(id) ON UPDATE CASCADE ON DELETE NO ACTION,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
