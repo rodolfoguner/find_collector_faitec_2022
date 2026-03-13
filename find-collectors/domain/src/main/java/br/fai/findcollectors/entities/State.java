@@ -17,5 +17,5 @@ public class State extends Auditable {
     private Long id;
 
     private String uf;
-    private String stateName;
+    private String name;
 }

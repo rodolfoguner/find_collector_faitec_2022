@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface JpaStateRepository extends JpaRepository<State, Long> {
 
-    List<State> find();
     List<State> findStateByName(String stateName);
 }

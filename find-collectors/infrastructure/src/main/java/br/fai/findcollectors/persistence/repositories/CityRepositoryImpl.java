@@ -42,7 +42,7 @@ public class CityRepositoryImpl implements CityRepository {
 
     @Override
     public List<City> findByStateIdAndCityName(Long stateId, String cityName) {
-        return repository.findByStateIdAndCityName(stateId, cityName);
+        return repository.findCityByNameAndStateId(cityName, stateId);
     }
 
 }
