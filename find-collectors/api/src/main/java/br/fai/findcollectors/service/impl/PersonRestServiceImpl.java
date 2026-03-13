@@ -1,0 +1,160 @@
+package br.fai.findcollectors.service.impl;
+
+import br.fai.findcollectors.entities.Account;
+import br.fai.findcollectors.entities.Person;
+import br.fai.findcollectors.service.PersonRestService;
+import br.fai.findcollectors.repositories.PersonRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class PersonRestServiceImpl implements PersonRestService<Person> {
+
+    private final String pepper = "ZiFuZC1jQGxsZWN0MHJzPw==";
+    private final String salt = BCrypt.gensalt(10) + pepper;
+
+    @Autowired
+    PersonRepository personDao;
+
+    @Override
+    public List<Person> find() {
+        return personDao.find();
+    }
+
+    @Override
+    public Person findById(int id) {
+        if (id <= 0) {
+            return null;
+        }
+
+//        return personDao.findById(id);
+        return null;
+    }
+
+    @Override
+    public int create(Person entity) {
+
+        if (entity.getEmail().isEmpty() || entity.getPassword().isEmpty()) {
+            return -1;
+        }
+
+        final String password = BCrypt.hashpw(entity.getPassword(), salt);
+
+        entity.setPassword(password);
+
+//        return personDao.create(entity);
+        return -1;
+    }
+
+    @Override
+    public boolean update(int id, Person entity) {
+
+        if (id <= 0) {
+            return false;
+        }
+
+//        Person person = personDao.findById(id);
+//
+//        if (person == null) {
+//            return false;
+//        }
+
+//        person.setName(entity.getName());
+//        person.setTelephone(entity.getTelephone());
+//        person.setCep(entity.getCep());
+//        person.setAddress(entity.getAddress());
+//        person.setDistrict(entity.getDistrict());
+//        person.setNumber(entity.getNumber());
+////        person.setCityId(entity.getCityId());
+//        person.setPersonType(entity.getPersonType());
+//        person.setCollectPoint(entity.isCollectPoint());
+//        person.setGarbageType(entity.getGarbageType() != null ? entity.getGarbageType() : new ArrayList<>());
+//        person.setDescription(entity.getDescription());
+//
+//        return personDao.update(person);
+        return false;
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        if (id <= 0) {
+            return false;
+        }
+
+//        return personDao.deleteById(id);
+        return false;
+    }
+
+    @Override
+    public Person validateLogin(Account account) {
+        if (account.getEmail().isEmpty() || account.getPassword().isEmpty()) {
+            return null;
+        }
+
+        Person person = personDao.findPersonByEmail(account.getEmail());
+
+        if (person == null) {
+            return null;
+        }
+
+        if (!BCrypt.checkpw(account.getPassword(), person.getPassword())) {
+            return null;
+        }
+
+        person.setPassword(null);
+
+        return person;
+    }
+
+    @Override
+    public int godfather(Person person) {
+
+//        return personDao.godfather(person);
+        return 0;
+    }
+
+    @Override
+    public List<Person> godfatherCollectors(int id) {
+
+        if (id <= 0) {
+            return new ArrayList<>();
+        }
+
+//        return personDao.godfatherCollectors(id);
+        return null;
+    }
+
+    @Override
+    public boolean updateGodfather(int id, Person entity) {
+
+//        Person person = personDao.findById(id);
+//
+//        if (person == null) {
+//            return false;
+//        }
+//
+//        person.setName(entity.getName());
+//        person.setCep(entity.getCep());
+//        person.setAddress(entity.getAddress());
+//        person.setDistrict(entity.getDistrict());
+//        person.setNumber(entity.getNumber());
+////        person.setCityId(entity.getCityId());
+//        person.setCollectPoint(entity.isCollectPoint());
+//        person.setDescription(entity.getDescription());
+//
+//        return personDao.updateGodfather(id, person);
+        return false;
+    }
+
+    @Override
+    public List<Person> getCollectPoints() {
+
+//        return personDao.getCollectPoints();
+        return null;
+    }
+
+}

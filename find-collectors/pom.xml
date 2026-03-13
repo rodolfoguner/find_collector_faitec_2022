@@ -17,9 +17,10 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <modules>
-        <module>find-collectors-api</module>
+        <module>api</module>
         <module>infrastructure</module>
         <module>domain</module>
+        <module>application</module>
     </modules>
 
     <packaging>pom</packaging>
