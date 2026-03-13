@@ -4,87 +4,58 @@ package br.fai.findcollectors.controller;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.service.PersonRestService;
 import br.fai.findcollectors.usecases.person.CreatePersonUseCase;
+import br.fai.findcollectors.usecases.person.DeletePersonUseCase;
+import br.fai.findcollectors.usecases.person.PersonQueryUseCase;
+import br.fai.findcollectors.usecases.person.UpdatePersonUseCase;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/person")
 @CrossOrigin(origins = "*")
+@AllArgsConstructor
 public class PersonRestController {
 
-    @Autowired
-    PersonRestService<Person> personRestService;
+    private final UpdatePersonUseCase updatePersonUseCase;
+    private final DeletePersonUseCase deletePersonUseCase;
+    private final PersonQueryUseCase personQueryUseCase;
 
     @GetMapping("")
     public ResponseEntity<List<Person>> findAll() {
-        return ResponseEntity.ok(personRestService.find());
+
+        return ResponseEntity.ok(personQueryUseCase.find());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> findById(@PathVariable int id) {
+    public ResponseEntity<Person> findById(@PathVariable Long id) {
 
-        Person person = personRestService.findById(id);
+        Optional<Person> person = personQueryUseCase.findById(id);
 
-        if (person == null) {
+        if (person.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(person);
+        return ResponseEntity.ok(person.get());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Boolean> update(@PathVariable("id") int id, @RequestBody Person person) {
-        boolean updated = personRestService.update(id, person);
+    public ResponseEntity<Person> update(@PathVariable("id") Long id, @RequestBody Person person) {
 
-        if (!updated) {
-            return ResponseEntity.badRequest().build();
-        }
+        Person updated = updatePersonUseCase.execute(id, person);
 
-        return ResponseEntity.ok(true);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable int id) {
-        boolean deleted = personRestService.deleteById(id);
-
-        if (!deleted) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(true);
-    }
-
-    @PostMapping("/godfather")
-    public ResponseEntity<Integer> godfather(@RequestBody Person person) {
-        int id = personRestService.godfather(person);
-
-        if (id <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(id);
-    }
-
-    @GetMapping("/godfather/{id}")
-    public ResponseEntity<List<Person>> getGodfatherCollectors(@PathVariable("id") final int id) {
-        return ResponseEntity.ok(personRestService.godfatherCollectors(id));
-    }
-
-    @PutMapping("/godfather/{id}")
-    public ResponseEntity<Boolean> godfather(@PathVariable("id") final int id, @RequestBody Person person) {
-        boolean updated = personRestService.updateGodfather(id, person);
-
-        if (!updated) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(updated);
     }
 
-    @GetMapping("/collect-points")
-    public ResponseEntity<List<Person>> getCollectPoints() {
-        return ResponseEntity.ok(personRestService.getCollectPoints());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+
+        deletePersonUseCase.execute(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
