@@ -6,7 +6,6 @@ import br.fai.findcollectors.repositories.PersonRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
