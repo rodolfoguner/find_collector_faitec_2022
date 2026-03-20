@@ -23,7 +23,7 @@ public class Collect extends Auditable {
 
     private LocalDateTime dateAndTime;
 
-    @ElementCollection
+    @ElementCollection(targetClass = GarbageType.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
             name = "collect_garbage_types",

@@ -1,7 +1,9 @@
 package br.fai.findcollectors.controller;
 
 
+import br.fai.findcollectors.dto.response.PersonResponse;
 import br.fai.findcollectors.entities.Person;
+import br.fai.findcollectors.mapper.PersonMapper;
 import br.fai.findcollectors.usecases.person.DeletePersonUseCase;
 import br.fai.findcollectors.usecases.person.PersonQueryUseCase;
 import br.fai.findcollectors.usecases.person.UpdatePersonUseCase;
@@ -22,13 +24,19 @@ public class PersonRestController {
     private final PersonQueryUseCase personQueryUseCase;
 
     @GetMapping("")
-    public ResponseEntity<List<Person>> findAll() {
+    public ResponseEntity<List<PersonResponse>> findAll() {
 
-        return ResponseEntity.ok(personQueryUseCase.find());
+        List<Person> persons = personQueryUseCase.find();
+        List<PersonResponse> response = persons
+                .stream()
+                .map(PersonMapper::toResponse)
+                .toList();
+        
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> findById(@PathVariable Long id) {
+    public ResponseEntity<PersonResponse> findById(@PathVariable final Long id) {
 
         Optional<Person> person = personQueryUseCase.findById(id);
 
@@ -36,19 +44,21 @@ public class PersonRestController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(person.get());
+        PersonResponse response = PersonMapper.toResponse(person.get());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> update(@PathVariable("id") Long id, @RequestBody Person person) {
+    public ResponseEntity<PersonResponse> update(@PathVariable final Long id, @RequestBody Person person) {
 
         Person updated = updatePersonUseCase.execute(id, person);
 
-        return ResponseEntity.ok(updated);
+        PersonResponse response = PersonMapper.toResponse(updated);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable final Long id) {
 
         deletePersonUseCase.execute(id);
 

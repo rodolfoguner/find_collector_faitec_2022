@@ -37,7 +37,7 @@ public class Person extends Auditable {
     @JoinColumn(name = "godfather_id")
     private Person godfather;
 
-    @ElementCollection
+    @ElementCollection(targetClass = GarbageType.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
             name = "person_garbage_type",

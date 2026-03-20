@@ -2,11 +2,10 @@ package br.fai.findcollectors.enums;
 
 public enum GarbageType {
 
-    PAPEL,
-    VIDRO,
-    PLASTICO,
+    PAPER,
+    GLASS,
+    PLASTIC,
     METAL,
-    ORGANICO,
-    NAO_RECICLAVEL
-
+    ORGANIC,
+    NO_RECICLABLE
 }

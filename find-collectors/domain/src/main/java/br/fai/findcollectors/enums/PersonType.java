@@ -2,7 +2,6 @@ package br.fai.findcollectors.enums;
 
 public enum PersonType {
 
-    RECICLADOR,
-    CATADOR
-
+    RECYCLER,
+    COLLECTOR
 }
