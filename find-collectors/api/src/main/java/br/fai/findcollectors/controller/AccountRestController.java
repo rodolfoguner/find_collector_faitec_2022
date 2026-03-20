@@ -30,8 +30,11 @@ public class AccountRestController {
     @PostMapping("/signup")
     public ResponseEntity<Person> signUp(@RequestBody Person person) {
 
-        Person saved = createPersonUseCase.execute(person);
+        Person created = createPersonUseCase.execute(person);
+        if (created == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok(created);
     }
 }
