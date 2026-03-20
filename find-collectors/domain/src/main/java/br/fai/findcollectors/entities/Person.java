@@ -2,6 +2,7 @@ package br.fai.findcollectors.entities;
 
 import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.enums.PersonType;
+import br.fai.findcollectors.valueobject.Address;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,10 +29,6 @@ public class Person extends Auditable {
     private String password;
     private String name;
     private String telephone;
-    private String cep;
-    private String address;
-    private String district;
-    private String number;
 
     @Enumerated(EnumType.STRING)
     private PersonType personType;
@@ -50,10 +47,15 @@ public class Person extends Auditable {
     private List<GarbageType> garbageType;
     private String description;
     private boolean collectPoint;
-
-    @ManyToOne
-    @JoinColumn(name = "city_id")
-    private City city;
-
-
+    
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "cep", column = @Column(name = "cep")),
+        @AttributeOverride(name = "street", column = @Column(name = "street")),
+        @AttributeOverride(name = "district", column = @Column(name = "district")),
+        @AttributeOverride(name = "number", column = @Column(name = "number")),
+        @AttributeOverride(name = "city", column = @Column(name = "city")),
+        @AttributeOverride(name = "state", column = @Column(name = "state")),
+    })
+    private Address address;
 }

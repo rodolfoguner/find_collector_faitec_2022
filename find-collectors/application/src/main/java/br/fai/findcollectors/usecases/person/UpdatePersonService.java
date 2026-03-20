@@ -25,11 +25,7 @@ public class UpdatePersonService implements UpdatePersonUseCase{
 
         existing.setName(person.getName());
         existing.setTelephone(person.getTelephone());
-        existing.setCep(person.getCep());
         existing.setAddress(person.getAddress());
-        existing.setDistrict(person.getDistrict());
-        existing.setNumber(person.getNumber());
-        existing.setCity(person.getCity());
         existing.setPersonType(person.getPersonType());
         existing.setCollectPoint(person.isCollectPoint());
         existing.setGarbageType(person.getGarbageType());

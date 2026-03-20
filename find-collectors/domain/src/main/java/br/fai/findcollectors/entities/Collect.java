@@ -1,6 +1,7 @@
 package br.fai.findcollectors.entities;
 
 import br.fai.findcollectors.enums.GarbageType;
+import br.fai.findcollectors.valueobject.Address;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,14 +34,17 @@ public class Collect extends Auditable {
     private boolean accept;
     private boolean collected;
     private boolean recurrent;
-    private String cep;
-    private String address;
-    private String district;
-    private String number;
-
-    @ManyToOne
-    @JoinColumn(name = "city_id")
-    private City city;
+    
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "cep", column = @Column(name = "cep")),
+        @AttributeOverride(name = "street", column = @Column(name = "street")),
+        @AttributeOverride(name = "district", column = @Column(name = "district")),
+        @AttributeOverride(name = "number", column = @Column(name = "number")),
+        @AttributeOverride(name = "city", column = @Column(name = "city")),
+        @AttributeOverride(name = "state", column = @Column(name = "state")),
+    })
+    private Address address;
 
     @ManyToOne
     @JoinColumn(name = "collector_id")
