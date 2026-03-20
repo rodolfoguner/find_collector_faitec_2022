@@ -16,7 +16,7 @@ public class PersonMapper {
                 .email(request.email())
                 .name(request.name())
                 .password(request.password())
-                .personType(PersonType.valueOf(request.personType()))
+                .personType(PersonType.fromString(request.personType()))
                 .build();
     }
 
