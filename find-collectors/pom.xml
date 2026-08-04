@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.2</version>
+        <version>3.5.11</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -17,57 +17,25 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <modules>
-        <module>find-collectors-api</module>
-        <module>find-collectors-client</module>
-        <module>find-collectors-database</module>
-        <module>find-collectors-model</module>
+        <module>api</module>
+        <module>infrastructure</module>
+        <module>domain</module>
+        <module>application</module>
     </modules>
 
     <packaging>pom</packaging>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <java.version>21</java.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!--Dependencias internas do projeto-->
-            <dependency>
-                <groupId>br.fai.find-collectors</groupId>
-                <artifactId>find-collectors-model</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>br.fai.find-collectors</groupId>
-                <artifactId>find-collectors-database</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-
-            <!--Dependencias externas do projeto-->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>5.3.22</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.2.5</version>
-            </dependency>
 
 			<dependency>
-				<groupId>org.springdoc</groupId>
-				<artifactId>springdoc-openapi-ui</artifactId>
-				<version>1.6.9</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.google.code.gson</groupId>
-				<artifactId>gson</artifactId>
-				<version>2.9.1</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>2.3.0</version>
 			</dependency>
 
 		</dependencies>
