@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/person")
@@ -38,13 +37,9 @@ public class PersonRestController {
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponse> findById(@PathVariable final Long id) {
 
-        Optional<Person> person = personQueryUseCase.findById(id);
+        Person person = personQueryUseCase.findById(id);
 
-        if (person.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        PersonResponse response = PersonMapper.toResponse(person.get());
+        PersonResponse response = PersonMapper.toResponse(person);
         return ResponseEntity.ok(response);
     }
 

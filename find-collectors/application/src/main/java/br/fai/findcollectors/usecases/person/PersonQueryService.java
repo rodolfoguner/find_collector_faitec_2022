@@ -1,12 +1,13 @@
 package br.fai.findcollectors.usecases.person;
 
 import br.fai.findcollectors.entities.Person;
+import br.fai.findcollectors.exceptions.ErrorCode;
+import br.fai.findcollectors.exceptions.NotFoundException;
 import br.fai.findcollectors.repositories.PersonRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,8 +21,12 @@ public class PersonQueryService implements PersonQueryUseCase{
     }
 
     @Override
-    public Optional<Person> findById(Long id) {
-        return repository.findById(id);
+    public Person findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                    ErrorCode.PERSON_NOT_FOUND,
+                    "Person with id %d not found".formatted(id)
+                ));
     }
 
     @Override
