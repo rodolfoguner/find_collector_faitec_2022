@@ -1,144 +1,123 @@
-<p align="center">
-  <a href="" rel="noopener">
- <img width=250px height=250px src="https://user-images.githubusercontent.com/72309970/163736378-a6b19183-0384-4383-bcf3-af15ac3d58b6.jpeg" alt="Project logo"></a>
-</p>
+# Find Collectors
 
-<h3 align="center">Find Collectors</h3>
+Find Collectors is a platform that connects people who have recyclable
+materials with waste collectors. Its goal is to make collectors and collection
+points easier to find while supporting the scheduling and tracking of
+collections.
 
----
+The project is being modernized. The backend is the active implementation; the
+previous Thymeleaf client is kept under [`legacy/`](legacy/README.md) only as a
+reference for the future frontend rebuild.
 
-<div align="center">
+## Current status
 
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
-![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
-![Thymeleaf](https://img.shields.io/badge/Thymeleaf-%23005C0F.svg?style=for-the-badge&logo=Thymeleaf&logoColor=white)
-![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
-![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
-![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
-![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
-![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
-![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+The backend currently provides:
 
-</div>
+- registration and basic email/password authentication;
+- person lookup, update, and deletion;
+- collection creation, lookup, update, and deletion;
+- queries for available, owned, and accepted collections;
+- persistence of addresses and recyclable material types;
+- database migrations with Flyway;
+- OpenAPI/Swagger documentation;
+- health checks with Spring Boot Actuator.
 
----
+Per-user authorization, password recovery, the complete collection lifecycle,
+points, chat, and notifications are not finished yet. See the
+[`roadmap`](docs/roadmap.md).
 
-<p align="center"> Este projeto tem como objetivo facilitar a localização de carrocinhas e catadores de recicláveis.
-</p>
+## Technology stack
 
-## 📝 Tabela de conteúdos
+- Java 25 (LTS)
+- Spring Boot 3.5
+- Spring Web
+- Spring Data JPA and Hibernate
+- PostgreSQL 16
+- Flyway
+- Spring Security Crypto and BCrypt
+- Springdoc OpenAPI
+- Spring Boot Actuator
+- Maven Wrapper
+- Docker Compose
 
-- [Sobre](#sobre)
-- [Como executar o projeto](#executar-projeto)
-  * [Pré-requisitos](#pre-requisitos)
-  * [Instalação](#instalacao)
-- [Executando testes automatizados](#testes)
-- [Tecnologias](#tecnologias)
-- [TODO](#todo)
-- [Autores](#autores)
+## Repository structure
 
-## 🧐 Sobre <a name = "sobre"></a>
+```text
+.
+├── find-collectors/        # Active multi-module Maven backend
+│   ├── api/                # Controllers, DTOs, and HTTP configuration
+│   ├── application/        # Use cases
+│   ├── domain/             # Domain entities and contracts
+│   └── infrastructure/     # JPA, PostgreSQL, and BCrypt
+├── docs/                   # Living documentation and historical material
+├── legacy/                 # Discontinued Thymeleaf client
+├── docker-compose.yml      # PostgreSQL for local development
+└── .env.example            # Example local environment variables
+```
 
-O Find Collectors é um projeto inspirado no 11° objetivo da ONU que se diz respeito a comunidades e cidades sustentáveis, com esse problema em pauta decidimos então iniciar um projeto com o objetivo de criar uma rede de contatos sustentável e beneficente para pessoas que cuidam do meio ambiente e também informar da importância da reciclagem e incentivar outras pessoas a reciclar.
- 
-O sistema tem como objetivo realizar cadastro de catadores de recicláveis contendo a sua localização para que as pessoas possam levar o lixo até os catadores ou também será possível combinar uma coleta entre as duas pessoas.
- 
-Após cada coleta confirmada, será gerado um bônus entre para o catador e o reciclador, com o objetivo de fomentar a reciclagem do lixo. Os pontos gerados por esse bônus serão utilizados para trocar em produtos ou serviços com as empresas parceiras e que apoiam a ideia do Find Collectors.
- 
-Com esse projeto esperamos conseguir atrair cada vez mais pessoas para reciclagem melhorando a sustentabilidade, a qualidade de vida de cada um e aumentar a renda dos catadores de reciclável.
+See the [architecture overview](docs/architecture/overview.md) for details.
 
+## Running locally
 
-## 🏁 Como executar o projeto <a name = "executar-projeto"></a>
+Prerequisites:
 
-### Pré-requisitos <a name = "pre-requisitos"></a>
+- Java 25;
+- Docker with Docker Compose;
+- Git.
 
-- [Git](https://git-scm.com)
-- [Java JDK 13](https://www.java.com/pt-BR/)
-- [Maven](https://maven.apache.org)
-- [Docker](https://www.docker.com) 
-
-### Instalação <a name = "instalacao"></a>
-
-Fazer download do projeto:
+Clone the repository and prepare the local environment variables:
 
 ```bash
-# Clonando o projeto
-
-# Com HTTPS
-$ git clone https://github.com/rodolfoguner/find_collector_faitec_2022
-
-# Com SSH
-$ git clone git@github.com:rodolfoguner/find_collector_faitec_2022.git
+cp .env.example .env
+docker compose up -d database
 ```
 
-Após o download do projeto é necessário iniciar o contêiner responsável pelo banco de dados do projeto.
-
-Para isso é necessário criar um arquivo ```.env```, ou utilizar o ```.env.example``` existente, que irá conter as configurações de senha, usuário e porta do seu banco.
-
-```
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=find-collectors
-DB_PORT=3000
-```
-Após a criação do arquivo, só executar as instruções abaixo para iniciar o contêiner.
+Build and test the backend:
 
 ```bash
-# Para iniciar o contêiner navegue até a pasta que contém o arquivo docker-compose.yml e execute o comando
-
-$ docker compose up -d
-
-# Caso queira parar o contêiner, execute o comando
-
-$ docker compose down
-
+cd find-collectors
+./mvnw clean install
 ```
 
-Caso necessite alterar a estrutura do banco de dados, altere o arquivo em ```./find-collectors/db-scripts/dump.sql``` e execute o comando ```docker compose up -d --build```.
+Start the API:
 
-## 🔧 Executando testes automatizados <a name = "testes"></a>
+```bash
+./mvnw -pl api spring-boot:run
+```
 
-Em definição. 🚧
+The application uses port `8080` by default. Once it has started:
 
-## ⛏️ Tecnologias <a name = "tecnologias"></a>
+- Health check: <http://localhost:8080/actuator/health>
+- Swagger UI: <http://localhost:8080/swagger-ui/index.html>
+- OpenAPI JSON: <http://localhost:8080/v3/api-docs/find-collectors-api>
 
-- [Postgres](https://www.postgresql.org)
-- [Java](https://www.java.com/pt-BR/)
-- [Spring Boot](https://spring.io/projects/spring-boot)
-- [Thymeleaf](https://www.thymeleaf.org)
-- [Maven](https://maven.apache.org)
-- [Bootstrap](https://getbootstrap.com)
-- [Docker](https://www.docker.com)
+Stop the database with:
 
-## ⚙ TODO <a name="todo"></a>
+```bash
+docker compose down
+```
 
-O projeto tem as seguintes funcionalidades:
-  - Essencial:
-    * [ ] Cadastrar-se;
-    * [ ] Login;
-    * [ ] Recuperar senha;
-    * [ ] Alterar senha;
-    * [ ] Editar perfil;
-    * [ ] Cadastrar-se como catador;
-    * [ ] Localizar catadores;
-    * [ ] Apadrinhar catadores;
-  - Importante:
-    * [ ] Cadastrar pontos de coleta;
-    * [ ] Agendar coleta;
-    * [ ] Chat entre catadores e recicladores para combinar coleta;
-    * [ ] Gerar bônus por coleta realizada;
-    * [ ] Apresentar a história dos catadores;
-  - Desejável:
-    * [ ] Notificar coletas próximas por whatsapp;
+See the [local development guide](docs/development/local-setup.md) for
+configuration details, troubleshooting, and migration precautions.
 
+## Documentation
 
-## ✍️ Autores <a name = "autores"></a>
+- [Documentation index](docs/README.md)
+- [Architecture overview](docs/architecture/overview.md)
+- [Modernization history](docs/modernization/refactoring-log.md)
+- [Technical and product roadmap](docs/roadmap.md)
+- [Legacy client](legacy/README.md)
+- [Original 2022 documentation](docs/archive/README.md)
 
-- [@Anilson22](https://github.com/Anilson22) - Colaborador | Desenvolvedor
-- [@enthonyedu](https://github.com/enthonyedu) - Colaborador | Desenvolvedor
-- [@rodolfoguner](https://github.com/rodolfoguner) - Colaborador | Desenvolvedor
+## Product context
+
+The project was inspired by the UN Sustainable Development Goal 11, which
+focuses on sustainable cities and communities. Its long-term vision is to build
+a network that encourages recycling, improves the visibility and income of
+waste collectors, and rewards participants for completed collections.
+
+## Authors
+
+- [Anilson22](https://github.com/Anilson22)
+- [enthonyedu](https://github.com/enthonyedu)
+- [rodolfoguner](https://github.com/rodolfoguner)
