@@ -18,9 +18,9 @@ passing tests, and updated documentation.
 
 ## Next phase: API consistency
 
-- [ ] Replace `RuntimeException` with specific business exceptions.
-- [ ] Standardize the error response format.
-- [ ] Use consistent HTTP status codes.
+- [x] Replace `RuntimeException` with specific business exceptions.
+- [x] Standardize the error response format.
+- [x] Use consistent HTTP status codes.
 - [ ] Add request and response DTOs to every endpoint.
 - [ ] Prevent controllers from exposing JPA entities directly.
 - [ ] Version endpoints under `/api/v1`.

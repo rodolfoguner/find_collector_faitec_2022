@@ -6,7 +6,7 @@ document in the same pull request.
 
 ## Current guides
 
-- [Architecture overview](architecture/overview.md): modules, responsibilities, and dependency flow.
+- [Architecture overview](architecture/overview.md): modules, dependency flow, external interfaces, and API error contract.
 - [Local environment](development/local-setup.md): how to configure, run, and test the backend.
 - [Modernization history](modernization/refactoring-log.md): decisions and improvements already made.
 - [Roadmap](roadmap.md): proposed sequence for upcoming refactorings and features.
