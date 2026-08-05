@@ -1,11 +1,12 @@
 package br.fai.findcollectors.usecases.collect;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import br.fai.findcollectors.entities.Collect;
+import br.fai.findcollectors.exceptions.ErrorCode;
+import br.fai.findcollectors.exceptions.NotFoundException;
 import br.fai.findcollectors.repositories.CollectRepository;
 import lombok.AllArgsConstructor;
 
@@ -21,8 +22,12 @@ public class CollectQueryService implements CollectQueryUseCase {
     }
 
     @Override
-    public Optional<Collect> findById(Long id) {
-        return repository.findById(id);
+    public Collect findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                    ErrorCode.COLLECT_NOT_FOUND,
+                    "Collect with id %d not found".formatted(id)
+                ));
     }
 
     @Override

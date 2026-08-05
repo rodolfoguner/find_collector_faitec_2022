@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/collect")
@@ -27,9 +26,6 @@ public class CollectRestController {
     public ResponseEntity<Collect> create(@RequestBody Collect collect) {
         
         Collect created = createCollectUseCase.execute(collect);
-        if (created == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(created);
     }
@@ -42,22 +38,15 @@ public class CollectRestController {
     @GetMapping("/{id}")
     public ResponseEntity<Collect> findById(@PathVariable Long id) {
 
-        Optional<Collect> collect = queryUseCase.findById(id);
+        Collect collect = queryUseCase.findById(id);
 
-        if (collect.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(collect.get());
+        return ResponseEntity.ok(collect);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Collect> update(@PathVariable Long id, @RequestBody Collect collect) {
-        Collect updated = updateCollectUseCase.execute(id, collect);
 
-        if (updated == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        Collect updated = updateCollectUseCase.execute(id, collect);
 
         return ResponseEntity.ok(updated);
     }

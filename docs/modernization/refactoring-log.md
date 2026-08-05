@@ -46,6 +46,19 @@ consolidated state and the motivation behind key decisions.
 - introduced living Markdown documentation for architecture, environment, and
   roadmap.
 
+## API error contract — August 2026
+
+- replaced generic exceptions in application operations with business
+  exceptions carrying stable `ErrorCode` values;
+- mapped not-found, conflict, unauthorized, and unprocessable-entity exception
+  categories to HTTP statuses `404`, `409`, `401`, and `422` respectively;
+- retained `400` for request validation failures and `500` as the fallback for
+  unexpected runtime failures;
+- standardized error responses with `code`, `message`, `path`, and `timestamp`;
+- stopped exposing Java exception class names as public error codes;
+- added unit coverage for the global exception handler and its business
+  exception hierarchy.
+
 ## Policy for future entries
 
 Add a section whenever a change significantly affects:

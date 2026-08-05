@@ -34,13 +34,8 @@ public class AccountRestController {
 
     @PostMapping("/signup")
     public ResponseEntity<PersonResponse> signUp(@RequestBody @Valid CreatePersonRequest personRequest) {
-
-        Person person = PersonMapper.toEntity(personRequest);
         
-        Person created = createPersonUseCase.execute(person);
-        if (created == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        Person created = createPersonUseCase.execute(PersonMapper.toEntity(personRequest));
 
         PersonResponse response = PersonMapper.toResponse(created);
         return ResponseEntity.ok(response);

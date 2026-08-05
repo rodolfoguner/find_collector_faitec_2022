@@ -1,6 +1,8 @@
 package br.fai.findcollectors.usecases.person;
 
 import br.fai.findcollectors.entities.Person;
+import br.fai.findcollectors.exceptions.ConflictException;
+import br.fai.findcollectors.exceptions.ErrorCode;
 import br.fai.findcollectors.repositories.PersonRepository;
 import br.fai.findcollectors.security.PasswordHasher;
 import lombok.AllArgsConstructor;
@@ -17,7 +19,10 @@ public class CreatePersonService implements CreatePersonUseCase {
     public Person execute(Person person) {
 
         if (repository.findPersonByEmail(person.getEmail()) != null) {
-            throw new RuntimeException();
+            throw new ConflictException(
+                ErrorCode.EMAIL_ALREADY_REGISTERED, 
+                "Email already registered"
+            );
         }
 
         person.setPassword(passwordHasher.hash(person.getPassword()));

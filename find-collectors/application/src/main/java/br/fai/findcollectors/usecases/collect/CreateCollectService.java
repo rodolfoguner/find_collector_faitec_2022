@@ -1,11 +1,13 @@
 package br.fai.findcollectors.usecases.collect;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.entities.Person;
+import br.fai.findcollectors.enums.PersonType;
+import br.fai.findcollectors.exceptions.BusinessRuleException;
+import br.fai.findcollectors.exceptions.ErrorCode;
+import br.fai.findcollectors.exceptions.NotFoundException;
 import br.fai.findcollectors.repositories.CollectRepository;
 import br.fai.findcollectors.repositories.PersonRepository;
 import lombok.AllArgsConstructor;
@@ -20,11 +22,16 @@ public class CreateCollectService implements CreateCollectUseCase {
     @Override
     public Collect execute(Collect collect) {
             
-        Optional<Person> recycler = personRepository.findById(collect.getRecycler().getId());
-        if (recycler.isEmpty()) {
-            throw new RuntimeException();
-        }
+        Person recycler = personRepository.findById(collect.getRecycler().getId())
+                .orElseThrow(() -> new NotFoundException(
+                    ErrorCode.RECYCLER_NOT_FOUND, 
+                    "Recycler with id %d not found".formatted(collect.getRecycler().getId())
+                ));
 
+        if (recycler.getPersonType() != PersonType.RECYCLER) {
+            throw new BusinessRuleException("Recycler must be of type recycler.");
+        }
+                
        return repository.create(collect);
     }
 }

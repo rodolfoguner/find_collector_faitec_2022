@@ -1,10 +1,10 @@
 package br.fai.findcollectors.usecases.collect;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import br.fai.findcollectors.entities.Collect;
+import br.fai.findcollectors.exceptions.ErrorCode;
+import br.fai.findcollectors.exceptions.NotFoundException;
 import br.fai.findcollectors.repositories.CollectRepository;
 import lombok.AllArgsConstructor;
 
@@ -16,13 +16,13 @@ public class UpdateCollectService implements UpdateCollectUseCase {
 
     @Override
     public Collect execute(Long id, Collect collect) {
-        Optional<Collect> existingDb = repository.findById(id);
-        if (existingDb.isEmpty()) {
-            throw new RuntimeException();
-        }
         
-        Collect existing = existingDb.get();
-        
+        Collect existing = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                    ErrorCode.COLLECT_NOT_FOUND,
+                    "Collect with id %d not found".formatted(id)
+                ));
+
         existing.setDateAndTime(collect.getDateAndTime());
         existing.setGarbageType(collect.getGarbageType());
         existing.setRecurrent(collect.isRecurrent());
