@@ -1,10 +1,15 @@
 package br.fai.findcollectors.controller;
 
+import br.fai.findcollectors.dto.request.CreateCollectRequest;
+import br.fai.findcollectors.dto.request.UpdateCollectRequest;
+import br.fai.findcollectors.dto.response.CollectResponse;
 import br.fai.findcollectors.entities.Collect;
+import br.fai.findcollectors.mapper.CollectMapper;
 import br.fai.findcollectors.usecases.collect.CollectQueryUseCase;
 import br.fai.findcollectors.usecases.collect.CreateCollectUseCase;
 import br.fai.findcollectors.usecases.collect.DeleteCollectUseCase;
 import br.fai.findcollectors.usecases.collect.UpdateCollectUseCase;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -23,81 +28,68 @@ public class CollectRestController {
     private final DeleteCollectUseCase deleteCollectUseCase;
 
     @PostMapping("")
-    public ResponseEntity<Collect> create(@RequestBody Collect collect) {
-        
-        Collect created = createCollectUseCase.execute(collect);
+    public ResponseEntity<CollectResponse> create(@RequestBody @Valid CreateCollectRequest request) {
 
-        return ResponseEntity.ok(created);
+        Collect created = createCollectUseCase.execute(CollectMapper.toEntity(request));
+
+        return ResponseEntity.ok(CollectMapper.toResponse(created));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Collect>> findAll() {
-        return ResponseEntity.ok(queryUseCase.find());
+    public ResponseEntity<List<CollectResponse>> findAll() {
+        return ResponseEntity.ok(toResponse(queryUseCase.find()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Collect> findById(@PathVariable Long id) {
+    public ResponseEntity<CollectResponse> findById(@PathVariable Long id) {
 
         Collect collect = queryUseCase.findById(id);
 
-        return ResponseEntity.ok(collect);
+        return ResponseEntity.ok(CollectMapper.toResponse(collect));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Collect> update(@PathVariable Long id, @RequestBody Collect collect) {
+    public ResponseEntity<CollectResponse> update(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateCollectRequest request
+    ) {
 
-        Collect updated = updateCollectUseCase.execute(id, collect);
+        Collect updated = updateCollectUseCase.execute(id, CollectMapper.toEntity(request));
 
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(CollectMapper.toResponse(updated));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         
         deleteCollectUseCase.execute(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    // @PutMapping("/accept-collect/{id}")
-    // public ResponseEntity<Boolean> acceptCollect(@PathVariable("id") int id, @RequestBody Collect collect) {
-    //     boolean updated = collectRestService.acceptCollect(id, collect);
-
-    //     if (!updated) {
-    //         return ResponseEntity.badRequest().build();
-    //     }
-
-    //     return ResponseEntity.ok(true);
-    // }
-
-    // @PutMapping("/close-collect/{id}")
-    // public ResponseEntity<Boolean> closeCollect(@PathVariable("id") int id, @RequestBody Collect collect) {
-    //     boolean updated = collectRestService.closeCollect(id, collect);
-
-    //     if (!updated) {
-    //         return ResponseEntity.badRequest().build();
-    //     }
-
-    //     return ResponseEntity.ok(true);
-    // }
-
     @GetMapping("/free-collects/{id}")
-    public ResponseEntity<List<Collect>> freeCollects(@PathVariable Long id) {
+    public ResponseEntity<List<CollectResponse>> freeCollects(@PathVariable Long id) {
 
-        return ResponseEntity.ok(queryUseCase.findPendingCollects(id));
+        return ResponseEntity.ok(toResponse(queryUseCase.findPendingCollects(id)));
 
     }
 
     @GetMapping("/my-collects/{id}")
-    public ResponseEntity<List<Collect>> myCollects(@PathVariable Long id) {
+    public ResponseEntity<List<CollectResponse>> myCollects(@PathVariable Long id) {
 
-        return ResponseEntity.ok(queryUseCase.findMyCollects(id));
+        return ResponseEntity.ok(toResponse(queryUseCase.findMyCollects(id)));
 
     }
 
     @GetMapping("/accepted-collects/{id}")
-    public ResponseEntity<List<Collect>> acceptedCollects(@PathVariable Long id) {
-        
-        return ResponseEntity.ok(queryUseCase.findCollectorAcceptedCollects(id));
+    public ResponseEntity<List<CollectResponse>> acceptedCollects(@PathVariable Long id) {
+
+        return ResponseEntity.ok(toResponse(queryUseCase.findCollectorAcceptedCollects(id)));
+    }
+
+    private List<CollectResponse> toResponse(List<Collect> collects) {
+        return collects.stream()
+                .map(CollectMapper::toResponse)
+                .toList();
     }
 }
