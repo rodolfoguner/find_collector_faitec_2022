@@ -1,6 +1,7 @@
 package br.fai.findcollectors.persistence.repositories;
 
 import br.fai.findcollectors.entities.Collect;
+import br.fai.findcollectors.enums.CollectStatus;
 import br.fai.findcollectors.persistence.jpa.repositories.JpaCollectRepository;
 import br.fai.findcollectors.repositories.CollectRepository;
 import lombok.AllArgsConstructor;
@@ -17,17 +18,17 @@ public class CollectRepositoryImpl implements CollectRepository {
 
     @Override
     public List<Collect> findPendingCollects(Long id) {
-        return repository.findPendingCollects(id);
+        return repository.findPendingCollects(id, CollectStatus.PENDING);
     }
 
     @Override
     public List<Collect> findMyCollects(Long id) {
-        return repository.findMyCollects(id);
+        return repository.findMyCollects(id, CollectStatus.COMPLETED);
     }
 
     @Override
     public List<Collect> findCollectorAcceptedCollects(Long id) {
-        return repository.findCollectorAcceptedCollects(id);
+        return repository.findCollectorAcceptedCollects(id, CollectStatus.ACCEPTED);
     }
 
     @Override

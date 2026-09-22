@@ -1,6 +1,7 @@
 package br.fai.findcollectors.entities;
 
 import br.fai.findcollectors.enums.GarbageType;
+import br.fai.findcollectors.enums.CollectStatus;
 import br.fai.findcollectors.valueobject.Address;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,8 +32,10 @@ public class Collect extends Auditable {
     )
     @Column(name = "garbage_type")
     private List<GarbageType> garbageType;
-    private boolean accept;
-    private boolean collected;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CollectStatus status;
+
     private boolean recurrent;
     
     @Embedded
