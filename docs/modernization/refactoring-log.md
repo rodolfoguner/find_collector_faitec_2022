@@ -59,6 +59,18 @@ consolidated state and the motivation behind key decisions.
 - added unit coverage for the global exception handler and its business
   exception hierarchy.
 
+## Collection API contract — September 2026
+
+- replaced the `accept` and `collected` flags with the explicit `CollectStatus`
+  lifecycle (`PENDING`, `ACCEPTED`, `COMPLETED`, and `CANCELLED`);
+- added an incremental migration that preserves the status of existing
+  collections before removing the legacy flags;
+- introduced request and response DTOs for collection endpoints, preventing
+  JPA entities and person passwords from becoming part of the HTTP contract;
+- made new collections start as `PENDING` in the application service;
+- corrected available and owned collection queries to use the recycler
+  relationship and the explicit lifecycle status.
+
 ## Policy for future entries
 
 Add a section whenever a change significantly affects:

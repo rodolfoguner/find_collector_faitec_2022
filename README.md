@@ -22,8 +22,9 @@ The backend currently provides:
 - OpenAPI/Swagger documentation;
 - health checks with Spring Boot Actuator.
 
-Per-user authorization, password recovery, the complete collection lifecycle,
-points, chat, and notifications are not finished yet. See the
+Per-user authorization, account activation and recovery, the complete
+collection lifecycle, collection-point discovery, direct communication,
+educational content, points, and notifications are not finished yet. See the
 [`roadmap`](docs/roadmap.md).
 
 ## Technology stack

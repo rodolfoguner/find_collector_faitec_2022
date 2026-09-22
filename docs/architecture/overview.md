@@ -46,9 +46,9 @@ The central entities are:
 - `GarbageType`: materials associated with people and collections;
 - `PersonType`: distinguishes `RECYCLER` from `COLLECTOR`.
 
-The collection model still uses the `accept`, `collected`, and `recurrent`
-booleans. Replacing the first two with an explicit lifecycle is part of the
-roadmap.
+The collection lifecycle is represented by `CollectStatus`, with `PENDING`,
+`ACCEPTED`, `COMPLETED`, and `CANCELLED` states. Recurrence remains represented
+by the `recurrent` attribute.
 
 ## External interfaces
 
@@ -92,7 +92,10 @@ which the handler created the response. Validation failures use
 ## Known limitations
 
 - current authentication only validates credentials and issues no token or session;
+- accounts have no email activation, password-strength policy, or recovery flow;
 - there is no authorization based on resource ownership or user type;
 - some controllers still expose JPA entities directly;
+- collection points have no dedicated search or geolocation resource;
+- there is no communication channel between collectors and recyclers;
 - the context test uses the PostgreSQL instance configured in the environment;
 - no active frontend technology has been selected yet.

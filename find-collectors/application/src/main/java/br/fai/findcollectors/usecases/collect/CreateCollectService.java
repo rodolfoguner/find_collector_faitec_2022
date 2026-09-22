@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import br.fai.findcollectors.entities.Collect;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.enums.PersonType;
+import br.fai.findcollectors.enums.CollectStatus;
 import br.fai.findcollectors.exceptions.BusinessRuleException;
 import br.fai.findcollectors.exceptions.ErrorCode;
 import br.fai.findcollectors.exceptions.NotFoundException;
@@ -31,7 +32,11 @@ public class CreateCollectService implements CreateCollectUseCase {
         if (recycler.getPersonType() != PersonType.RECYCLER) {
             throw new BusinessRuleException("Recycler must be of type recycler.");
         }
-                
+
+        collect.setRecycler(recycler);
+        collect.setCollector(null);
+        collect.setStatus(CollectStatus.PENDING);
+
        return repository.create(collect);
     }
 }

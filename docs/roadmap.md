@@ -40,12 +40,16 @@ passing tests, and updated documentation.
 - [ ] Define and implement access and refresh tokens.
 - [ ] Add an endpoint for the authenticated user.
 - [ ] Enforce authorization by user type and resource ownership.
+- [ ] Require account activation through a short-lived email verification token.
+- [ ] Enforce a documented password-strength policy in the API and mirror its
+  feedback in the frontend.
 - [ ] Implement password changes.
-- [ ] Implement password recovery with short-lived tokens.
+- [ ] Implement account recovery through a verified email address or phone
+  number, using single-use, short-lived tokens to reset the password.
 
 ## Core collection lifecycle
 
-- [ ] Replace `accept` and `collected` with `CollectStatus`.
+- [x] Replace `accept` and `collected` with `CollectStatus`.
 - [ ] Define `PENDING`, `ACCEPTED`, `COMPLETED`, and `CANCELLED` transitions.
 - [ ] Allow recyclers to publish and track collections.
 - [ ] Allow collectors to find and accept collections.
@@ -57,6 +61,8 @@ passing tests, and updated documentation.
 
 - [ ] Search collectors by city, material, and eventually distance.
 - [ ] Model collection points as a dedicated resource.
+- [ ] Allow users to locate collection points by city, accepted material, and
+  distance, with map visualization, address, and opening details.
 - [ ] Evolve sponsorship into a relationship with history.
 - [ ] Add public collector profiles and stories.
 - [ ] Evaluate reputation and ratings after completed collections.
@@ -67,8 +73,11 @@ passing tests, and updated documentation.
 - [ ] Award points for completed collections.
 - [ ] Add partners, rewards, and redemptions.
 - [ ] Add email notifications.
-- [ ] Evaluate WhatsApp, maps, and geolocation.
-- [ ] Evaluate chat only after the core workflow is stable.
+- [ ] Evaluate maps and geolocation providers for collectors and collection
+  points.
+- [ ] Define a privacy-aware communication channel between collectors and
+  recyclers for arranging a collection, evaluating in-app messaging and
+  WhatsApp only after the core workflow is stable.
 
 ## Frontend
 
@@ -77,3 +86,9 @@ stable contracts, complete OpenAPI documentation, pagination, and a defined
 error format. The client under `legacy/` is only a reference for journeys,
 content, and visual elements; it is not a required foundation for the new
 implementation.
+
+The frontend scope should include educational content explaining recyclable
+material types, separation practices, preparation for collection, and correct
+disposal. This content should be designed together with the new frontend so it
+is accessible in the relevant user journeys instead of being coupled to the
+backend domain model.
