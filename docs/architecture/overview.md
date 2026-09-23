@@ -89,10 +89,18 @@ specific failure. `path` is the request URI, and `timestamp` is the instant at
 which the handler created the response. Validation failures use
 `VALIDATION_ERROR`; unexpected failures use `INTERNAL_SERVER_ERROR`.
 
+## Account password policy
+
+New accounts must use a password containing between 8 and 100 characters, at
+least one number, and at least one uppercase letter. The signup endpoint rejects
+passwords that do not meet this policy with `400 Bad Request` and the standard
+`VALIDATION_ERROR` response. Login does not revalidate password strength so
+accounts created before this policy remain able to authenticate.
+
 ## Known limitations
 
 - current authentication only validates credentials and issues no token or session;
-- accounts have no email activation, password-strength policy, or recovery flow;
+- accounts have no email activation, password-change, or recovery flow;
 - there is no authorization based on resource ownership or user type;
 - collection points have no dedicated search or geolocation resource;
 - there is no communication channel between collectors and recyclers;

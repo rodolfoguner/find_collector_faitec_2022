@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +34,7 @@ class PersonRequestValidationTest {
     void shouldAcceptValidCreatePersonRequest() {
         CreatePersonRequest request = new CreatePersonRequest(
                 "recycler@example.com",
-                "password",
+                "Password1",
                 "Recycler",
                 "recycler"
         );
@@ -50,6 +51,30 @@ class PersonRequestValidationTest {
         assertThat(violations)
                 .extracting(violation -> violation.getPropertyPath().toString())
                 .contains("email", "password", "name", "personType");
+    }
+
+    @Test
+    void shouldRejectPasswordShorterThanEightCharacters() {
+        CreatePersonRequest request = validCreatePersonRequest("Pass1");
+
+        assertThat(validationMessages(request))
+                .contains("password must have between 8 and 100 characters");
+    }
+
+    @Test
+    void shouldRejectPasswordWithoutNumber() {
+        CreatePersonRequest request = validCreatePersonRequest("Password");
+
+        assertThat(validationMessages(request))
+                .contains("password must contain at least one number");
+    }
+
+    @Test
+    void shouldRejectPasswordWithoutUppercaseLetter() {
+        CreatePersonRequest request = validCreatePersonRequest("password1");
+
+        assertThat(validationMessages(request))
+                .contains("password must contain at least one uppercase letter");
     }
 
     @Test
@@ -105,5 +130,21 @@ class PersonRequestValidationTest {
                 "Itajuba",
                 "Minas Gerais"
         );
+    }
+
+    private CreatePersonRequest validCreatePersonRequest(String password) {
+        return new CreatePersonRequest(
+                "recycler@example.com",
+                password,
+                "Recycler",
+                "RECYCLER"
+        );
+    }
+
+    private Set<String> validationMessages(CreatePersonRequest request) {
+        return validator.validate(request)
+                .stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toSet());
     }
 }
