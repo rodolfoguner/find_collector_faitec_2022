@@ -94,7 +94,6 @@ which the handler created the response. Validation failures use
 - current authentication only validates credentials and issues no token or session;
 - accounts have no email activation, password-strength policy, or recovery flow;
 - there is no authorization based on resource ownership or user type;
-- some controllers still expose JPA entities directly;
 - collection points have no dedicated search or geolocation resource;
 - there is no communication channel between collectors and recyclers;
 - the context test uses the PostgreSQL instance configured in the environment;

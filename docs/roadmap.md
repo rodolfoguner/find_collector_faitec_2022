@@ -27,8 +27,8 @@ check already exist; they are a foundation for the planned observability work.
 - [x] Replace `RuntimeException` with specific business exceptions.
 - [x] Standardize the error response format.
 - [x] Use consistent HTTP status codes.
-- [ ] Add request and response DTOs to every endpoint.
-- [ ] Prevent controllers from exposing JPA entities directly.
+- [x] Add request and response DTOs to every endpoint.
+- [x] Prevent controllers from exposing JPA entities directly.
 - [ ] Version endpoints under `/api/v1`.
 - [ ] Add pagination, sorting, and filters to list operations.
 

@@ -1,12 +1,14 @@
 package br.fai.findcollectors.controller;
 
 
+import br.fai.findcollectors.dto.request.UpdatePersonRequest;
 import br.fai.findcollectors.dto.response.PersonResponse;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.mapper.PersonMapper;
 import br.fai.findcollectors.usecases.person.DeletePersonUseCase;
 import br.fai.findcollectors.usecases.person.PersonQueryUseCase;
 import br.fai.findcollectors.usecases.person.UpdatePersonUseCase;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,9 +46,12 @@ public class PersonRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PersonResponse> update(@PathVariable final Long id, @RequestBody Person person) {
+    public ResponseEntity<PersonResponse> update(
+            @PathVariable final Long id,
+            @RequestBody @Valid UpdatePersonRequest request
+    ) {
 
-        Person updated = updatePersonUseCase.execute(id, person);
+        Person updated = updatePersonUseCase.execute(id, PersonMapper.toEntity(request));
 
         PersonResponse response = PersonMapper.toResponse(updated);
         return ResponseEntity.ok(response);
