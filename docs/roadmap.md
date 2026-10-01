@@ -67,9 +67,9 @@ coverage is imported, and CI enforces the agreed quality and security gates.
 
 ## Authentication and accounts
 
-- [ ] Implement Spring Security for the API.
-- [ ] Define and implement access and refresh tokens.
-- [ ] Add an endpoint for the authenticated user.
+- [x] Implement Spring Security for the API.
+- [x] Define and implement access and refresh tokens.
+- [x] Add an endpoint for the authenticated user.
 - [ ] Define an operation-level permission matrix for `RECYCLER` and
   `COLLECTOR`, distinguishing authentication from authorization.
 - [ ] Implement role-based access control (RBAC) with Spring Security to

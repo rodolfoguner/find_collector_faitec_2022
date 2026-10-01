@@ -97,11 +97,24 @@ passwords that do not meet this policy with `400 Bad Request` and the standard
 `VALIDATION_ERROR` response. Login does not revalidate password strength so
 accounts created before this policy remain able to authenticate.
 
+## Authentication
+
+Authentication is stateless and uses signed JWTs. `POST /api/login` validates
+credentials and returns a 15-minute access token plus a 7-day refresh token.
+`POST /api/refresh` validates a refresh token and returns a new token pair.
+Refresh tokens are rejected as bearer credentials for protected resources.
+`GET /api/me` resolves the current account from the access-token subject.
+
+`POST /api/login`, `POST /api/signup`, `POST /api/refresh`, health, and OpenAPI
+resources are public. Other endpoints require `Authorization: Bearer <token>`.
+The signing secret comes from the required `JWT_SECRET` environment variable
+and must contain at least 32 bytes.
+
 ## Known limitations
 
-- current authentication only validates credentials and issues no token or session;
 - accounts have no email activation, password-change, or recovery flow;
 - there is no authorization based on resource ownership or user type;
+- refresh tokens are stateless and cannot yet be revoked before expiration;
 - collection points have no dedicated search or geolocation resource;
 - there is no communication channel between collectors and recyclers;
 - the context test uses the PostgreSQL instance configured in the environment;

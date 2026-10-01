@@ -94,6 +94,24 @@ class GlobalExceptionHandlerTest {
         );
     }
 
+    @Test
+    void shouldNotExposeUnexpectedExceptionDetails() {
+        RuntimeException exception = new RuntimeException(
+                "password=secret jdbc:postgresql://internal-host/database"
+        );
+
+        Instant beforeHandling = Instant.now();
+        ResponseEntity<ExceptionResponse> response = handler.handleRuntime(exception, request);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertResponse(
+                response.getBody(),
+                "INTERNAL_SERVER_ERROR",
+                "An unexpected error occurred",
+                beforeHandling
+        );
+    }
+
     private void assertResponse(
             ExceptionResponse response,
             String code,

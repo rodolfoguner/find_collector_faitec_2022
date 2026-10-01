@@ -27,8 +27,19 @@ Variables supported by the backend:
 | `POSTGRES_PASSWORD` | `postgres` | Database password |
 | `POSTGRES_DB` | `find-collectors` | Database created by Compose |
 | `DB_PORT` | `5432` | Port published by Compose |
+| `JWT_SECRET` | none | Secret used to sign access and refresh tokens; at least 32 bytes |
 
 If `DB_PORT` changes, update `DATABASE_URL` accordingly.
+
+Generate a local JWT secret before starting the API and expose it to the Java
+process. For Fish:
+
+```fish
+set -gx JWT_SECRET (openssl rand -base64 48)
+```
+
+Use an independently generated secret in each deployed environment. Never
+commit its value.
 
 ## Startup
 

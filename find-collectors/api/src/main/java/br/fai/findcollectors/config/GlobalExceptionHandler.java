@@ -7,6 +7,7 @@ import br.fai.findcollectors.exceptions.NotFoundException;
 import br.fai.findcollectors.exceptions.UnauthorizedException;
 import br.fai.findcollectors.exceptions.UnprocessableEntityException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
@@ -58,9 +60,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ExceptionResponse> handleRuntime(RuntimeException ex, HttpServletRequest request) {
+        log.error(
+                "Unexpected failure while handling {}: {}",
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
         ExceptionResponse response = new ExceptionResponse(
                 "INTERNAL_SERVER_ERROR",
-                ex.getMessage(),
+                "An unexpected error occurred",
                 request.getRequestURI(),
                 Instant.now()
         );
