@@ -35,9 +35,11 @@
 
 ## Local environment and verification
 
-- Java and Maven are managed by `mise` and activated by interactive Fish.
-- Run Maven commands through Fish, for example:
-  `fish -lic 'cd find-collectors; mvn compile'`.
+- Java and Maven are managed by `mise`, with activation configured in Bash.
+- Run Maven commands directly from `find-collectors/`, for example:
+  `mvn compile`.
+- If a non-interactive shell does not find the managed tools, use
+  `mise exec -C find-collectors -- mvn compile` from the repository root.
 - Use Java 25 for compilation and debugging.
 - Verify changes in proportion to their risk. At minimum, compile affected
   modules; run relevant tests and migration checks when they are in scope and
