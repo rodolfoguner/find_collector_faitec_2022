@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@EntityScan("br.fai.findcollectors.entities")
+@EntityScan({"br.fai.findcollectors.entities", "br.fai.findcollectors.persistence.jpa.entities"})
 @EnableJpaAuditing
 @SpringBootApplication
 public class FindCollectorsApplicationApi {

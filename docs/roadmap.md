@@ -27,8 +27,8 @@ check already exist; they are a foundation for the planned observability work.
 - [x] Replace `RuntimeException` with specific business exceptions.
 - [x] Standardize the error response format.
 - [x] Use consistent HTTP status codes.
-- [ ] Add request and response DTOs to every endpoint.
-- [ ] Prevent controllers from exposing JPA entities directly.
+- [x] Add request and response DTOs to every endpoint.
+- [x] Prevent controllers from exposing JPA entities directly.
 - [ ] Version endpoints under `/api/v1`.
 - [ ] Add pagination, sorting, and filters to list operations.
 
@@ -67,9 +67,12 @@ coverage is imported, and CI enforces the agreed quality and security gates.
 
 ## Authentication and accounts
 
-- [ ] Implement Spring Security for the API.
-- [ ] Define and implement access and refresh tokens.
-- [ ] Add an endpoint for the authenticated user.
+- [x] Implement Spring Security for the API.
+- [x] Define and implement access and refresh tokens.
+- [x] Persist login sessions in PostgreSQL, rotate refresh tokens once per use,
+  revoke sessions on refresh reuse, and invalidate access and refresh tokens on
+  current-session logout.
+- [x] Add an endpoint for the authenticated user.
 - [ ] Define an operation-level permission matrix for `RECYCLER` and
   `COLLECTOR`, distinguishing authentication from authorization.
 - [ ] Implement role-based access control (RBAC) with Spring Security to

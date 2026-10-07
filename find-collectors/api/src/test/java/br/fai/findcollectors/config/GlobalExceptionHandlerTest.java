@@ -21,6 +21,17 @@ class GlobalExceptionHandlerTest {
     private final MockHttpServletRequest request = createRequest();
 
     @Test
+    void shouldReturn503ForSessionStorageFailure() {
+        var response = new GlobalExceptionHandler().handlePersistenceUnavailable(
+                new br.fai.findcollectors.exceptions.AuthenticationUnavailableException(
+                        new RuntimeException("password=secret")),
+                new org.springframework.mock.web.MockHttpServletRequest("POST", "/api/refresh"));
+        org.assertj.core.api.Assertions.assertThat(response.getStatusCode().value()).isEqualTo(503);
+        org.assertj.core.api.Assertions.assertThat(response.getBody().code()).isEqualTo("AUTHENTICATION_UNAVAILABLE");
+        org.assertj.core.api.Assertions.assertThat(response.getBody().message()).doesNotContain("secret");
+    }
+
+    @Test
     void shouldReturnNotFoundForNotFoundException() {
         NotFoundException exception = new NotFoundException(
                 ErrorCode.PERSON_NOT_FOUND,
@@ -90,6 +101,24 @@ class GlobalExceptionHandlerTest {
                 response.getBody(),
                 "BUSINESS_RULE_VIOLATION",
                 "Recycler must be of type recycler.",
+                beforeHandling
+        );
+    }
+
+    @Test
+    void shouldNotExposeUnexpectedExceptionDetails() {
+        RuntimeException exception = new RuntimeException(
+                "password=secret jdbc:postgresql://internal-host/database"
+        );
+
+        Instant beforeHandling = Instant.now();
+        ResponseEntity<ExceptionResponse> response = handler.handleRuntime(exception, request);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertResponse(
+                response.getBody(),
+                "INTERNAL_SERVER_ERROR",
+                "An unexpected error occurred",
                 beforeHandling
         );
     }

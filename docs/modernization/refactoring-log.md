@@ -83,3 +83,22 @@ Add a section whenever a change significantly affects:
 - deployment or operations.
 
 Small fixes remain documented through commits and pull requests only.
+
+## PostgreSQL authentication sessions — October 2026
+
+- kept HS256 signing and introduced a stable session UUID (`sid`) and distinct
+  token UUIDs (`jti`);
+- added migration `V4` for sessions and SHA-256 refresh-token hashes without
+  changing earlier migrations or existing account/collection records;
+- implemented single-use refresh rotation and full session revocation on reuse;
+- serialized refresh and logout through the session row lock and committed
+  replay revocation before returning the authentication failure;
+- added `POST /api/logout` with `204` and validation of session state on each
+  protected request; independent logins remain active;
+- bounded sessions to 7 days and capped access expiry at the same deadline;
+- added hourly cleanup of expired session/refresh history;
+- preserved `INVALID_TOKEN` for rejected tokens and added
+  `AUTHENTICATION_UNAVAILABLE` (`503`) for session persistence failures;
+- required new login for JWTs created before session claims were introduced;
+- added unit tests and opt-in PostgreSQL tests for HTTP revocation, concurrent
+  refresh/logout, cleanup, and migrations on fresh and upgraded schemas.

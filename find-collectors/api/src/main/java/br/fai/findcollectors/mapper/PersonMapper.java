@@ -1,7 +1,9 @@
 package br.fai.findcollectors.mapper;
 
 import br.fai.findcollectors.dto.request.CreatePersonRequest;
+import br.fai.findcollectors.dto.request.UpdatePersonRequest;
 import br.fai.findcollectors.dto.response.PersonResponse;
+import br.fai.findcollectors.dto.response.PersonSummaryResponse;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.enums.GarbageType;
 import br.fai.findcollectors.enums.PersonType;
@@ -20,6 +22,22 @@ public class PersonMapper {
                 .build();
     }
 
+    public static Person toEntity(UpdatePersonRequest request) {
+
+        return Person.builder()
+                .name(request.name())
+                .telephone(request.telephone())
+                .personType(PersonType.fromString(request.personType()))
+                .collectPoint(request.collectPoint())
+                .garbageType(request.garbageType()
+                        .stream()
+                        .map(GarbageType::fromString)
+                        .toList())
+                .description(request.description())
+                .address(AddressMapper.toEntity(request.address()))
+                .build();
+    }
+
     public static PersonResponse toResponse(Person person) {
 
         if (person == null) {
@@ -32,7 +50,7 @@ public class PersonMapper {
                 .name(person.getName())
                 .telephone(person.getTelephone())
                 .personType(person.getPersonType().name())
-                .godfather(toResponse(person.getGodfather()))
+                .godfather(toSummaryResponse(person.getGodfather()))
                 .garbageType(person.getGarbageType() == null ? List.of() : person.getGarbageType()
                         .stream()
                         .map(GarbageType::name)
@@ -40,6 +58,18 @@ public class PersonMapper {
                 )
                 .description(person.getDescription())
                 .address(AddressMapper.toResponse(person.getAddress()))
+                .build();
+    }
+
+    private static PersonSummaryResponse toSummaryResponse(Person person) {
+        if (person == null) {
+            return null;
+        }
+
+        return PersonSummaryResponse.builder()
+                .id(person.getId())
+                .name(person.getName())
+                .personType(person.getPersonType().name())
                 .build();
     }
 }

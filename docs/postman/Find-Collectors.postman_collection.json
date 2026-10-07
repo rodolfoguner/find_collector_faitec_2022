@@ -1,0 +1,1822 @@
+{
+  "info": {
+    "name": "Find Collectors",
+    "description": "# Find Collectors — API atual\n\nBackend REST Java 25 / Spring Boot, PostgreSQL e Flyway, nos módulos api, application, domain e infrastructure. Conecta recicladores e coletores e oferece cadastro, consulta/edição de pessoas e CRUD/consultas de coletas. Esta collection documenta o código atual de find-collectors/, incluindo sessões persistidas, refresh de uso único e logout.\n\n## Uso\nImporte esta collection v2.1. Em Variables, preencha loginEmail e loginPassword manualmente; ajuste baseUrl. Não é necessário um environment. As variáveis de configuração/autenticação são lidas da própria collection. Use uma conta existente ou execute Cadastrar conta. Envie qualquer request protegido: a autenticação Bearer é herdada da collection, e o script faz login quando necessário, reutiliza o access válido e renova com 30 segundos de antecedência. Falhas de autenticação impedem o envio do request principal. Uma resposta 401 limpa tokens para o próximo envio; não há repetição automática do request principal.\n\nExecute Minha conta para salvar authenticatedPersonId. Preencha personId, recyclerId e collectorId conforme a operação; cadastro salva personId e cadastro/Minha conta preenchem o ID do tipo correspondente somente quando vazio. Criar coleta salva collectId. As requests podem ser enviadas individualmente. No Runner, selecione somente as operações desejadas e execute sequencialmente: não execute refresh simultâneos nem rode a collection inteira indiscriminadamente, pois cadastro/PUT/DELETE/logout alteram dados. Para trocar de conta, altere loginEmail/loginPassword e limpe IDs que pertenciam à conta anterior; para trocar só a senha e forçar novo login, limpe os tokens.\n\n## Contratos\nPersonResponse: id, email, name, telephone, personType, godfather (resumo ou null), garbageType, description, address; nunca senha e não inclui collectPoint. CollectResponse: id, dateAndTime, garbageType, status, recurrent, address, collector/recycler (id, name, personType), createdAt e updatedAt. Address: cep/street/district/city/state obrigatórios; limites 10/100/100/100/50; number opcional até 10. Datas de coleta/auditoria são LocalDateTime; expirações de tokens/timestamp de erro são Instant UTC.\n\nMateriais: PAPER, GLASS, PLASTIC, METAL, ORGANIC, NO_RECICLABLE (grafia atual do contrato). Tipos de pessoa: RECYCLER, COLLECTOR. Estados: PENDING, ACCEPTED, COMPLETED, CANCELLED. Não existem endpoints de aceitação, conclusão ou cancelamento; recurrent ainda é apenas um atributo.\n\n## Erros\nFormato: {\"code\":\"PERSON_NOT_FOUND\",\"message\":\"Person with id 123 not found\",\"path\":\"/api/person/123\",\"timestamp\":\"2026-10-05T13:00:00Z\"}. HTTP 400 VALIDATION_ERROR; 401 INVALID_CREDENTIALS, AUTHENTICATION_REQUIRED ou INVALID_TOKEN; 403 ACCESS_DENIED; 404 PERSON_NOT_FOUND/COLLECT_NOT_FOUND/RECYCLER_NOT_FOUND; 409 EMAIL_ALREADY_REGISTERED; 422 BUSINESS_RULE_VIOLATION; 500 INTERNAL_SERVER_ERROR; 503 AUTHENTICATION_UNAVAILABLE. A validação de token considera a sessão no PostgreSQL, além da assinatura/expiração. Não há autorização por proprietário/tipo de usuário implementada ainda.\n\n## Autenticação e testes\nCada login cria sessão independente. Refresh rota o par sem estender o prazo absoluto da sessão (padrão 7 dias). Reutilização de refresh revoga toda a sessão; não repita um refresh cuja resposta foi perdida. Se a renovação automática receber 401, tenta um login novo uma única vez; outros erros interrompem o envio. Logout revoga somente a sessão atual, limpa os tokens e o próximo request protegido faz novo login. Para testar tokens inválidos/revogados/expirados ou ausência de autenticação, use uma cópia sem scripts automáticos e configure o Bearer/noauth desejado. Exemplos são ilustrativos, com IDs fictícios, e não criam fixtures.\n\nCredenciais/tokens estão vazios no arquivo versionado. Guarde os valores preenchidos localmente no Postman e não os compartilhe/exporte para Git. Guia completo: docs/postman/README.md.\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string",
+      "description": "URL da API sem barra final. Usada diretamente da collection."
+    },
+    {
+      "key": "loginEmail",
+      "value": "",
+      "type": "string",
+      "description": "Preencha manualmente o e-mail; usado no login automático e cadastro."
+    },
+    {
+      "key": "loginPassword",
+      "value": "",
+      "type": "string",
+      "description": "Preencha manualmente a senha; não exporte valores preenchidos."
+    },
+    {
+      "key": "signupName",
+      "value": "Pessoa de teste",
+      "type": "string",
+      "description": "Nome para cadastro."
+    },
+    {
+      "key": "signupPersonType",
+      "value": "RECYCLER",
+      "type": "string",
+      "description": "RECYCLER ou COLLECTOR para cadastro."
+    },
+    {
+      "key": "personId",
+      "value": "",
+      "type": "string",
+      "description": "Alvo de leitura/edição/exclusão; salvo no cadastro."
+    },
+    {
+      "key": "authenticatedPersonId",
+      "value": "",
+      "type": "string",
+      "description": "ID do usuário; salvo por Minha conta."
+    },
+    {
+      "key": "recyclerId",
+      "value": "",
+      "type": "string",
+      "description": "ID de uma pessoa RECYCLER; criação e consulta de coletas."
+    },
+    {
+      "key": "collectorId",
+      "value": "",
+      "type": "string",
+      "description": "ID de uma pessoa COLLECTOR; consulta de aceitas."
+    },
+    {
+      "key": "collectId",
+      "value": "",
+      "type": "string",
+      "description": "ID salvo na criação da coleta ou preenchido manualmente."
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string",
+      "description": "Gerenciado automaticamente; não preencha nem exporte tokens reais."
+    },
+    {
+      "key": "accessTokenExpiresAt",
+      "value": "",
+      "type": "string",
+      "description": "Gerenciado automaticamente; não preencha nem exporte tokens reais."
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string",
+      "description": "Gerenciado automaticamente; não preencha nem exporte tokens reais."
+    },
+    {
+      "key": "refreshTokenExpiresAt",
+      "value": "",
+      "type": "string",
+      "description": "Gerenciado automaticamente; não preencha nem exporte tokens reais."
+    },
+    {
+      "key": "authContext",
+      "value": "",
+      "type": "string",
+      "description": "Gerenciado automaticamente para invalidar tokens ao mudar URL/e-mail."
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Autenticação centralizada: executar sequencialmente (refresh é de uso único).",
+          "const cv = pm.collectionVariables;",
+          "const tokenKeys = ['accessToken', 'accessTokenExpiresAt', 'refreshToken', 'refreshTokenExpiresAt'];",
+          "const clearTokens = () => tokenKeys.forEach(key => cv.set(key, ''));",
+          "const baseUrl = String(cv.get('baseUrl') || '').replace(/\\/+$/, '');",
+          "const email = String(cv.get('loginEmail') || '');",
+          "const password = String(cv.get('loginPassword') || '');",
+          "const path = pm.request.url.getPath();",
+          "const endpoint = path.replace(/\\{\\{[^}]+\\}\\}/g, 'id');",
+          "const context = baseUrl + '|' + email;",
+          "if (cv.get('authContext') !== context) {",
+          "    clearTokens();",
+          "    cv.set('authContext', context);",
+          "}",
+          "// Variáveis locais evitam que outro environment sobreponha os tokens/credenciais.",
+          "pm.variables.set('baseUrl', baseUrl);",
+          "pm.variables.set('loginBody', JSON.stringify({email, password}));",
+          "pm.variables.set('signupBody', JSON.stringify({email, password,",
+          "    name: cv.get('signupName'), personType: cv.get('signupPersonType')}));",
+          "const isPost = pm.request.method === 'POST';",
+          "const login = isPost && endpoint === '/api/login';",
+          "const signup = isPost && endpoint === '/api/signup';",
+          "const refresh = isPost && endpoint === '/api/refresh';",
+          "const publicResource = endpoint.startsWith('/actuator/') || endpoint.startsWith('/v3/api-docs') || endpoint.startsWith('/swagger-ui');",
+          "const usable = (key, expiresKey) => Boolean(cv.get(key)) && Date.parse(cv.get(expiresKey)) > Date.now() + 30000;",
+          "const storeTokens = data => {",
+          "    if (data.tokenType !== 'Bearer' || !data.accessToken || !data.refreshToken ||",
+          "        !Number.isFinite(Date.parse(data.accessTokenExpiresAt)) || !Number.isFinite(Date.parse(data.refreshTokenExpiresAt))) {",
+          "        throw new Error('Resposta de autenticação inválida. Confira o contrato AuthResponse da API.');",
+          "    }",
+          "    tokenKeys.forEach(key => cv.set(key, data[key]));",
+          "};",
+          "const sendAuth = async (route, body) => await pm.sendRequest({",
+          "    url: baseUrl + route, method: 'POST',",
+          "    header: {'Content-Type': 'application/json', 'Accept': 'application/json'},",
+          "    body: {mode: 'raw', raw: JSON.stringify(body)}",
+          "});",
+          "const doLogin = async () => {",
+          "    if (!email || !password) throw new Error('Preencha loginEmail e loginPassword nas Variables da collection.');",
+          "    const response = await sendAuth('/api/login', {email, password});",
+          "    if (response.code !== 200) throw new Error('Login automático falhou (HTTP ' + response.code + '). Confira credenciais e disponibilidade da API.');",
+          "    storeTokens(response.json());",
+          "};",
+          "try {",
+          "    if (!baseUrl) throw new Error('Preencha baseUrl nas Variables da collection.');",
+          "    if ((login || signup) && (!email || !password)) throw new Error('Preencha loginEmail e loginPassword nas Variables da collection.');",
+          "    if (!login && !signup && !publicResource) {",
+          "        if (refresh) {",
+          "            // A própria request fará a rotação, sem consumir antecipadamente o refresh.",
+          "            if (!usable('refreshToken', 'refreshTokenExpiresAt')) await doLogin();",
+          "        } else if (!usable('accessToken', 'accessTokenExpiresAt')) {",
+          "            if (usable('refreshToken', 'refreshTokenExpiresAt')) {",
+          "                const response = await sendAuth('/api/refresh', {refreshToken: cv.get('refreshToken')});",
+          "                if (response.code === 200) storeTokens(response.json());",
+          "                else if (response.code === 401) { clearTokens(); await doLogin(); }",
+          "                else throw new Error('Renovação automática falhou (HTTP ' + response.code + ').');",
+          "            } else await doLogin();",
+          "        }",
+          "    }",
+          "    tokenKeys.forEach(key => pm.variables.set(key, cv.get(key) || ''));",
+          "} catch (error) {",
+          "    clearTokens();",
+          "    pm.execution.skipRequest();",
+          "    throw new Error(error.message || 'Não foi possível autenticar; a request foi interrompida.');",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const cv = pm.collectionVariables;",
+          "const path = pm.request.url.getPath();",
+          "const tokenKeys = ['accessToken', 'accessTokenExpiresAt', 'refreshToken', 'refreshTokenExpiresAt'];",
+          "const clearTokens = () => tokenKeys.forEach(key => cv.set(key, ''));",
+          "const authResponse = pm.request.method === 'POST' && ['/api/login', '/api/refresh'].includes(path);",
+          "if (authResponse && pm.response.code === 200) {",
+          "    const data = pm.response.json();",
+          "    pm.test('AuthResponse contém o par de tokens e as expirações', () => {",
+          "        pm.expect(data.tokenType).to.eql('Bearer');",
+          "        tokenKeys.forEach(key => pm.expect(data[key]).to.be.a('string').and.not.empty);",
+          "        pm.expect(Date.parse(data.accessTokenExpiresAt)).to.be.above(Date.now());",
+          "        pm.expect(Date.parse(data.refreshTokenExpiresAt)).to.be.above(Date.now());",
+          "    });",
+          "    if (data.tokenType === 'Bearer' && tokenKeys.every(key => typeof data[key] === 'string' && data[key]) &&",
+          "        Number.isFinite(Date.parse(data.accessTokenExpiresAt)) && Number.isFinite(Date.parse(data.refreshTokenExpiresAt))) {",
+          "        tokenKeys.forEach(key => cv.set(key, data[key]));",
+          "    } else clearTokens();",
+          "}",
+          "if (pm.response.code === 401 || (path === '/api/logout' && pm.response.code === 204)) clearTokens();",
+          "if (pm.response.code >= 400) {",
+          "    pm.test('Erro segue o contrato padronizado', () => {",
+          "        const data = pm.response.json();",
+          "        ['code', 'message', 'path', 'timestamp'].forEach(key => pm.expect(data[key]).to.be.a('string'));",
+          "    });",
+          "}",
+          "if (pm.response.code === 204) pm.test('Resposta sem conteúdo', () => pm.expect(pm.response.text()).to.eql(''));",
+          "if (pm.response.code >= 200 && pm.response.code < 300 &&",
+          "    (path === '/api/signup' || path === '/api/me')) {",
+          "    const data = pm.response.json();",
+          "    cv.set(path === '/api/me' ? 'authenticatedPersonId' : 'personId', String(data.id));",
+          "    const key = data.personType === 'RECYCLER' ? 'recyclerId' : 'collectorId';",
+          "    if (!cv.get(key)) cv.set(key, String(data.id));",
+          "}",
+          "if (pm.request.method === 'POST' && path === '/api/collect' && pm.response.code === 200) {",
+          "    cv.set('collectId', String(pm.response.json().id));",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Conta e autenticação",
+      "item": [
+        {
+          "name": "Cadastrar conta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "signup"
+              ]
+            },
+            "description": "Cria uma conta. O body usa loginEmail/loginPassword, signupName e signupPersonType. E-mail válido até 100 caracteres; nome obrigatório até 100; senha de 8 a 100, com número e maiúscula. Tipos: RECYCLER ou COLLECTOR (sem distinção de caixa). Salva personId e preenche recyclerId/collectorId se vazio. Não faz login automaticamente após cadastro.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 201.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 409 EMAIL_ALREADY_REGISTERED.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{{signupBody}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Senha não é exposta', () => pm.expect(pm.response.json()).not.to.have.property('password'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/signup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "signup"
+                  ]
+                },
+                "description": "Cria uma conta. O body usa loginEmail/loginPassword, signupName e signupPersonType. E-mail válido até 100 caracteres; nome obrigatório até 100; senha de 8 a 100, com número e maiúscula. Tipos: RECYCLER ou COLLECTOR (sem distinção de caixa). Salva personId e preenche recyclerId/collectorId se vazio. Não faz login automaticamente após cadastro.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 201.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 409 EMAIL_ALREADY_REGISTERED.",
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{signupBody}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 123,\n  \"email\": \"pessoa@example.com\",\n  \"name\": \"Pessoa de teste\",\n  \"telephone\": null,\n  \"personType\": \"RECYCLER\",\n  \"godfather\": null,\n  \"garbageType\": [],\n  \"description\": null,\n  \"address\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login (opcional; automático nos requests protegidos)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            },
+            "description": "Valida loginEmail/loginPassword e cria uma sessão independente. Salva os dois tokens e as expirações. Access padrão: 15 minutos; sessão/refresh: 7 dias absolutos. Login manual é opcional.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 401 INVALID_CREDENTIALS; 503 AUTHENTICATION_UNAVAILABLE.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{{loginBody}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "login"
+                  ]
+                },
+                "description": "Valida loginEmail/loginPassword e cria uma sessão independente. Salva os dois tokens e as expirações. Access padrão: 15 minutos; sessão/refresh: 7 dias absolutos. Login manual é opcional.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 401 INVALID_CREDENTIALS; 503 AUTHENTICATION_UNAVAILABLE.",
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{{loginBody}}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"tokenType\": \"Bearer\",\n  \"accessToken\": \"<access-token-emitido-pela-api>\",\n  \"accessTokenExpiresAt\": \"2026-10-05T13:15:00Z\",\n  \"refreshToken\": \"<refresh-token-emitido-pela-api>\",\n  \"refreshTokenExpiresAt\": \"2026-10-12T13:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Renovar tokens (opcional; automático quando necessário)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "refresh"
+              ]
+            },
+            "description": "Consome o refreshToken salvo e armazena um novo par. Se ausente/expirado, o pre-request faz login primeiro. Reutilizar um refresh revoga a sessão inteira; execute sequencialmente. Para testes negativos sem automação, use uma cópia com scripts desabilitados.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 401 INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/refresh",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "refresh"
+                  ]
+                },
+                "description": "Consome o refreshToken salvo e armazena um novo par. Se ausente/expirado, o pre-request faz login primeiro. Reutilizar um refresh revoga a sessão inteira; execute sequencialmente. Para testes negativos sem automação, use uma cópia com scripts desabilitados.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 401 INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE.",
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"tokenType\": \"Bearer\",\n  \"accessToken\": \"<access-token-emitido-pela-api>\",\n  \"accessTokenExpiresAt\": \"2026-10-05T13:15:00Z\",\n  \"refreshToken\": \"<refresh-token-emitido-pela-api>\",\n  \"refreshTokenExpiresAt\": \"2026-10-12T13:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Minha conta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "me"
+              ]
+            },
+            "description": "Retorna o usuário do access token. Salva authenticatedPersonId e preenche recyclerId/collectorId se vazio; personId continua sendo o alvo de edição/exclusão.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Senha não é exposta', () => pm.expect(pm.response.json()).not.to.have.property('password'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "me"
+                  ]
+                },
+                "description": "Retorna o usuário do access token. Salva authenticatedPersonId e preenche recyclerId/collectorId se vazio; personId continua sendo o alvo de edição/exclusão.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 123,\n  \"email\": \"pessoa@example.com\",\n  \"name\": \"Pessoa de teste\",\n  \"telephone\": null,\n  \"personType\": \"RECYCLER\",\n  \"godfather\": null,\n  \"garbageType\": [],\n  \"description\": null,\n  \"address\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout da sessão atual",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "logout"
+              ]
+            },
+            "description": "Revoga a sessão atual e todos os seus tokens; outras sessões permanecem válidas. Limpa tokens locais após 204. O próximo request protegido faz login novamente; para testar a revogação, desabilite os scripts em uma cópia.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 204.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "204 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/logout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "logout"
+                  ]
+                },
+                "description": "Revoga a sessão atual e todos os seus tokens; outras sessões permanecem válidas. Limpa tokens locais após 204. O próximo request protegido faz login novamente; para testar a revogação, desabilite os scripts em uma cópia.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 204.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pessoas",
+      "item": [
+        {
+          "name": "Listar pessoas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/person",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "person"
+              ]
+            },
+            "description": "Lista todas as pessoas, sem paginação, ordenação ou filtros.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta é uma lista', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/person",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "person"
+                  ]
+                },
+                "description": "Lista todas as pessoas, sem paginação, ordenação ou filtros.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 123,\n    \"email\": \"pessoa@example.com\",\n    \"name\": \"Pessoa de teste\",\n    \"telephone\": null,\n    \"personType\": \"RECYCLER\",\n    \"godfather\": null,\n    \"garbageType\": [],\n    \"description\": null,\n    \"address\": null\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Buscar pessoa por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/person/{{personId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "person",
+                "{{personId}}"
+              ]
+            },
+            "description": "personId é o ID da pessoa consultada (não necessariamente o usuário autenticado).\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 404 PERSON_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Senha não é exposta', () => pm.expect(pm.response.json()).not.to.have.property('password'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/person/{{personId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "person",
+                    "{{personId}}"
+                  ]
+                },
+                "description": "personId é o ID da pessoa consultada (não necessariamente o usuário autenticado).\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 404 PERSON_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 123,\n  \"email\": \"pessoa@example.com\",\n  \"name\": \"Pessoa de teste\",\n  \"telephone\": null,\n  \"personType\": \"RECYCLER\",\n  \"godfather\": null,\n  \"garbageType\": [],\n  \"description\": null,\n  \"address\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Atualizar pessoa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/person/{{personId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "person",
+                "{{personId}}"
+              ]
+            },
+            "description": "Substitui os campos editáveis. Nome obrigatório até 100; telephone opcional até 15; personType obrigatório; garbageType obrigatório (pode ser []). description/address opcionais; address null remove o endereço. collectPoint é persistido, mas não aparece em PersonResponse. Não altera e-mail, senha ou padrinho.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 404 PERSON_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pessoa de teste\",\n  \"telephone\": \"35999999999\",\n  \"personType\": \"RECYCLER\",\n  \"collectPoint\": false,\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"description\": \"Materiais separados para reciclagem.\",\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Senha não é exposta', () => pm.expect(pm.response.json()).not.to.have.property('password'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/person/{{personId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "person",
+                    "{{personId}}"
+                  ]
+                },
+                "description": "Substitui os campos editáveis. Nome obrigatório até 100; telephone opcional até 15; personType obrigatório; garbageType obrigatório (pode ser []). description/address opcionais; address null remove o endereço. collectPoint é persistido, mas não aparece em PersonResponse. Não altera e-mail, senha ou padrinho.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 404 PERSON_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Pessoa de teste\",\n  \"telephone\": \"35999999999\",\n  \"personType\": \"RECYCLER\",\n  \"collectPoint\": false,\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"description\": \"Materiais separados para reciclagem.\",\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 123,\n  \"email\": \"pessoa@example.com\",\n  \"name\": \"Pessoa de teste\",\n  \"telephone\": null,\n  \"personType\": \"RECYCLER\",\n  \"godfather\": null,\n  \"garbageType\": [],\n  \"description\": null,\n  \"address\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Excluir pessoa",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/person/{{personId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "person",
+                "{{personId}}"
+              ]
+            },
+            "description": "Exclui a pessoa identificada por personId. A exclusão também remove suas sessões de autenticação. Execute com uma conta destinada a testes; relacionamentos existentes podem impedir a exclusão.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 204.\n\n**Erros esperados:** 404 PERSON_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "204 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/person/{{personId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "person",
+                    "{{personId}}"
+                  ]
+                },
+                "description": "Exclui a pessoa identificada por personId. A exclusão também remove suas sessões de autenticação. Execute com uma conta destinada a testes; relacionamentos existentes podem impedir a exclusão.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 204.\n\n**Erros esperados:** 404 PERSON_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Coletas",
+      "item": [
+        {
+          "name": "Criar coleta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collect",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collect"
+              ]
+            },
+            "description": "recyclerId obrigatório, positivo e de uma pessoa RECYCLER existente. Data/hora local ISO 8601 sem timezone; lista de materiais não vazia; endereço obrigatório. Cria PENDING com collector null. Salva collectId. O status atual de sucesso é 200.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 404 RECYCLER_NOT_FOUND; 422 BUSINESS_RULE_VIOLATION; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateAndTime\": \"2026-12-10T09:00:00\",\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"recurrent\": false,\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  },\n  \"recyclerId\": {{recyclerId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/collect",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "collect"
+                  ]
+                },
+                "description": "recyclerId obrigatório, positivo e de uma pessoa RECYCLER existente. Data/hora local ISO 8601 sem timezone; lista de materiais não vazia; endereço obrigatório. Cria PENDING com collector null. Salva collectId. O status atual de sucesso é 200.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 404 RECYCLER_NOT_FOUND; 422 BUSINESS_RULE_VIOLATION; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"dateAndTime\": \"2026-12-10T09:00:00\",\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"recurrent\": false,\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  },\n  \"recyclerId\": {{recyclerId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 456,\n  \"dateAndTime\": \"2026-12-10T09:00:00\",\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"status\": \"PENDING\",\n  \"recurrent\": false,\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  },\n  \"collector\": null,\n  \"recycler\": {\n    \"id\": 123,\n    \"name\": \"Pessoa de teste\",\n    \"personType\": \"RECYCLER\"\n  },\n  \"createdAt\": \"2026-10-05T10:00:00\",\n  \"updatedAt\": \"2026-10-05T10:00:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Listar coletas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collect",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collect"
+              ]
+            },
+            "description": "Lista todas as coletas, sem paginação, ordenação ou filtros.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta é uma lista', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/collect",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "collect"
+                  ]
+                },
+                "description": "Lista todas as coletas, sem paginação, ordenação ou filtros.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 456,\n    \"dateAndTime\": \"2026-12-10T09:00:00\",\n    \"garbageType\": [\n      \"PAPER\",\n      \"PLASTIC\"\n    ],\n    \"status\": \"PENDING\",\n    \"recurrent\": false,\n    \"address\": {\n      \"cep\": \"37540-000\",\n      \"street\": \"Rua de Exemplo\",\n      \"district\": \"Centro\",\n      \"number\": \"100\",\n      \"city\": \"Santa Rita do Sapucaí\",\n      \"state\": \"MG\"\n    },\n    \"collector\": null,\n    \"recycler\": {\n      \"id\": 123,\n      \"name\": \"Pessoa de teste\",\n      \"personType\": \"RECYCLER\"\n    },\n    \"createdAt\": \"2026-10-05T10:00:00\",\n    \"updatedAt\": \"2026-10-05T10:00:00\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Buscar coleta por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collect/{{collectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collect",
+                "{{collectId}}"
+              ]
+            },
+            "description": "collectId é o ID salvo ao criar uma coleta ou preenchido manualmente.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 404 COLLECT_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/collect/{{collectId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "collect",
+                    "{{collectId}}"
+                  ]
+                },
+                "description": "collectId é o ID salvo ao criar uma coleta ou preenchido manualmente.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 404 COLLECT_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 456,\n  \"dateAndTime\": \"2026-12-10T09:00:00\",\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"status\": \"PENDING\",\n  \"recurrent\": false,\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  },\n  \"collector\": null,\n  \"recycler\": {\n    \"id\": 123,\n    \"name\": \"Pessoa de teste\",\n    \"personType\": \"RECYCLER\"\n  },\n  \"createdAt\": \"2026-10-05T10:00:00\",\n  \"updatedAt\": \"2026-10-05T10:00:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Atualizar coleta",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collect/{{collectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collect",
+                "{{collectId}}"
+              ]
+            },
+            "description": "Substitui dateAndTime, garbageType, recurrent e address. Não altera status, recycler ou collector. Validações iguais às de criação, sem recyclerId.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 404 COLLECT_NOT_FOUND; 422 BUSINESS_RULE_VIOLATION; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateAndTime\": \"2026-12-10T09:00:00\",\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"recurrent\": false,\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/collect/{{collectId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "collect",
+                    "{{collectId}}"
+                  ]
+                },
+                "description": "Substitui dateAndTime, garbageType, recurrent e address. Não altera status, recycler ou collector. Validações iguais às de criação, sem recyclerId.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 400 VALIDATION_ERROR; 404 COLLECT_NOT_FOUND; 422 BUSINESS_RULE_VIOLATION; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"dateAndTime\": \"2026-12-10T09:00:00\",\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"recurrent\": false,\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 456,\n  \"dateAndTime\": \"2026-12-10T09:00:00\",\n  \"garbageType\": [\n    \"PAPER\",\n    \"PLASTIC\"\n  ],\n  \"status\": \"PENDING\",\n  \"recurrent\": false,\n  \"address\": {\n    \"cep\": \"37540-000\",\n    \"street\": \"Rua de Exemplo\",\n    \"district\": \"Centro\",\n    \"number\": \"100\",\n    \"city\": \"Santa Rita do Sapucaí\",\n    \"state\": \"MG\"\n  },\n  \"collector\": null,\n  \"recycler\": {\n    \"id\": 123,\n    \"name\": \"Pessoa de teste\",\n    \"personType\": \"RECYCLER\"\n  },\n  \"createdAt\": \"2026-10-05T10:00:00\",\n  \"updatedAt\": \"2026-10-05T10:00:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Coletas disponíveis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collect/free-collects/{{authenticatedPersonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collect",
+                "free-collects",
+                "{{authenticatedPersonId}}"
+              ]
+            },
+            "description": "Retorna PENDING cujo recycler.id difere do ID informado. Use Minha conta antes para preencher authenticatedPersonId ou informe o ID manualmente. Não filtra por localização/material.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta é uma lista', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/collect/free-collects/{{authenticatedPersonId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "collect",
+                    "free-collects",
+                    "{{authenticatedPersonId}}"
+                  ]
+                },
+                "description": "Retorna PENDING cujo recycler.id difere do ID informado. Use Minha conta antes para preencher authenticatedPersonId ou informe o ID manualmente. Não filtra por localização/material.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 456,\n    \"dateAndTime\": \"2026-12-10T09:00:00\",\n    \"garbageType\": [\n      \"PAPER\",\n      \"PLASTIC\"\n    ],\n    \"status\": \"PENDING\",\n    \"recurrent\": false,\n    \"address\": {\n      \"cep\": \"37540-000\",\n      \"street\": \"Rua de Exemplo\",\n      \"district\": \"Centro\",\n      \"number\": \"100\",\n      \"city\": \"Santa Rita do Sapucaí\",\n      \"state\": \"MG\"\n    },\n    \"collector\": null,\n    \"recycler\": {\n      \"id\": 123,\n      \"name\": \"Pessoa de teste\",\n      \"personType\": \"RECYCLER\"\n    },\n    \"createdAt\": \"2026-10-05T10:00:00\",\n    \"updatedAt\": \"2026-10-05T10:00:00\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Coletas do reciclador",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collect/my-collects/{{recyclerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collect",
+                "my-collects",
+                "{{recyclerId}}"
+              ]
+            },
+            "description": "Retorna coletas de recyclerId com status diferente de COMPLETED; inclui outros estados, inclusive CANCELLED.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta é uma lista', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/collect/my-collects/{{recyclerId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "collect",
+                    "my-collects",
+                    "{{recyclerId}}"
+                  ]
+                },
+                "description": "Retorna coletas de recyclerId com status diferente de COMPLETED; inclui outros estados, inclusive CANCELLED.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 456,\n    \"dateAndTime\": \"2026-12-10T09:00:00\",\n    \"garbageType\": [\n      \"PAPER\",\n      \"PLASTIC\"\n    ],\n    \"status\": \"PENDING\",\n    \"recurrent\": false,\n    \"address\": {\n      \"cep\": \"37540-000\",\n      \"street\": \"Rua de Exemplo\",\n      \"district\": \"Centro\",\n      \"number\": \"100\",\n      \"city\": \"Santa Rita do Sapucaí\",\n      \"state\": \"MG\"\n    },\n    \"collector\": null,\n    \"recycler\": {\n      \"id\": 123,\n      \"name\": \"Pessoa de teste\",\n      \"personType\": \"RECYCLER\"\n    },\n    \"createdAt\": \"2026-10-05T10:00:00\",\n    \"updatedAt\": \"2026-10-05T10:00:00\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Coletas aceitas pelo coletor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collect/accepted-collects/{{collectorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collect",
+                "accepted-collects",
+                "{{collectorId}}"
+              ]
+            },
+            "description": "Retorna apenas ACCEPTED com collector.id igual a collectorId. Não existe endpoint de aceitação no backend atual; criar/atualizar não permite atribuir coletor.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta é uma lista', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/collect/accepted-collects/{{collectorId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "collect",
+                    "accepted-collects",
+                    "{{collectorId}}"
+                  ]
+                },
+                "description": "Retorna apenas ACCEPTED com collector.id igual a collectorId. Não existe endpoint de aceitação no backend atual; criar/atualizar não permite atribuir coletor.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 200.\n\n**Erros esperados:** 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[]"
+            }
+          ]
+        },
+        {
+          "name": "Excluir coleta",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collect/{{collectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collect",
+                "{{collectId}}"
+              ]
+            },
+            "description": "Exclui definitivamente a coleta identificada por collectId. Não é uma transição para CANCELLED.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 204.\n\n**Erros esperados:** 404 COLLECT_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "204 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/collect/{{collectId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "collect",
+                    "{{collectId}}"
+                  ]
+                },
+                "description": "Exclui definitivamente a coleta identificada por collectId. Não é uma transição para CANCELLED.\n\n**Autenticação:** Bearer herdado da collection; login/renovação automáticos.\n\n**Sucesso:** HTTP 204.\n\n**Erros esperados:** 404 COLLECT_NOT_FOUND; 401 AUTHENTICATION_REQUIRED/INVALID_TOKEN; 503 AUTHENTICATION_UNAVAILABLE."
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Operação e documentação",
+      "item": [
+        {
+          "name": "Saúde",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            },
+            "description": "Verifica saúde da aplicação e dependências. Em indisponibilidade pode retornar 503.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/actuator/health",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "actuator",
+                    "health"
+                  ]
+                },
+                "description": "Verifica saúde da aplicação e dependências. Em indisponibilidade pode retornar 503.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"UP\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Informações da aplicação",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/info",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actuator",
+                "info"
+              ]
+            },
+            "description": "Informações expostas pelo Actuator; pode retornar objeto vazio na configuração atual.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/actuator/info",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "actuator",
+                    "info"
+                  ]
+                },
+                "description": "Informações expostas pelo Actuator; pode retornar objeto vazio na configuração atual.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}"
+            }
+          ]
+        },
+        {
+          "name": "OpenAPI JSON",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v3/api-docs/find-collectors-api",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs",
+                "find-collectors-api"
+              ]
+            },
+            "description": "Contrato OpenAPI gerado pela aplicação; Swagger UI em {{baseUrl}}/swagger-ui/index.html. Exemplo abreviado.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 - Exemplo de sucesso",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v3/api-docs/find-collectors-api",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v3",
+                    "api-docs",
+                    "find-collectors-api"
+                  ]
+                },
+                "description": "Contrato OpenAPI gerado pela aplicação; Swagger UI em {{baseUrl}}/swagger-ui/index.html. Exemplo abreviado.\n\n**Autenticação:** público; sem Bearer.\n\n**Sucesso:** HTTP 200.",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"openapi\": \"3.0.1\",\n  \"info\": {\n    \"title\": \"Find Collectors\"\n  },\n  \"paths\": {}\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

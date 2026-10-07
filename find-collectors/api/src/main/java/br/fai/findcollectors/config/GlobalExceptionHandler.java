@@ -1,12 +1,15 @@
 package br.fai.findcollectors.config;
 
 import br.fai.findcollectors.dto.response.ExceptionResponse;
+import br.fai.findcollectors.exceptions.AuthenticationUnavailableException;
 import br.fai.findcollectors.exceptions.BusinessException;
 import br.fai.findcollectors.exceptions.ConflictException;
+import br.fai.findcollectors.exceptions.ErrorCode;
 import br.fai.findcollectors.exceptions.NotFoundException;
 import br.fai.findcollectors.exceptions.UnauthorizedException;
 import br.fai.findcollectors.exceptions.UnprocessableEntityException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
@@ -56,11 +60,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @ExceptionHandler(AuthenticationUnavailableException.class)
+    public ResponseEntity<ExceptionResponse> handlePersistenceUnavailable(AuthenticationUnavailableException ex, HttpServletRequest request) {
+        log.error("Persistence unavailable while handling {}: {}", request.getRequestURI(), ex.getClass().getSimpleName());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ExceptionResponse(
+                ErrorCode.AUTHENTICATION_UNAVAILABLE.name(), "Authentication is temporarily unavailable",
+                request.getRequestURI(), Instant.now()));
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ExceptionResponse> handleRuntime(RuntimeException ex, HttpServletRequest request) {
+        log.error(
+                "Unexpected failure while handling {}: {}",
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
         ExceptionResponse response = new ExceptionResponse(
                 "INTERNAL_SERVER_ERROR",
-                ex.getMessage(),
+                "An unexpected error occurred",
                 request.getRequestURI(),
                 Instant.now()
         );

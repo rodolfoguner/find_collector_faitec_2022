@@ -12,7 +12,7 @@ public record PersonResponse(
     String name,
     String telephone,
     String personType,
-    PersonResponse godfather,
+    PersonSummaryResponse godfather,
     List<String> garbageType,
     String description,
     AddressResponse address
