@@ -87,7 +87,13 @@ Every error response uses the same JSON structure:
 `code` is the stable machine-readable identifier and `message` describes the
 specific failure. `path` is the request URI, and `timestamp` is the instant at
 which the handler created the response. Validation failures use
-`VALIDATION_ERROR`; unexpected failures use `INTERNAL_SERVER_ERROR`.
+`VALIDATION_ERROR`; unexpected failures use `INTERNAL_SERVER_ERROR`. Invalid
+path-variable formats use the same `400 VALIDATION_ERROR` contract.
+
+`POST /api/collect` returns `201 Created` with the new resource URI in the
+`Location` header. Collection create and update requests validate every
+material name before mapping; unknown, blank, or null values return
+`400 VALIDATION_ERROR` instead of reaching the mapper.
 
 ## Account password policy
 

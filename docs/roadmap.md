@@ -34,8 +34,8 @@ check already exist; they are a foundation for the planned observability work.
 
 ## Automated quality
 
-- [ ] Add unit tests for use cases with JUnit and Mockito.
-- [ ] Add controller tests with MockMvc.
+- [x] Add unit tests for use cases with JUnit and Mockito.
+- [x] Add controller tests with MockMvc.
 - [ ] Isolate integration tests with Testcontainers and PostgreSQL.
 - [ ] Validate migrations against an empty database in CI.
 - [ ] Add a continuous integration pipeline.

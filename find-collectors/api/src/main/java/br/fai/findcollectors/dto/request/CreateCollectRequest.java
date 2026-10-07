@@ -3,6 +3,8 @@ package br.fai.findcollectors.dto.request;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
@@ -14,7 +16,14 @@ public record CreateCollectRequest(
     LocalDateTime dateAndTime,
 
     @NotEmpty(message = "garbageType is required")
-    List<@NotNull(message = "garbageType must not contain null values") String> garbageType,
+    List<
+        @NotNull(message = "garbageType must not contain null values")
+        @NotBlank(message = "garbageType must not contain blank values")
+        @Pattern(
+            regexp = "(?i)PAPER|GLASS|PLASTIC|METAL|ORGANIC|NO_RECICLABLE",
+            message = "garbageType contains an invalid value"
+        ) String
+    > garbageType,
 
     boolean recurrent,
 
