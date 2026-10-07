@@ -1,8 +1,10 @@
 package br.fai.findcollectors.config;
 
 import br.fai.findcollectors.dto.response.ExceptionResponse;
+import br.fai.findcollectors.exceptions.AuthenticationUnavailableException;
 import br.fai.findcollectors.exceptions.BusinessException;
 import br.fai.findcollectors.exceptions.ConflictException;
+import br.fai.findcollectors.exceptions.ErrorCode;
 import br.fai.findcollectors.exceptions.NotFoundException;
 import br.fai.findcollectors.exceptions.UnauthorizedException;
 import br.fai.findcollectors.exceptions.UnprocessableEntityException;
@@ -56,6 +58,14 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(AuthenticationUnavailableException.class)
+    public ResponseEntity<ExceptionResponse> handlePersistenceUnavailable(AuthenticationUnavailableException ex, HttpServletRequest request) {
+        log.error("Persistence unavailable while handling {}: {}", request.getRequestURI(), ex.getClass().getSimpleName());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ExceptionResponse(
+                ErrorCode.AUTHENTICATION_UNAVAILABLE.name(), "Authentication is temporarily unavailable",
+                request.getRequestURI(), Instant.now()));
     }
 
     @ExceptionHandler(RuntimeException.class)

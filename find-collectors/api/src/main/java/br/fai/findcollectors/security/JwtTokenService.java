@@ -1,74 +1,62 @@
 package br.fai.findcollectors.security;
 
 import br.fai.findcollectors.config.JwtProperties;
-import br.fai.findcollectors.dto.response.AuthResponse;
 import br.fai.findcollectors.entities.Person;
 import br.fai.findcollectors.exceptions.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.security.oauth2.jwt.JwtException;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Service
-public class JwtTokenService {
-
+public class JwtTokenService implements SessionTokenCodec {
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder refreshTokenDecoder;
-    private final JwtProperties properties;
+    private final String issuer;
 
-    public JwtTokenService(
-            JwtEncoder jwtEncoder,
-            @Qualifier("refreshTokenDecoder") JwtDecoder refreshTokenDecoder,
-            JwtProperties properties
-    ) {
+    public JwtTokenService(JwtEncoder jwtEncoder,
+                           @Qualifier("refreshTokenDecoder") JwtDecoder refreshTokenDecoder,
+                           JwtProperties properties) {
         this.jwtEncoder = jwtEncoder;
         this.refreshTokenDecoder = refreshTokenDecoder;
-        this.properties = properties;
+        this.issuer = properties.issuer();
     }
 
-    public AuthResponse issueTokens(Person person) {
-        Instant issuedAt = Instant.now();
-        Instant accessTokenExpiresAt = issuedAt.plus(properties.accessTokenTtl());
-        Instant refreshTokenExpiresAt = issuedAt.plus(properties.refreshTokenTtl());
-
-        return new AuthResponse(
-                "Bearer",
-                encode(person, "access", issuedAt, accessTokenExpiresAt),
-                accessTokenExpiresAt,
-                encode(person, "refresh", issuedAt, refreshTokenExpiresAt),
-                refreshTokenExpiresAt
-        );
+    @Override
+    public IssuedTokens issue(Person person, UUID sessionId, Instant issuedAt,
+                              Instant accessExpiresAt, Instant sessionExpiresAt) {
+        return new IssuedTokens(
+                encode(person, sessionId, "access", issuedAt, accessExpiresAt), accessExpiresAt,
+                encode(person, sessionId, "refresh", issuedAt, sessionExpiresAt), sessionExpiresAt);
     }
 
-    public String subjectFromRefreshToken(String refreshToken) {
+    @Override
+    public RefreshTokenIdentity readRefresh(String token) {
         try {
-            Jwt jwt = refreshTokenDecoder.decode(refreshToken);
-            return jwt.getSubject();
-        } catch (JwtException exception) {
+            Jwt jwt = refreshTokenDecoder.decode(token);
+            return new RefreshTokenIdentity(UUID.fromString(jwt.getClaimAsString("sid")),
+                    ((Number) jwt.getClaim("personId")).longValue(), jwt.getSubject());
+        } catch (JwtException | IllegalArgumentException exception) {
             throw new InvalidTokenException("Refresh token is invalid or expired");
         }
     }
 
-    private String encode(Person person, String tokenType, Instant issuedAt, Instant expiresAt) {
+    private String encode(Person person, UUID sessionId, String tokenType, Instant issuedAt, Instant expiresAt) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer(properties.issuer())
+                .issuer(issuer)
                 .subject(person.getEmail())
+                .id(UUID.randomUUID().toString())
                 .issuedAt(issuedAt)
                 .expiresAt(expiresAt)
+                .claim("sid", sessionId.toString())
                 .claim("personId", person.getId())
                 .claim("personType", person.getPersonType().name())
                 .claim("tokenType", tokenType)
                 .build();
-
-        JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
-        return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+        return jwtEncoder.encode(JwtEncoderParameters.from(
+                JwsHeader.with(MacAlgorithm.HS256).build(), claims)).getTokenValue();
     }
 }

@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
@@ -27,12 +29,18 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        boolean unavailable = authException instanceof AuthenticationServiceException;
+        boolean invalid = authException instanceof InvalidBearerTokenException;
+        response.setStatus(unavailable ? HttpServletResponse.SC_SERVICE_UNAVAILABLE : HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
+        if (!unavailable) {
+            response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
+        }
         objectMapper.writeValue(response.getOutputStream(), new ExceptionResponse(
-                ErrorCode.AUTHENTICATION_REQUIRED.name(),
-                "Authentication is required",
+                (unavailable ? ErrorCode.AUTHENTICATION_UNAVAILABLE
+                        : invalid ? ErrorCode.INVALID_TOKEN : ErrorCode.AUTHENTICATION_REQUIRED).name(),
+                unavailable ? "Authentication is temporarily unavailable"
+                        : invalid ? "Token is invalid, expired or revoked" : "Authentication is required",
                 request.getRequestURI(),
                 Instant.now()
         ));

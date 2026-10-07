@@ -8,6 +8,7 @@ document in the same pull request.
 
 - [Architecture overview](architecture/overview.md): modules, dependency flow, external interfaces, and API error contract.
 - [Local environment](development/local-setup.md): how to configure, run, and test the backend.
+- [Postman collection](postman/README.md): endpoint documentation, examples, and automatic login/refresh.
 - [Modernization history](modernization/refactoring-log.md): decisions and improvements already made.
 - [Roadmap](roadmap.md): proposed sequence for upcoming refactorings and features.
 

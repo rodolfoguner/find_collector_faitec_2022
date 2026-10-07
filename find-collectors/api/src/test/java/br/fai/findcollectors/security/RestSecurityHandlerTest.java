@@ -30,6 +30,26 @@ class RestSecurityHandlerTest {
     }
 
     @Test
+    void shouldReturnInvalidTokenForRejectedBearer() throws Exception {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        new RestAuthenticationEntryPoint(objectMapper).commence(new MockHttpServletRequest("GET", "/api/me"),
+                response, new org.springframework.security.oauth2.server.resource.InvalidBearerTokenException("secret"));
+        assertThat(response.getStatus()).isEqualTo(401);
+        assertThat(objectMapper.readTree(response.getContentAsByteArray()).get("code").asText()).isEqualTo("INVALID_TOKEN");
+    }
+
+    @Test
+    void shouldReturnUnavailableWithoutLeakingDatabaseDetails() throws Exception {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        new RestAuthenticationEntryPoint(objectMapper).commence(new MockHttpServletRequest("GET", "/api/me"),
+                response, new org.springframework.security.authentication.AuthenticationServiceException("database secret"));
+        assertThat(response.getStatus()).isEqualTo(503);
+        assertThat(response.getHeader(HttpHeaders.WWW_AUTHENTICATE)).isNull();
+        assertThat(objectMapper.readTree(response.getContentAsByteArray()).get("code").asText()).isEqualTo("AUTHENTICATION_UNAVAILABLE");
+        assertThat(response.getContentAsString()).doesNotContain("database secret");
+    }
+
+    @Test
     void shouldReturnStandardForbiddenResponse() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest("DELETE", "/api/person/2");
         MockHttpServletResponse response = new MockHttpServletResponse();

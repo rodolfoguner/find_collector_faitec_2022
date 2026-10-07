@@ -69,6 +69,9 @@ coverage is imported, and CI enforces the agreed quality and security gates.
 
 - [x] Implement Spring Security for the API.
 - [x] Define and implement access and refresh tokens.
+- [x] Persist login sessions in PostgreSQL, rotate refresh tokens once per use,
+  revoke sessions on refresh reuse, and invalidate access and refresh tokens on
+  current-session logout.
 - [x] Add an endpoint for the authenticated user.
 - [ ] Define an operation-level permission matrix for `RECYCLER` and
   `COLLECTOR`, distinguishing authentication from authorization.

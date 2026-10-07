@@ -99,22 +99,68 @@ accounts created before this policy remain able to authenticate.
 
 ## Authentication
 
-Authentication is stateless and uses signed JWTs. `POST /api/login` validates
-credentials and returns a 15-minute access token plus a 7-day refresh token.
-`POST /api/refresh` validates a refresh token and returns a new token pair.
-Refresh tokens are rejected as bearer credentials for protected resources.
+Authentication uses HS256-signed JWTs backed by PostgreSQL sessions. HTTP
+requests do not use server-side HTTP sessions, but token validity depends on the
+persisted authentication session.
+
+`POST /api/login` validates credentials and creates an independent session for
+each login. It returns a 15-minute access token and a refresh token with an
+absolute 7-day session deadline. Both tokens carry the same `sid` (session UUID)
+and distinct `jti` values (token UUIDs). Refreshing preserves `sid` and the
+original deadline; access expiration is capped at that deadline.
+
+`POST /api/refresh` accepts `{ "refreshToken": "..." }`, validates the refresh
+JWT, consumes its persisted SHA-256 hash, and returns a new token pair. Used
+refresh hashes remain recorded until the session expires. Reusing a consumed
+refresh revokes the entire session, including its latest refresh and all access
+tokens. The revocation commits before the API returns `401 INVALID_TOKEN`.
+Concurrent renewals are serialized by a PostgreSQL row lock; at most one
+renewal succeeds and a repeated use revokes the session. Clients must coordinate
+refresh calls across requests/tabs. A lost refresh response followed by a retry
+can require a new login; there is no retry grace period.
+
+`POST /api/logout` requires a valid access bearer token and returns
+`204 No Content` after revoking its session. All tokens belonging to that `sid`
+are rejected on subsequent checks, while other logins remain active. An expired
+or revoked access token cannot authenticate logout; a repeated logout with that
+token returns `401`. Already authorized requests may finish.
+
+Protected requests verify the JWT signature, issuer, expiration, token type and
+required identity/session claims, then query the session's owner, revocation
+and absolute expiration. Refresh tokens are rejected as bearer credentials.
 `GET /api/me` resolves the current account from the access-token subject.
+Missing, expired and revoked sessions yield `401 INVALID_TOKEN`. Session-store
+failures yield `503 AUTHENTICATION_UNAVAILABLE`, without accepting unchecked
+tokens or returning database details. Missing bearer credentials retain
+`401 AUTHENTICATION_REQUIRED`.
+
+`domain` defines session state, rotation decisions, persistence and token codec
+contracts; `application` orchestrates login sessions, refresh and logout;
+`infrastructure` implements transactional session persistence; `api` implements
+the JWT codec, HTTP DTO mapping, security integration and scheduled cleanup.
+Session and refresh persistence entities stay in `infrastructure` and are never
+part of HTTP contracts.
+
+Migration `V4` adds `auth_sessions` and `auth_refresh_tokens`, preserving existing
+people and collection data. Only refresh hashes and session metadata are stored;
+raw JWTs are not persisted. Deleting a person cascades to their sessions and
+refresh history. Expired sessions are cleaned up hourly, cascading to their
+refresh history; session validation rejects expired records even before cleanup.
+The interval can be configured through `security.sessions.cleanup-interval`
+(default `PT1H`).
 
 `POST /api/login`, `POST /api/signup`, `POST /api/refresh`, health, and OpenAPI
 resources are public. Other endpoints require `Authorization: Bearer <token>`.
 The signing secret comes from the required `JWT_SECRET` environment variable
-and must contain at least 32 bytes.
+and must contain at least 32 UTF-8 bytes. Tokens issued before migration to
+session-backed authentication lack `sid`/`jti` and require a new login. Deploy
+all API instances together: old instances do not enforce session revocation.
 
 ## Known limitations
 
 - accounts have no email activation, password-change, or recovery flow;
 - there is no authorization based on resource ownership or user type;
-- refresh tokens are stateless and cannot yet be revoked before expiration;
+- logout revokes the current session only; account-wide logout is not implemented;
 - collection points have no dedicated search or geolocation resource;
 - there is no communication channel between collectors and recyclers;
 - the context test uses the PostgreSQL instance configured in the environment;

@@ -21,6 +21,17 @@ class GlobalExceptionHandlerTest {
     private final MockHttpServletRequest request = createRequest();
 
     @Test
+    void shouldReturn503ForSessionStorageFailure() {
+        var response = new GlobalExceptionHandler().handlePersistenceUnavailable(
+                new br.fai.findcollectors.exceptions.AuthenticationUnavailableException(
+                        new RuntimeException("password=secret")),
+                new org.springframework.mock.web.MockHttpServletRequest("POST", "/api/refresh"));
+        org.assertj.core.api.Assertions.assertThat(response.getStatusCode().value()).isEqualTo(503);
+        org.assertj.core.api.Assertions.assertThat(response.getBody().code()).isEqualTo("AUTHENTICATION_UNAVAILABLE");
+        org.assertj.core.api.Assertions.assertThat(response.getBody().message()).doesNotContain("secret");
+    }
+
+    @Test
     void shouldReturnNotFoundForNotFoundException() {
         NotFoundException exception = new NotFoundException(
                 ErrorCode.PERSON_NOT_FOUND,

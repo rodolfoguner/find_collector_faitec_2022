@@ -1,20 +1,29 @@
 package br.fai.findcollectors.config;
 
+import br.fai.findcollectors.exceptions.AuthenticationUnavailableException;
+import br.fai.findcollectors.repositories.AuthSessionRepository;
 import br.fai.findcollectors.security.RestAccessDeniedHandler;
 import br.fai.findcollectors.security.RestAuthenticationEntryPoint;
+import br.fai.findcollectors.security.SessionClaimsValidator;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.JwtClaimValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -22,13 +31,13 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
 import java.util.List;
+import java.util.UUID;
 
 @Configuration
 @EnableConfigurationProperties(JwtProperties.class)
@@ -63,6 +72,14 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler)
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
+                        .withObjectPostProcessor(new ObjectPostProcessor<BearerTokenAuthenticationFilter>() {
+                            @Override
+                            public <O extends BearerTokenAuthenticationFilter> O postProcess(O filter) {
+                                // The default failure handler rethrows AuthenticationServiceException.
+                                filter.setAuthenticationFailureHandler(authenticationEntryPoint::commence);
+                                return filter;
+                            }
+                        })
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .jwt(jwt -> jwt
                                 .decoder(accessTokenDecoder)
@@ -86,8 +103,20 @@ public class SecurityConfig {
 
     @Bean("accessTokenDecoder")
     @Primary
-    public JwtDecoder accessTokenDecoder(JwtProperties properties) {
-        return tokenDecoder(properties, "access");
+    public JwtDecoder accessTokenDecoder(JwtProperties properties, AuthSessionRepository sessions, Clock authClock) {
+        JwtDecoder decoder = tokenDecoder(properties, "access");
+        return token -> {
+            var jwt = decoder.decode(token);
+            try {
+                if (!sessions.isActive(UUID.fromString(jwt.getClaimAsString("sid")),
+                        ((Number) jwt.getClaim("personId")).longValue(), authClock.instant())) {
+                    throw new BadJwtException("Token session is expired or revoked");
+                }
+            } catch (AuthenticationUnavailableException exception) {
+                throw new AuthenticationServiceException("Session validation is unavailable", exception);
+            }
+            return jwt;
+        };
     }
 
     @Bean("refreshTokenDecoder")
@@ -103,7 +132,8 @@ public class SecurityConfig {
 
         decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(
                 JwtValidators.createDefaultWithIssuer(properties.issuer()),
-                new JwtClaimValidator<>(TOKEN_TYPE_CLAIM, expectedTokenType::equals)
+                new JwtClaimValidator<>(TOKEN_TYPE_CLAIM, expectedTokenType::equals),
+                new SessionClaimsValidator()
         ));
 
         return decoder;

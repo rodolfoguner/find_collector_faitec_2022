@@ -13,7 +13,8 @@ reference for the future frontend rebuild.
 
 The backend currently provides:
 
-- registration and basic email/password authentication;
+- registration and email/password authentication with signed JWTs;
+- PostgreSQL sessions, single-use refresh rotation, and current-session logout;
 - person lookup, update, and deletion;
 - collection creation, lookup, update, and deletion;
 - queries for available, owned, and accepted collections;
@@ -35,7 +36,7 @@ educational content, points, and notifications are not finished yet. See the
 - Spring Data JPA and Hibernate
 - PostgreSQL 16
 - Flyway
-- Spring Security Crypto and BCrypt
+- Spring Security, OAuth2 Resource Server, and BCrypt
 - Springdoc OpenAPI
 - Spring Boot Actuator
 - Maven Wrapper
@@ -104,6 +105,7 @@ configuration details, troubleshooting, and migration precautions.
 ## Documentation
 
 - [Documentation index](docs/README.md)
+- [Postman collection and automatic authentication](docs/postman/README.md)
 - [Architecture overview](docs/architecture/overview.md)
 - [Modernization history](docs/modernization/refactoring-log.md)
 - [Technical and product roadmap](docs/roadmap.md)
