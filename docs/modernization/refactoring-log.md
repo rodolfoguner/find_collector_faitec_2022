@@ -102,3 +102,19 @@ Small fixes remain documented through commits and pull requests only.
 - required new login for JWTs created before session claims were introduced;
 - added unit tests and opt-in PostgreSQL tests for HTTP revocation, concurrent
   refresh/logout, cleanup, and migrations on fresh and upgraded schemas.
+
+## Controller contracts and coverage gates — October 2026
+
+- added isolated `@WebMvcTest` suites for account, person, and collection
+  controllers with mocked use cases, real JSON mapping, validation, and the
+  standardized error handler;
+- separated MVC contract tests from a filter-enabled security suite covering
+  public routes, protected routes, invalid bearer tokens, and rejection of
+  refresh tokens as access credentials;
+- changed collection creation to return `201 Created` with a `Location` header
+  and made collection material names fail with `400 VALIDATION_ERROR` before
+  mapping;
+- standardized invalid path-variable formats as `400 VALIDATION_ERROR`;
+- centralized JaCoCo configuration, enforced 80% line and 70% branch coverage
+  for `application` and `api`, and added a reactor-wide HTML/XML aggregate
+  report that displays all active modules separately.

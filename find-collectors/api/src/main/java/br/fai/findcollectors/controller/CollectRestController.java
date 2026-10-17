@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -32,7 +33,8 @@ public class CollectRestController {
 
         Collect created = createCollectUseCase.execute(CollectMapper.toEntity(request));
 
-        return ResponseEntity.ok(CollectMapper.toResponse(created));
+        return ResponseEntity.created(URI.create("/api/collect/" + created.getId()))
+                .body(CollectMapper.toResponse(created));
     }
 
     @GetMapping("")

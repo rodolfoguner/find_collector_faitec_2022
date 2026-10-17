@@ -135,3 +135,22 @@ tests cover both an empty schema and upgrading `V3` with existing account data.
 The configured database user needs permission to create schemas. Without
 `RUN_POSTGRES_TESTS=true`, these additional database tests are skipped; the
 existing application-context test still requires PostgreSQL.
+
+## Test coverage
+
+JaCoCo measures the `application` and `api` modules and enforces, for each
+module, a minimum of 80% line coverage and 70% branch coverage during Maven's
+`verify` phase. Run all tests, generate the module reports and the aggregate
+report from `find-collectors/`:
+
+```bash
+./mvnw clean verify
+```
+
+Module HTML and XML reports are generated under
+`application/target/site/jacoco/` and `api/target/site/jacoco/`. The combined
+reactor report is generated under `coverage/target/site/jacoco-aggregate/` and
+keeps `application`, `api`, `domain`, and `infrastructure` separately visible.
+The XML files in these locations are available for future SonarQube and CI
+integration. Coverage gates for `domain` and `infrastructure` remain pending
+until those modules have dedicated test suites.

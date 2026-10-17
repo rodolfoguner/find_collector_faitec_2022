@@ -21,7 +21,9 @@ The backend currently provides:
 - persistence of addresses and recyclable material types;
 - database migrations with Flyway;
 - OpenAPI/Swagger documentation;
-- health checks with Spring Boot Actuator.
+- health checks with Spring Boot Actuator;
+- controller contract and authentication-boundary tests with enforced JaCoCo
+  coverage gates for the API and application modules.
 
 Per-user authorization, account activation and recovery, the complete
 collection lifecycle, collection-point discovery, direct communication,
@@ -50,7 +52,8 @@ educational content, points, and notifications are not finished yet. See the
 │   ├── api/                # Controllers, DTOs, and HTTP configuration
 │   ├── application/        # Use cases
 │   ├── domain/             # Domain entities and contracts
-│   └── infrastructure/     # JPA, PostgreSQL, and BCrypt
+│   ├── infrastructure/     # JPA, PostgreSQL, and BCrypt
+│   └── coverage/           # Aggregated JaCoCo report
 ├── docs/                   # Living documentation and historical material
 ├── legacy/                 # Discontinued Thymeleaf client
 ├── docker-compose.yml      # PostgreSQL for local development

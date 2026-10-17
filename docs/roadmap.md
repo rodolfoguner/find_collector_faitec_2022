@@ -34,8 +34,8 @@ check already exist; they are a foundation for the planned observability work.
 
 ## Automated quality
 
-- [ ] Add unit tests for use cases with JUnit and Mockito.
-- [ ] Add controller tests with MockMvc.
+- [x] Add unit tests for use cases with JUnit and Mockito.
+- [x] Add controller tests with MockMvc.
 - [ ] Isolate integration tests with Testcontainers and PostgreSQL.
 - [ ] Validate migrations against an empty database in CI.
 - [ ] Add a continuous integration pipeline.
@@ -95,7 +95,7 @@ coverage is imported, and CI enforces the agreed quality and security gates.
   reason, operation, timestamp, and trace correlation when available; restrict
   access and define retention for audit records.
 - [ ] Require account activation through a short-lived email verification token.
-- [ ] Enforce a documented password-strength policy in the API and mirror its
+- [x] Enforce a documented password-strength policy in the API and mirror its
   feedback in the frontend.
 - [ ] Implement password changes.
 - [ ] Implement account recovery through a verified email address or phone

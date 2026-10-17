@@ -35,6 +35,10 @@ public final class CollectMapper {
     }
 
     public static CollectResponse toResponse(Collect collect) {
+        if (collect == null) {
+            return null;
+        }
+
         return CollectResponse.builder()
                 .id(collect.getId())
                 .dateAndTime(collect.getDateAndTime())
