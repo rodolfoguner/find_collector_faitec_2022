@@ -118,3 +118,14 @@ Small fixes remain documented through commits and pull requests only.
 - centralized JaCoCo configuration, enforced 80% line and 70% branch coverage
   for `application` and `api`, and added a reactor-wide HTML/XML aggregate
   report that displays all active modules separately.
+
+## CI quality gates — October 2026
+
+- added a GitHub Actions workflow for PostgreSQL-backed Maven verification on
+  pull requests and protected branches;
+- made the existing JaCoCo thresholds, the SonarQube quality gate, and
+  high-severity Snyk Code results blocking inputs to a stable merge-gate job;
+- added Snyk Open Source analysis as a deliberately non-blocking baseline and
+  retained coverage and security reports as workflow artifacts;
+- documented the required GitHub secrets, branch ruleset, fork limitation, and
+  migration path from a workflow PostgreSQL service to Testcontainers.

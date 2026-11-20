@@ -104,6 +104,8 @@ docker compose down
 
 See the [local development guide](docs/development/local-setup.md) for
 configuration details, troubleshooting, and migration precautions.
+See the [continuous integration guide](docs/development/continuous-integration.md)
+for GitHub quality gates, required secrets, and branch protection.
 
 ## Documentation
 
