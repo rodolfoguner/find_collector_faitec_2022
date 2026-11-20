@@ -1,0 +1,189 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, master]
+  push:
+    branches: [develop, master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: "25"
+  SNYK_CLI_VERSION: "1.1308.1"
+
+jobs:
+  tests:
+    name: Tests and coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: find_collectors_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d find_collectors_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: jdbc:postgresql://localhost:5432/find_collectors_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      JWT_SECRET: ci-only-secret-with-at-least-thirty-two-bytes
+      RUN_POSTGRES_TESTS: "true"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Set up Java
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-dependency-path: find-collectors/**/pom.xml
+      - name: Run tests and enforce JaCoCo thresholds
+        working-directory: find-collectors
+        run: ./mvnw --batch-mode --no-transfer-progress clean verify
+      - name: Retain JaCoCo XML reports
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: jacoco-reports
+          path: |
+            find-collectors/application/target/site/jacoco/jacoco.xml
+            find-collectors/api/target/site/jacoco/jacoco.xml
+            find-collectors/coverage/target/site/jacoco-aggregate/jacoco.xml
+          if-no-files-found: error
+          retention-days: 14
+
+  sonarqube:
+    name: SonarQube quality gate
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+      SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - name: Set up Java
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-dependency-path: find-collectors/**/pom.xml
+      - name: Restore JaCoCo reports
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: jacoco-reports
+          path: find-collectors
+      - name: Compile modules for analysis
+        working-directory: find-collectors
+        run: ./mvnw --batch-mode --no-transfer-progress -DskipTests -Djacoco.skip=true install
+      - name: Analyze source and wait for the quality gate
+        working-directory: find-collectors
+        run: >-
+          ./mvnw --batch-mode --no-transfer-progress
+          org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar
+          -Dsonar.projectKey="${SONAR_PROJECT_KEY}"
+          -Dsonar.coverage.jacoco.xmlReportPaths="${GITHUB_WORKSPACE}/find-collectors/coverage/target/site/jacoco-aggregate/jacoco.xml"
+          -Dsonar.qualitygate.wait=true
+          -Dsonar.qualitygate.timeout=300
+
+  snyk_code:
+    name: Snyk Code
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@11b673cfb4b0dc0d860a1323caa199d54950dcce
+        with:
+          snyk-version: ${{ env.SNYK_CLI_VERSION }}
+      - name: Scan active source code
+        working-directory: find-collectors
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk code test --severity-threshold=high --sarif-file-output=snyk-code.sarif
+      - name: Retain Snyk Code report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: snyk-code-report
+          path: find-collectors/snyk-code.sarif
+          if-no-files-found: ignore
+          retention-days: 14
+
+  snyk_dependencies:
+    name: Snyk dependencies (non-blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Set up Java
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-dependency-path: find-collectors/**/pom.xml
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@11b673cfb4b0dc0d860a1323caa199d54950dcce
+        with:
+          snyk-version: ${{ env.SNYK_CLI_VERSION }}
+      - name: Scan direct and transitive dependencies
+        id: dependency-scan
+        continue-on-error: true
+        working-directory: find-collectors
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --all-projects --sarif-file-output=snyk-dependencies.sarif
+      - name: Retain dependency report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: snyk-dependency-report
+          path: find-collectors/snyk-dependencies.sarif
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Record non-blocking result
+        if: always()
+        run: echo "Dependency scan outcome (non-blocking) - ${{ steps.dependency-scan.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+
+  merge_gate:
+    name: Merge gate
+    if: always()
+    needs: [tests, sonarqube, snyk_code, snyk_dependencies]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require blocking quality checks
+        env:
+          TESTS_RESULT: ${{ needs.tests.result }}
+          SONAR_RESULT: ${{ needs.sonarqube.result }}
+          SNYK_CODE_RESULT: ${{ needs.snyk_code.result }}
+        run: |
+          if [[ "$TESTS_RESULT" == "success" && "$SONAR_RESULT" == "success" && "$SNYK_CODE_RESULT" == "success" ]]; then
+            exit 0
+          fi
+
+          echo "Blocking check failed: tests=$TESTS_RESULT sonar=$SONAR_RESULT snyk-code=$SNYK_CODE_RESULT"
+          exit 1

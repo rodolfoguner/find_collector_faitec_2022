@@ -40,6 +40,13 @@ check already exist; they are a foundation for the planned observability work.
 - [ ] Validate migrations against an empty database in CI.
 - [ ] Add a continuous integration pipeline.
 
+The GitHub Actions workflow is configured with PostgreSQL-backed tests, JaCoCo,
+SonarQube, blocking Snyk Code analysis, and non-blocking dependency analysis.
+Keep the pipeline item pending until repository secrets and variables are set,
+the first complete run passes, and `CI / Merge gate` is required by the branch
+ruleset. Testcontainers remains the target for removing the shared PostgreSQL
+service from CI.
+
 ### Code quality and security analysis
 
 - [ ] Integrate SonarQube for static analysis of reliability, maintainability,
